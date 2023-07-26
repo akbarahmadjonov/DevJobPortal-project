@@ -1,0 +1,38 @@
+//* Import fonts
+@import "fonts.scss";
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  //* Your container site here👇🏻
+
+  //   width: 100% !important;
+  //   max-width: 1210px !important;
+  padding: 0 20px !important;
+  margin: 0 auto !important;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+
+  & li {
+    list-style: none;
+  }
+}
+
+a {
+  text-decoration: none;
+}
+
+//***   MOBILE   ***//
+
+@media only screen and (max-width: 576px) {
+  .container {
+    padding: 0 16px !important;
+  }
+}
