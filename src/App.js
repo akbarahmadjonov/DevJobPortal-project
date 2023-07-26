@@ -8,6 +8,7 @@ import Header from "./Widgets/Header/Header";
 
 const App = () => (
   <>
+  <main>
     <div>
       <Header />
       <Routes>
@@ -16,6 +17,7 @@ const App = () => (
         </Route>
       </Routes>
     </div>
+    </main>
   </>
 );
 
