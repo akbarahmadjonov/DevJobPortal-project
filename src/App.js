@@ -42,6 +42,12 @@ const App = () => (
         <Route path="/users" element={<h2>Пользователи</h2>} />
       </Routes>
     </main>
+    <p>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis totam
+      earum voluptatem modi ex perferendis labore officia deleniti expedita
+      iste. Minus fuga ratione inventore necessitatibus ad accusamus provident
+      numquam deleniti.
+    </p>
   </>
 );
 
