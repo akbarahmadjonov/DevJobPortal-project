@@ -1,47 +1,21 @@
 import React from "react";
-import { Routes, Route, Link, Router, Outlet } from "react-router-dom";
-import Login from "./Pages/Login";
+import { Routes, Route } from "react-router-dom";
+import Login from "./Pages/Auth/Login";
+import Register from "./Pages/Auth/Register";
+// import "./main.scss";
+import "./index.css";
+import Header from "./Widgets/Header/Header";
 
 const App = () => (
   <>
-    <header>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Главная</Link>
-          </li>
-          <li>
-            <Link to="/about">Контакты</Link>
-          </li>
-          <li>
-            <Link to="/about/oi">Yes</Link>
-          </li>
-          <li>
-            <Link to="/users">Пользователи</Link>
-          </li>
-        </ul>
-      </nav>
-    </header>
-
-    <main>
+    <div>
+      <Header />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route
-          path="/about"
-          element={
-            <div>
-              <h2>Контакты</h2>
-              <div>
-                <Outlet />
-              </div>
-            </div>
-          }
-        >
-          <Route path="oi" element={<h1>Hello nooooooo</h1>} />
+        <Route path="/auth" element={<Register />}>
+          <Route path="login" element={<Login />} />
         </Route>
-        <Route path="/users" element={<h2>Пользователи</h2>} />
       </Routes>
-    </main>
+    </div>
   </>
 );
 
