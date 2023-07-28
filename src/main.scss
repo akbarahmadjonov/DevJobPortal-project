@@ -13,8 +13,9 @@ body {
   //* Your container site here👇🏻
 
   //   width: 100% !important;
-  //   max-width: 1210px !important;
-  padding: 0 20px !important;
+  max-width: 1480px !important;
+
+  padding: 0 20px; //important removed
   margin: 0 auto !important;
 }
 
@@ -37,4 +38,21 @@ a {
   .container {
     padding: 0 16px !important;
   }
+}
+
+//Common styles
+
+.sub-title-text {
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 22px;
+}
+
+.text {
+  color: #c4c4c4;
+  font-size: 16px;
+  font-style: normal;
+  line-height: normal;
 }
