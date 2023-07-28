@@ -15,7 +15,7 @@ export const Footer = ()=>{
 
 
 return <footer className="relative w-full bg-white">
-  <div className="flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px] ">
+  <div className="flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px]">
     <div className="flex justify-between mb-[84px] items-center w-full">
       <div className="flex flex-col items-start w-[50%]">
         <h2 className="text-[24px] text-black font-semibold ">
