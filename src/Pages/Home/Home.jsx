@@ -16,15 +16,13 @@ import { Link } from "react-router-dom"
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Scrollbar, A11y, EffectCube } from 'swiper/modules';
 import 'swiper/css/bundle';
-
-
-
+import { Footer } from "../../Widgets"
 
 
 export const Home = ()=>{
 return <div>
   <div className="home__header-wrapper">
-  <Header authStyle={{color: "#FFF"}}  className/>
+  <Header inputStyle={{backgroundColor: "#FFFFFF"}} className/>
   </div>
   <section className="home__hero">
     <div className="top-container"> 
@@ -317,7 +315,9 @@ same thing. Find them here</p>
     </Swiper>
     </div>
   </section>
+  <div className="middle-container">
+  <Footer></Footer>
+  </div>
+
 </div>
-
-
 }

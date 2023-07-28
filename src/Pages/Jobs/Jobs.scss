@@ -1,0 +1,126 @@
+//* JOBS part
+.jobs {
+  //* Custom properties
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+
+  background-image: url("../../Assets/Images/jobs-hero-bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 443px;
+}
+
+.jobs-inner {
+  //* Custom properties
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  .jobs-inner__hero {
+    .jobs-title {
+      //* Marging, paddings
+      margin: 0;
+
+      //* Custom style
+      font-size: 48px;
+      font-style: normal;
+      font-weight: 700;
+
+      line-height: normal;
+      color: #fff;
+    }
+
+    .jobs-text {
+      //* Custom style
+      font-size: 16px;
+      font-weight: 400;
+
+      line-height: normal;
+      color: rgba(255, 255, 255, 0.6);
+      font-style: normal;
+    }
+
+    .jobs-inner__input {
+      width: 314px;
+
+      //* Margin, paddings
+      padding: 32px 27px;
+
+      border: none;
+      outline: none;
+
+      //* Custom styles
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+
+      line-height: normal;
+      color: #000;
+
+      &::placeholder {
+        font-size: 16px !important;
+      }
+    }
+
+    .jobs-inner__select {
+      width: 314px;
+
+      //* Margin, paddings
+      padding: 32px 27px;
+
+      outline: none;
+
+      //* Custom styles
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+
+      line-height: normal;
+      color: #c4c4c4;
+    }
+
+    .jobs-inner__button {
+      //* Margin, paddings
+      padding: 32px 27px;
+
+      //* Custom styles
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+
+      line-height: normal;
+      color: #fff;
+      background-color: #1f66cf;
+
+      &:hover {
+        background-color: #075cdc;
+      }
+    }
+  }
+  .jobs-inputs {
+    display: flex;
+  }
+}
+
+//* JOBS part
+
+//* Jobs posts
+.job-posts {
+  //* Margin, paddings
+  margin-top: 125px;
+  margin-bottom: 125px;
+  .job-posts__title {
+    //* Margin, paddings
+    margin-bottom: 65px;
+
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 600;
+
+    line-height: normal;
+    color: #000;
+  }
+}
+
+//* Jobs posts

@@ -12,10 +12,14 @@ body {
 .container {
   //* Your container site here👇🏻
 
+
   //   width: 100% !important;
   max-width: 1480px !important;
 
   padding: 0 20px; //important removed
+
+  width: 100%;
+
   margin: 0 auto !important;
 }
 
@@ -40,6 +44,7 @@ a {
   }
 }
 
+
 //Common styles
 
 .sub-title-text {
@@ -55,4 +60,9 @@ a {
   font-size: 16px;
   font-style: normal;
   line-height: normal;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  border: none !important;
+
 }
