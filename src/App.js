@@ -8,15 +8,14 @@ import Header from "./Widgets/Header/Header";
 
 const App = () => (
   <>
-  <main>
-    <div>
-      <Header />
-      <Routes>
-        <Route path="/auth" element={<Register />}>
-          <Route path="login" element={<Login />} />
-        </Route>
-      </Routes>
-    </div>
+    <main>
+      <div>
+        <Header />
+        <Routes>
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/register" element={<Register />} />
+        </Routes>
+      </div>
     </main>
   </>
 );
