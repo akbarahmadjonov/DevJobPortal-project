@@ -1,16 +1,15 @@
-import { React, useState } from "react";
+import { React, useRef, useState } from "react";
 import hBg from "./../../Assets/Images/Header bg.png";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
-import { Button, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 
 export default function Register() {
+  const privacy_check = useRef(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -26,6 +25,7 @@ export default function Register() {
       email: data.get("emailForSub"),
     });
   };
+  console.log(privacy_check);
   return (
     <>
       <img
@@ -109,16 +109,30 @@ export default function Register() {
                       autoComplete="new-password"
                     />
                   </Grid>
-                  <Grid item xs={12}  >
+                  <Grid item xs={12}>
                     {/* <FormControlLabel
                       style={{ paddingLeft: "30px", paddingTop:'20px', fontSize:'100px !important' , color: "#2F2F2F" }}
                       className='ooo'
                       control={<Checkbox value="allowExtraEmails" />}
                       label="I accept the terms of  service and privacy policy"
                     /> */}
-                    <label htmlFor="checkbox" className="flex space-x-4 text-[20px] items-center mt-[49px]" >
-                      <input type="checkbox" className="h-[20px] w-[20px]" />
-                      <p>I accept the terms of  service and privacy policy</p>
+                    <label
+                      htmlFor="checkbox"
+                      className="flex space-x-4 text-[20px] items-center mt-[49px]"
+                    >
+                      <input
+                        type="checkbox"
+                        ref={privacy_check}
+                        className="h-[20px] w-[20px]"
+                      />
+                      <p
+                        onClick={() => {
+                          privacy_check.current.checked =
+                            !privacy_check.current.checked;
+                        }}
+                      >
+                        I accept the terms of service and privacy policy
+                      </p>
                     </label>
                   </Grid>
                 </Grid>
@@ -194,13 +208,38 @@ export default function Register() {
                   </h2>
                   <ul
                     style={{ fontFamily: "Lato, sans-serif" }}
-                    className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
+                    className=" flex flex-col items-start  text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
                   >
-                    <Link to={"/"}>Home</Link>
-                    <Link to={"/"}>Jobs</Link>
-                    <Link to={"/"}>FAQs</Link>
-                    <Link to={"/"}>Support</Link>
-                    <Link to={"/"}>About</Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Jobs
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      FAQs
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Support
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      About
+                    </Link>
                   </ul>
                 </div>
                 <div>
@@ -211,9 +250,24 @@ export default function Register() {
                     style={{ fontFamily: "Lato, sans-serif" }}
                     className=" flex flex-col items-start w-full text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
                   >
-                    <Link to={"/"}>How can I search for a specific job ?</Link>
-                    <Link to={"/"}>Are there freelance jobs ?</Link>
-                    <Link to={"/"}>Can I post a jobs also</Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      How can I search for a specific job ?
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Are there freelance jobs ?
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Can I post a jobs also
+                    </Link>
                   </ul>
                 </div>
                 <div>
@@ -222,13 +276,36 @@ export default function Register() {
                   </h2>
                   <ul
                     style={{ fontFamily: "Lato, sans-serif" }}
-                    className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
+                    className=" flex flex-col items-start  text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
                   >
-                    <Link to={"/"}>Github</Link>
-                    <Link to={"/"}>Twitter</Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Github
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Twitter
+                    </Link>
                   </ul>
                 </div>
               </div>
+            </div>
+            <div className="flex w-full items-center pt-[197px] justify-center">
+              <a
+                href="#!"
+                className="text-[#2F2F2F] text-[16px] font-normal "
+                target="_blank"
+              >
+                Developer and maintained by{" "}
+                <span className="hover:text-blue-500 transition-all">
+                  {" "}
+                  Regis
+                </span>
+              </a>
             </div>
           </div>
         </footer>

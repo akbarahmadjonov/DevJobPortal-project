@@ -13,8 +13,6 @@ body {
   //* Your container site here👇🏻
 
   width: 100%;
-  max-width: 1440px !important;
-  padding: 0 20px !important;
   margin: 0 auto !important;
 }
 
@@ -37,4 +35,9 @@ a {
   .container {
     padding: 0 16px !important;
   }
+}
+
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  border: none !important;
 }

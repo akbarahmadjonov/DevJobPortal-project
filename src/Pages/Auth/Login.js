@@ -90,7 +90,7 @@ export default function Login() {
                 />
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
-                  style={{ paddingLeft: "30px",  }}
+                  style={{ paddingLeft: "30px" }}
                   label="Remember me"
                 />
                 <div className="flex flex-col items-center pt-[30px] justify-between w-full space-y-4">
@@ -152,7 +152,7 @@ export default function Login() {
             </div>
             <hr className="bg-[#0050c81a] flex " />
             {/*  */}
-            <div className="flex space-x-[190px]  pt-[55px] items-start">
+            <div className="flex space-x-[190px]   pt-[55px] items-start">
               <div>
                 <h1 className="text-[#0050C8] text-[20px] font-bold">
                   TheJobportal
@@ -167,11 +167,36 @@ export default function Login() {
                     style={{ fontFamily: "Lato, sans-serif" }}
                     className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
                   >
-                    <Link to={"/"}>Home</Link>
-                    <Link to={"/"}>Jobs</Link>
-                    <Link to={"/"}>FAQs</Link>
-                    <Link to={"/"}>Support</Link>
-                    <Link to={"/"}>About</Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Jobs
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      FAQs
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Support
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      About
+                    </Link>
                   </ul>
                 </div>
                 <div>
@@ -182,9 +207,24 @@ export default function Login() {
                     style={{ fontFamily: "Lato, sans-serif" }}
                     className=" flex flex-col items-start w-full text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
                   >
-                    <Link to={"/"}>How can I search for a specific job ?</Link>
-                    <Link to={"/"}>Are there freelance jobs ?</Link>
-                    <Link to={"/"}>Can I post a jobs also</Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      How can I search for a specific job ?
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Are there freelance jobs ?
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Can I post a jobs also
+                    </Link>
                   </ul>
                 </div>
                 <div>
@@ -195,11 +235,34 @@ export default function Login() {
                     style={{ fontFamily: "Lato, sans-serif" }}
                     className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
                   >
-                    <Link to={"/"}>Github</Link>
-                    <Link to={"/"}>Twitter</Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Github
+                    </Link>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Twitter
+                    </Link>
                   </ul>
                 </div>
               </div>
+            </div>
+            <div className="flex w-full items-center pt-[197px] justify-center">
+              <a
+                href="#!"
+                className="text-[#2F2F2F] text-[16px] font-normal "
+                target="_blank"
+              >
+                Developer and maintained by{" "}
+                <span className="hover:text-blue-500 transition-all">
+                  {" "}
+                  Regis
+                </span>
+              </a>
             </div>
           </div>
         </footer>

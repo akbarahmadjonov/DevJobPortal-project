@@ -18,7 +18,7 @@ export default function Header(props) {
                 className=" flex items-center w-[30%] text-[14px] font-[Lato] justify-between  text-[#999FA8]"
               >
                 <Link to={"/"}>Home</Link>
-                <Link to={"/"}>Jobs</Link>
+                <Link to={"/jobs"}>Jobs</Link>
                 <Link to={"/"}>FAQs</Link>
                 <Link to={"/"}>Support</Link>
                 <Link to={"/"}>About</Link>
