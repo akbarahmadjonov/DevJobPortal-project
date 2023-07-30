@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import userVector from "./../../Assets/Images/Vector.svg";
 import schIco from "./../../Assets/Images/search.svg";
 
-export default function Header({ headerClassName, style, inputStyle }) {
+export default function Header({ headerClassName, style, inputStyle, loginTextColor} ) {
   return (
     <header style={style} className={headerClassName ? "home__header" : ""}>
       <div className="container max-w-[1728px] mx-auto p-[20px]">
@@ -16,11 +16,11 @@ export default function Header({ headerClassName, style, inputStyle }) {
               style={{ fontFamily: "Lato, sans-serif" }}
               className=" flex items-center w-[30%] text-[14px] font-[Lato] justify-between  text-[#999FA8]"
             >
-              <Link to={"/"}>Home</Link>
-              <Link to={"/jobs"}>Jobs</Link>
-              <Link to={"/"}>FAQs</Link>
-              <Link to={"/"}>Support</Link>
-              <Link to={"/"}>About</Link>
+              <Link className="hover:text-blue-500 transition-all" to={"/"}>Home</Link>
+              <Link className="hover:text-blue-500 transition-all" to={"/jobs"}>Jobs</Link>
+              <Link className="hover:text-blue-500 transition-all" to={"/"}>FAQs</Link>
+              <Link className="hover:text-blue-500 transition-all" to={"/"}>Support</Link>
+              <Link className="hover:text-blue-500 transition-all" to={"/"}>About</Link>
             </ul>
             <div>
               <label
@@ -44,16 +44,16 @@ export default function Header({ headerClassName, style, inputStyle }) {
               </label>
             </div>
             <div className="flex  items-center justify-start space-x-[10px]">
-              <img src={userVector} alt="userIcon" />
+              <img src={userVector}  alt="userIcon" />
               <NavLink
-                className={`active:text-black text-[#c2c2c2]`}
+                className={`active:text-black text-[${loginTextColor ? loginTextColor : "#c2c2c2"}]`}
                 to={"/auth/register"}
               >
                 Create account{" "}
               </NavLink>
               <span className="text-black">/</span>
               <NavLink
-                className={"active:text-black text-[#c2c2c2]"}
+                className={`active:text-black text-[${loginTextColor ? loginTextColor : "#c2c2c2"}]`}
                 to={"/auth/login"}
               >
                 login
