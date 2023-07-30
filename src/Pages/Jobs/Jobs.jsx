@@ -41,7 +41,7 @@ export const Jobs = () => {
         <div className="container">
           <h3 className="job-posts__title">Latest added</h3>
           <div className="job-posts__inner"></div>
-      <Footer></Footer>
+          <Footer footerTop="135"/>
         </div>
       </div>
     </>

@@ -159,7 +159,7 @@ export default function Register() {
             </Box>
           </div>
         </main>
-        <Footer></Footer>
+        <Footer footerTop="1200"></Footer>
       </div>
     </>
   );

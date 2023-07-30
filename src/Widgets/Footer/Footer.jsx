@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 
 
-export const Footer = ()=>{
+export const Footer = (props)=>{
 
   const handleSubmitSub = (event) => {
     event.preventDefault();
@@ -15,7 +15,7 @@ export const Footer = ()=>{
 
 
 return <footer className="relative w-full bg-white">
-  <div className="flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px]">
+  <div className={`flex flex-col space-y-[20px] py-[80px] absolute w-full top-[${props.footerTop? props.footerTop : 100 }px]`}>
     <div className="flex justify-between mb-[84px] items-center w-full">
       <div className="flex flex-col items-start w-[50%]">
         <h2 className="text-[24px] text-black font-semibold ">
@@ -154,7 +154,7 @@ return <footer className="relative w-full bg-white">
     </div>
     <div className="flex w-full items-center pt-[197px] justify-center">
       <a
-        href="#!"
+        href="*#"
         className="text-[#2F2F2F] text-[16px] font-normal "
         target="_blank"
       >

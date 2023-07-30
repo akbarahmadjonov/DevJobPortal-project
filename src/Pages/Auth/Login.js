@@ -117,7 +117,7 @@ export default function Login() {
             </Box>
           </div>
         </main>
-        <Footer></Footer>
+        <Footer footerTop="1200" />
       </div>
     </>
   );
