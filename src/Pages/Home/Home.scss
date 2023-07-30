@@ -178,9 +178,9 @@
 }
 
 .middle-container {
-  max-width: 1490px;
+  max-width: 1490px + 150px;
   padding: 0 20px;
-  margin-left: 80px;
+  padding-left: 150px;
   margin: 0 auto;
 }
 
@@ -227,6 +227,7 @@
 
 .why-section__wrapper {
   padding: 152px 0 47px 0;
+  padding-left: 150px;
 }
 
 .home__why-section {
@@ -290,6 +291,13 @@
 
 //Feedbacks
 
+.feedback-container {
+  max-width: 1977px;
+  padding: 0 20px;
+  // padding-left: 110px;
+  margin: 0 auto;
+}
+
 .home-feedbacks {
   background: #f2f6fc;
   padding: 93px 0 132px 0;
@@ -303,4 +311,16 @@
   // display: flex;
   gap: 103px;
   // overflow-x: hidden;
+}
+
+//swiper
+
+.swiper-shadow {
+  background: linear-gradient(270deg, #f2f6fc 0%, rgba(242, 246, 252, 0) 100%);
+  width: 250px;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 100;
 }

@@ -1,25 +1,36 @@
-import Header from "../../Widgets/Header/Header"
-import "./Home.scss"
-import heroImgWebp from "../../Assets/Images/hero-img.webp"
-import heroImgWebp2 from "../../Assets/Images/hero-img@2x.webp"
-import heroImgPng from "../../Assets/Images/hero-img.png"
-import heroImgPng2 from "../../Assets/Images/hero-img@2x.png"
-import { BlueButton, FeedbackItem } from "../../Components"
+import { useEffect } from "react"
+import { Link } from "react-router-dom"
+import Swiper from 'swiper/bundle'
+import 'swiper/css/bundle'
+import { register } from 'swiper/element/bundle'
 import dotsImage from "../../Assets/Images/dots.png"
-import womanImage from "../../Assets/Images/woman.png"
 import img1 from "../../Assets/Images/img1.jpg"
 import img2 from "../../Assets/Images/img2.jpg"
 import img3 from "../../Assets/Images/img3.jpg"
 import img4 from "../../Assets/Images/img4.jpg"
 import rectangle from "../../Assets/Images/Rectangle1.png"
-import { Link } from "react-router-dom"
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Scrollbar, A11y, EffectCube } from 'swiper/modules';
-import 'swiper/css/bundle';
+import womanImage from "../../Assets/Images/woman.png"
+import { BlueButton, FeedbackItem } from "../../Components"
 import { Footer } from "../../Widgets"
+import Header from "../../Widgets/Header/Header"
+import "./Home.scss"
 
 
-export const Home = ()=>{
+export const Home =  ()=>{
+  register()
+
+useEffect(()=>{
+  new Swiper('.swiper', {
+    direction: 'horizontal',
+    spaceBetween: 103,
+    slidesPerView: 3.5,
+    loop: false,
+    
+  });
+})
+   
+
+
 return <div>
   <div className="home__header-wrapper">
   <Header inputStyle={{backgroundColor: "#FFFFFF"}} className/>
@@ -283,36 +294,21 @@ same thing. Find them here</p>
     </div>
   </section>
   <section className="home-feedbacks">
-    <div className="middle-container">
+    <div className="feedback-container">
 <p style={{color: "#2F2F2F"}} className="sub-title-text">What others say about us</p>
 <p className="text home-feedbacks__text">Not yet convinced to get started?  Here are what other job seekers say about us.</p>
-  {/* <ul className="home-feedbacks__list">
+<div class="swiper">
+  <div class="swiper-wrapper swiper-wrapper-custom">
 
-  </ul> */}
-   <Swiper
-      modules={[Navigation, Pagination, Scrollbar, A11y, EffectCube]}
-      spaceBetween={103}
-      slidesPerView={3}
-      // navigation
-      // pagination={{ clickable: true }}
-      // scrollbar={{ draggable: true }}
-      onSwiper={(swiper) => console.log(swiper)}
-          // effect={"cube"}
-          //     cubeEffect={{
-          //       shadow: true,
-          //       slideShadows: true,
-          //       shadowOffset: 20,
-          //       shadowScale: 0.94,
-          //     }}
-      onSlideChange={() => console.log('slide change')}
-    >
-      <SwiperSlide><FeedbackItem></FeedbackItem></SwiperSlide>
-      <SwiperSlide><FeedbackItem></FeedbackItem></SwiperSlide>
-      <SwiperSlide><FeedbackItem></FeedbackItem></SwiperSlide>
-      <SwiperSlide><FeedbackItem></FeedbackItem></SwiperSlide>
-      <SwiperSlide><FeedbackItem></FeedbackItem></SwiperSlide>
-      <SwiperSlide><FeedbackItem></FeedbackItem></SwiperSlide>
-    </Swiper>
+    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+</div>
+ <div className="swiper-shadow"></div>
+    </div>
     </div>
   </section>
   <div className="middle-container">
