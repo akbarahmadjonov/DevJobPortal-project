@@ -63,7 +63,7 @@ full time, part time
 </h1>
 <p className="home__hero-text">The jobportal helps you land your dream job, the ones done on site or remote. We search for jobs for people allover the world and accross all time zones
 </p>
-<BlueButton>Find me a job</BlueButton>
+<BlueButton to={"/jobs"}>Find me a job</BlueButton>
   </div>
   <div className="home__hero-right">
   <img width={429} height={489} src={dotsImage} alt="dots" />
@@ -103,7 +103,7 @@ full time, part time
   </div>
   </div>
   </section>
-  <section className="home-careers">
+  <section className="home__careers">
     <div className="top-container">
     <div className="home-careers__wrapper">
       <div className="home-careers__pictures">
@@ -126,7 +126,7 @@ full time, part time
 <div className="home-careers__text-wrapper">
   <h2 className="sub-title-text">All careers gigs, one portal</h2>
   <p className="home-careers__text">Whatever you are, a software developer, a user interface designer or someone else, we got you. We have all types of jobs ready for you.</p>
-  <BlueButton>Show me all available jobs</BlueButton>
+  <BlueButton to={"/jobs"}>Show me all available jobs</BlueButton>
 </div>
     </div>
     </div> 
@@ -134,8 +134,8 @@ full time, part time
   </section>
   <section className="home__jobs">
     <div className="middle-container">
-    <p className="sub-title-text home__jobs-sub-title-text">The choice is yours</p>
-    <p className="text home__jobs-text">Choose the job type you want</p>
+    <h3 className="sub-title-text home__jobs-sub-title-text">The choice is yours</h3>
+    <h3 className="text home__jobs-text">Choose the job type you want</h3>
     <ul className="home__jobs-cards-list">
     {loading ? <div className="loader"></div> :
       jobs?.map((job)=>(
@@ -155,7 +155,7 @@ full time, part time
   </section>
   <section className="home__why-section">
     <div className="middle-container why-section__wrapper">
-    <p style={{color: "#FFF"}} className="sub-title-text why-section__title">Why choose us</p>
+    <h3 style={{color: "#FFF"}} className="sub-title-text why-section__title">Why choose us</h3>
     <p className="text why-section__text">Why not choose us</p>
     <ul className="why-section__list">
       <li className="why-section__item">
@@ -222,9 +222,9 @@ same thing. Find them here</p>
     </div>
     </div>
   </section>
-  <section className="home-feedbacks">
+  <section className="home__feedbacks">
     <div className="feedback-container">
-<p style={{color: "#2F2F2F"}} className="sub-title-text">What others say about us</p>
+<h5 style={{color: "#2F2F2F"}} className="sub-title-text">What others say about us</h5>
 <p className="text home-feedbacks__text">Not yet convinced to get started?  Here are what other job seekers say about us.</p>
 <div class="swiper">
   <div class="swiper-wrapper swiper-wrapper-custom">
