@@ -13,15 +13,15 @@
 }
 
 .top-container {
-  max-width: 1350px;
-  padding: 0 20px;
+  max-width: 1350px + 132px;
+  padding: 0 132px 0 20px;
   margin: 0 auto;
 }
 
 .home__hero-wrapper {
   display: flex;
   align-items: center;
-  column-gap: 176px;
+  column-gap: 176px + 22px;
   margin-bottom: 43px + 70px;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .hero-stats {
-  padding: 50px 130px;
+  padding: 50px 133px 50px 126px;
   border-radius: 2px;
   background: #fff;
   box-shadow: 0px 0px 81px 0px rgba(0, 0, 0, 0.05);
@@ -178,9 +178,7 @@
 }
 
 .middle-container {
-  max-width: 1490px + 150px;
-  padding: 0 20px;
-  padding-left: 150px;
+  max-width: 1490px;
   margin: 0 auto;
 }
 
@@ -197,12 +195,35 @@
 }
 
 .home__jobs-cards-item {
+  height: 221px;
+  width: 240px;
   background: #f2f6fc;
   padding: 59px 25px 36px 20px;
+
+  &:active {
+    background-color: #0050c8;
+  }
+
+  &:active .home__jobs-cards-text {
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  &:active .home__jobs-cards-title {
+    color: #ffffff;
+  }
+
+  &:active .home__jobs-card-icon {
+    fill: #ffffff;
+  }
 }
 
 .home__jobs-card-icon {
   margin-bottom: 21px;
+  fill: #000000;
+
+  &:active {
+    fill: #ffffff;
+  }
 }
 
 .home__jobs-text {
@@ -216,18 +237,40 @@
   font-weight: 600;
   line-height: normal;
   margin-bottom: 12px;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .home__jobs-cards-text {
   width: 195px;
+  max-height: 57px;
   color: #c4c4c4;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    position: absolute;
+    content: "...";
+    bottom: 0;
+    right: 0;
+
+    &::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      width: 1rem;
+      height: 1rem;
+      background: white;
+    }
+  }
 }
 
 //Why section
 
 .why-section__wrapper {
   padding: 152px 0 47px 0;
-  padding-left: 150px;
 }
 
 .home__why-section {
@@ -294,7 +337,6 @@
 .feedback-container {
   max-width: 1977px;
   padding: 0 20px;
-  // padding-left: 110px;
   margin: 0 auto;
 }
 
@@ -308,9 +350,6 @@
 }
 
 .home-feedbacks__list {
-  // display: flex;
-  gap: 103px;
-  // overflow-x: hidden;
 }
 
 //swiper

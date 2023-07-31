@@ -1,4 +1,5 @@
-import { useEffect } from "react"
+import axios from "axios"
+import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
@@ -16,8 +17,25 @@ import Header from "../../Widgets/Header/Header"
 import "./Home.scss"
 
 
+
 export const Home =  ()=>{
+  const [jobs, setJobs] = useState(null)
+  const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(true)
   register()
+
+  const url = "https://jobas.onrender.com/api";
+
+
+useEffect(()=>{
+  axios.get(`${url}/category`).then((data)=>{
+    setJobs(data.data)
+  }).catch(()=>{
+    setError(true)
+  }).finally(()=>{
+    setLoading(false)
+  })
+})
 
 useEffect(()=>{
   new Swiper('.swiper', {
@@ -28,13 +46,14 @@ useEffect(()=>{
     
   });
 })
-   
 
+if (error) return <p className="error">Something went wrong. Try again...</p>
 
-return <div>
+return <div className="home">
   <div className="home__header-wrapper">
   <Header inputStyle={{backgroundColor: "#FFFFFF"}} className/>
   </div>
+  <main>
   <section className="home__hero">
     <div className="top-container"> 
   <div className="home__hero-wrapper">
@@ -83,7 +102,6 @@ full time, part time
     </ul>
   </div>
   </div>
- 
   </section>
   <section className="home-careers">
     <div className="top-container">
@@ -105,7 +123,6 @@ full time, part time
 </ul>
 <img className="home-careers__rectangle" src={rectangle} alt="rectangle" />
       </div>
-
 <div className="home-careers__text-wrapper">
   <h2 className="sub-title-text">All careers gigs, one portal</h2>
   <p className="home-careers__text">Whatever you are, a software developer, a user interface designer or someone else, we got you. We have all types of jobs ready for you.</p>
@@ -113,114 +130,26 @@ full time, part time
 </div>
     </div>
     </div> 
+
   </section>
   <section className="home__jobs">
     <div className="middle-container">
     <p className="sub-title-text home__jobs-sub-title-text">The choice is yours</p>
     <p className="text home__jobs-text">Choose the job type you want</p>
     <ul className="home__jobs-cards-list">
-    
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-      <li className="home__jobs-cards-item">
-      <Link >
-      <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
-  <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" fill="black"/>
-</svg>
-<h4 className="home__jobs-cards-title">Web Development</h4>
-<p className="text home__jobs-cards-text">Are you specialised frontend developer ? Or a backend</p>
-      </Link>
-      
-      </li>
-
+    {loading ? <div className="loader"></div> :
+      jobs?.map((job)=>(
+             <li key={job._id} className="home__jobs-cards-item">
+             <Link to={"/jobs"} >
+             {/* <img style={{marginBottom: 20}} src={job.jobImg} alt="job image" /> */}
+             <svg className="home__jobs-card-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="31" viewBox="0 0 38 31" fill="none">
+         <path d="M34.7576 0H2.81818C1.26818 0 0 1.26818 0 2.81818V22.5455C0 24.0955 1.26818 25.3636 2.81818 25.3636H13.1515V27.3364C13.1045 27.5242 12.7288 28.0409 12.5409 28.2758C12.0242 28.9333 11.5076 29.5909 11.8833 30.3424C12.0242 30.6712 12.4 31 13.1515 31H23.9545C24.4242 31 25.5045 31 25.8803 30.1545C26.2561 29.3091 25.5985 28.6515 25.0348 28.0409C24.847 27.8061 24.5182 27.4773 24.4242 27.2894V25.3636H34.7576C36.3076 25.3636 37.5758 24.0955 37.5758 22.5455V2.81818C37.5758 1.26818 36.3076 0 34.7576 0ZM14.2318 29.1212C14.6545 28.6045 15.0303 27.9939 15.0303 27.3364V25.3636H22.5455V27.3364C22.5455 27.9939 23.0152 28.6045 23.4848 29.1212H14.2318ZM35.697 22.5455C35.697 23.0621 35.2742 23.4848 34.7576 23.4848H2.81818C2.30152 23.4848 1.87879 23.0621 1.87879 22.5455V19.7273H35.697V22.5455ZM35.697 17.8485H1.87879V2.81818C1.87879 2.30152 2.30152 1.87879 2.81818 1.87879H34.7576C35.2742 1.87879 35.697 2.30152 35.697 2.81818V17.8485Z" />
+       </svg>
+       <h4 className="home__jobs-cards-title">{job.jobName}</h4>
+       <p className="text home__jobs-cards-text">{job.jobDesc}</p>
+             </Link>
+             </li>
+      ))}
     </ul>
     </div>
   </section>
@@ -299,7 +228,6 @@ same thing. Find them here</p>
 <p className="text home-feedbacks__text">Not yet convinced to get started?  Here are what other job seekers say about us.</p>
 <div class="swiper">
   <div class="swiper-wrapper swiper-wrapper-custom">
-
     <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
     <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
     <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
@@ -311,9 +239,9 @@ same thing. Find them here</p>
     </div>
     </div>
   </section>
+  </main>
   <div className="middle-container">
   <Footer></Footer>
   </div>
-
 </div>
 }

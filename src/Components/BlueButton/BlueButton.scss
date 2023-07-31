@@ -6,4 +6,9 @@
   background: #0050c8;
   padding: 21px 59px;
   cursor: pointer;
+  transition: 150ms all ease-in-out;
+
+  &:hover {
+    background: rgba($color: #2964bc, $alpha: 1);
+  }
 }
