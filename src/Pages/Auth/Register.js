@@ -5,32 +5,84 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
-import { Grid } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Snackbar,
+} from "@mui/material";
 import Header from "../../Widgets/Header/Header";
 import { Footer } from "../../Widgets";
+import axios from "axios";
 
 export default function Register() {
   const privacy_check = useRef(false);
-  const handleSubmit = (event) => {
+  const [showConfirmationCode, setShowConfirmationCode] = useState(false);
+  const [openLoader, setOpenLoader] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("This is a success message!");
+  const [errorMsg, setErrorMsg] = useState("This is a error message!");
+  const url = "https://jobas.onrender.com/api";
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    setOpenLoader(true);
+    await axios
+      .post(url + "/user", data)
+      .then((res) => {
+        const token = res?.data?.token;
+        const msg = res?.data?.message;
+        if (msg === "Confirmation code sent to the email") {
+          setSuccessMsg(msg);
+          setOpenSuccess(true);
+          setShowConfirmationCode(true);
+        }
+        if (token) {
+          setSuccessMsg('Successfully Signed Up!');
+          setOpenSuccess(true);
+          setShowConfirmationCode(false)
+          localStorage.setItem("token", token);
+          localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+          navigate("/jobs");
+        }
+        setOpenLoader(false);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorMsg(err.response.data.message);
+        setOpenError(true);
+        setOpenLoader(false);
+      });
     console.log({
-      email: data.get("email"),
+      fullName: data.get("fullName"),
+      userName: data.get("userName"),
+      userEmail: data.get("userEmail"),
       password: data.get("password"),
+      confirmationCode: data.get("confirmationCode"),
     });
   };
-  const handleSubmitSub = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("emailForSub"),
-    });
-  };
-  console.log(privacy_check);
+  // const handleSubmitSub = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   console.log({
+  //     email: data.get("emailForSub"),
+  //   });
+  // };
+  // console.log(privacy_check);
   return (
     <>
-      <Header></Header>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Header />
       <img
         src={hBg}
         alt="header background"
@@ -95,9 +147,9 @@ export default function Register() {
                     <TextField
                       required
                       fullWidth
-                      id="email"
+                      id="userEmail"
                       label="Email Address"
-                      name="email"
+                      name="userEmail"
                       autoComplete="email"
                     />
                   </Grid>
@@ -112,6 +164,20 @@ export default function Register() {
                       autoComplete="new-password"
                     />
                   </Grid>
+                  {showConfirmationCode ? (
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        name="confirmationCode"
+                        label="Confirmation Code"
+                        type="number"
+                        id="confirmationCode"
+                      />
+                    </Grid>
+                  ) : (
+                    ""
+                  )}
                   <Grid item xs={12}>
                     {/* <FormControlLabel
                       style={{ paddingLeft: "30px", paddingTop:'20px', fontSize:'100px !important' , color: "#2F2F2F" }}
@@ -144,7 +210,7 @@ export default function Register() {
                     type="submit"
                     className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
                   >
-                    Login
+                    Sign up
                   </button>
                   <span className="text-[#999999] text-[16px]">OR</span>
                   <button
@@ -161,6 +227,32 @@ export default function Register() {
         </main>
         <Footer footerTop="1200"></Footer>
       </div>
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {successMsg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

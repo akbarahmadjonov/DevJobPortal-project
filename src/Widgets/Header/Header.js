@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import userVector from "./../../Assets/Images/Vector.svg";
 import schIco from "./../../Assets/Images/search.svg";
 
-export default function Header({ headerClassName, style, inputStyle, loginTextColor} ) {
+export default function Header({ headerClassName, style, inputStyle} ) {
   return (
     <header style={style} className={headerClassName ? "home__header" : ""}>
       <div className="container max-w-[1728px] mx-auto p-[20px]">
@@ -46,14 +46,14 @@ export default function Header({ headerClassName, style, inputStyle, loginTextCo
             <div className="flex  items-center justify-start space-x-[10px]">
               <img src={userVector}  alt="userIcon" />
               <NavLink
-                className={`active:text-black text-[${loginTextColor ? loginTextColor : "#c2c2c2"}]`}
+                className={`active:text-blue-500 text-[#c2c2c2]`}
                 to={"/auth/register"}
               >
                 Create account{" "}
               </NavLink>
               <span className="text-black">/</span>
               <NavLink
-                className={`active:text-black text-[${loginTextColor ? loginTextColor : "#c2c2c2"}]`}
+                className={`active:text-blue-500 text-[#c2c2c2]`}
                 to={"/auth/login"}
               >
                 login

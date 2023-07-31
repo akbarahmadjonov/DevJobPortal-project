@@ -7,22 +7,58 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../../Widgets/Header/Header";
 import { Footer } from "../../Widgets";
+import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import axios from "axios";
 
 export default function Login(props) {
-  const handleSubmit = (event) => {
+  const url = "https://jobas.onrender.com/api";
+  const [openLoader, setOpenLoader] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("Success!");
+  const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    setOpenLoader(true);
+    await axios
+      .post(url + "/user/login", data)
+      .then((res) => {
+        const token = res?.data?.token;
+        const msg = res?.data?.message;
+        if (msg === "Confirmation code sent to the email") {
+          setSuccessMsg(msg);
+          setOpenSuccess(true);
+        }
+        if (token) {
+          setSuccessMsg('Successfully Logged In!');
+          setOpenSuccess(true);
+          localStorage.setItem("token", token);
+          localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+          navigate("/jobs");
+        }
+        setOpenLoader(false);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorMsg(err?.response?.data?.message);
+        setOpenError(true);
+        setOpenLoader(false);
+      });
     console.log({
-      email: data.get("email"),
+      email: data.get("userEmail"),
       password: data.get("password"),
     });
   };
 
   const handleSubmitSub = (event) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     console.log({
       email: data.get("emailForSub"),
@@ -31,6 +67,12 @@ export default function Login(props) {
 
   return (
     <>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Header />
       <img
         src={hBg}
@@ -74,9 +116,9 @@ export default function Login(props) {
                   type="email"
                   required
                   fullWidth
-                  id="email"
+                  id="userEmail"
                   label="Email Address"
-                  name="email"
+                  name="userEmail"
                   style={{ color: "#999" }}
                   autoComplete="email"
                   autoFocus
@@ -273,6 +315,32 @@ export default function Login(props) {
           </div>
         </footer>
       </div>
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {successMsg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
