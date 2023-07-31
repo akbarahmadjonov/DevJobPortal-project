@@ -225,7 +225,7 @@ export default function Register() {
             </Box>
           </div>
         </main>
-        <Footer footerTop="1200"></Footer>
+        <Footer footerTop="1200"/>
       </div>
       <Snackbar
         open={openError}
