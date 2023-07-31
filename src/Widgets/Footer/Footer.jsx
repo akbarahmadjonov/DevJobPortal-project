@@ -2,9 +2,11 @@ import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import { Alert, Snackbar } from "@mui/material";
+import '../../index.css'
 
-export const Footer = (props) => {
+export function Footer (props)  {
   const [openSuccess, setOpenSuccess] = useState(false);
+  console.log(props)
   const [successMsg, setSuccessMsg] = useState("Successfully Subscribed!");
   const [subValue, setSubValue] = useState("");
 
@@ -34,7 +36,7 @@ export const Footer = (props) => {
       <footer className="relative w-full bg-white">
         <div
           className={`flex flex-col space-y-[20px] py-[80px] absolute w-full top-[${
-            props.footerTop ? props.footerTop : 100
+            props.footerTop ? props.footerTop : "100"
           }px]`}
         >
           <div className="flex justify-between mb-[84px] items-center w-full">

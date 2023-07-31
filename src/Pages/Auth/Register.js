@@ -42,53 +42,52 @@ export default function Register() {
           setShowConfirmationCode(true);
         }
         if (token) {
-          setSuccessMsg('Successfully Signed Up!');
+          setSuccessMsg("Successfully Signed Up!");
           setOpenSuccess(true);
-          setShowConfirmationCode(false)
+          setShowConfirmationCode(false);
           localStorage.setItem("token", token);
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
-          navigate("/jobs");
+          localStorage.setItem('verify', JSON.stringify(true));
+          setTimeout(() => {
+            navigate("/auth/login");
+          }, 1000);
         }
         setOpenLoader(false);
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
-        setErrorMsg(err.response.data.message);
+        const unexpectedError = err?.message
+        const serverError = err?.response?.data?.message
+        if(unexpectedError){
+          setErrorMsg(unexpectedError)
+        }
+        if(serverError){
+          setErrorMsg(serverError)
+        };
         setOpenError(true);
         setOpenLoader(false);
       });
-    console.log({
-      fullName: data.get("fullName"),
-      userName: data.get("userName"),
-      userEmail: data.get("userEmail"),
-      password: data.get("password"),
-      confirmationCode: data.get("confirmationCode"),
-    });
   };
-  // const handleSubmitSub = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get("emailForSub"),
-  //   });
-  // };
-  // console.log(privacy_check);
   return (
     <>
+      {/* Backdrop - Loader */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={openLoader}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+      {/* Header */}
       <Header />
+      {/* Background Image */}
       <img
         src={hBg}
         alt="header background"
         className="w-full   max-h-[1200px] absolute -z-20 object-cover"
       />
+      {/* Main sect  */}
       <div className="container max-w-[1728px] mx-auto">
+        {/* Main Register Card */}
         <main className="relative w-full">
           <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
             <CssBaseline />
@@ -179,12 +178,6 @@ export default function Register() {
                     ""
                   )}
                   <Grid item xs={12}>
-                    {/* <FormControlLabel
-                      style={{ paddingLeft: "30px", paddingTop:'20px', fontSize:'100px !important' , color: "#2F2F2F" }}
-                      className='ooo'
-                      control={<Checkbox value="allowExtraEmails" />}
-                      label="I accept the terms of  service and privacy policy"
-                    /> */}
                     <label
                       htmlFor="checkbox"
                       className="flex space-x-4 text-[20px] items-center mt-[49px]"
@@ -225,8 +218,10 @@ export default function Register() {
             </Box>
           </div>
         </main>
-        <Footer footerTop="1200"/>
+        {/* Footer sect */}
+        <Footer footerTop="1200" />
       </div>
+      {/* Error Alert */}
       <Snackbar
         open={openError}
         autoHideDuration={6000}
@@ -240,6 +235,7 @@ export default function Register() {
           {errorMsg}
         </Alert>
       </Snackbar>
+      {/* Success Alert */}
       <Snackbar
         open={openSuccess}
         autoHideDuration={6000}
