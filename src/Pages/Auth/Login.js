@@ -1,19 +1,21 @@
 import { React, useState } from "react";
 import hBg from "./../../Assets/Images/Header bg.png";
 
+// Material UI components
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link, useNavigate } from "react-router-dom";
+import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+// Default components
+import { useNavigate } from "react-router-dom";
 import Header from "../../Widgets/Header/Header";
 import { Footer } from "../../Widgets";
-import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 import axios from "axios";
 
-export default function Login(props) {
+export default function Login() {
   const url = "https://jobas.onrender.com/api";
   const [openLoader, setOpenLoader] = useState(false);
   const [openError, setOpenError] = useState(false);
@@ -21,6 +23,8 @@ export default function Login(props) {
   const [successMsg, setSuccessMsg] = useState("Success!");
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
   const navigate = useNavigate();
+
+  // LogIn Function
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -35,14 +39,13 @@ export default function Login(props) {
           setOpenSuccess(true);
         }
         if (token) {
-          setSuccessMsg('Successfully Logged In!');
+          setSuccessMsg("Successfully Logged In!");
           setOpenSuccess(true);
           localStorage.setItem("token", token);
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
           navigate("/jobs");
         }
         setOpenLoader(false);
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -50,36 +53,39 @@ export default function Login(props) {
         setOpenError(true);
         setOpenLoader(false);
       });
-    console.log({
-      email: data.get("userEmail"),
-      password: data.get("password"),
-    });
   };
 
-  const handleSubmitSub = (event) => {
-    event.preventDefault();
-
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("emailForSub"),
-    });
-  };
+  // Subscription Function
+  // const handleSubmitSub = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+  //   if (data.get("emailForSub")) {
+  //   }
+  //   console.log(data.get("emailForSub"));
+  // };
 
   return (
     <>
+      {/* Backdrop Loader */}
+
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={openLoader}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+
+      {/* Header  */}
       <Header />
+
+      {/* Main background-image */}
       <img
         src={hBg}
         alt="header background"
         className="w-full   max-h-[1200px] absolute -z-20 object-cover"
       />
       <div className="container max-w-[1728px] mx-auto">
+        {/* Main Login Card */}
         <main className="relative w-full">
           <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
             <CssBaseline />
@@ -159,7 +165,8 @@ export default function Login(props) {
             </Box>
           </div>
         </main>
-        <footer className="relative w-full bg-white">
+        {/* Footer */}
+        {/* <footer className="relative w-full bg-white">
           <div
             className={`flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px]`}
           >
@@ -199,7 +206,6 @@ export default function Login(props) {
               </div>
             </div>
             <hr className="bg-[#0050c81a] flex " />
-            {/*  */}
             <div className="flex space-x-[190px]   pt-[55px] items-start">
               <div>
                 <h1 className="text-[#0050C8] text-[20px] font-bold">
@@ -313,8 +319,11 @@ export default function Login(props) {
               </a>
             </div>
           </div>
-        </footer>
+        </footer> */}
+        <Footer footerTop="1200" />
       </div>
+
+      {/* Success Alert */}
       <Snackbar
         open={openError}
         autoHideDuration={6000}
@@ -328,6 +337,8 @@ export default function Login(props) {
           {errorMsg}
         </Alert>
       </Snackbar>
+
+      {/* Error Alert */}
       <Snackbar
         open={openSuccess}
         autoHideDuration={6000}
