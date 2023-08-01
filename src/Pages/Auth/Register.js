@@ -56,7 +56,14 @@ export default function Register() {
       })
       .catch((err) => {
         console.log(err);
-        setErrorMsg(err.response.data.message);
+        const unexpectedError = err?.message
+        const serverError = err?.response?.data?.message
+        if(unexpectedError){
+          setErrorMsg(unexpectedError)
+        }
+        if(serverError){
+          setErrorMsg(serverError)
+        };
         setOpenError(true);
         setOpenLoader(false);
       });

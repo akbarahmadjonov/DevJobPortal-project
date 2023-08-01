@@ -43,7 +43,7 @@ export default function Login() {
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
           localStorage.setItem('verify', JSON.stringify(true));
           setTimeout(() => {
-            navigate("/jobs");
+            navigate("/");
           }, 1000);
         }
         setOpenLoader(false);
