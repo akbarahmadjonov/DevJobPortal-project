@@ -35,7 +35,7 @@ useEffect(()=>{
   }).finally(()=>{
     setLoading(false)
   })
-})
+}, [])
 
 useEffect(()=>{
   new Swiper('.swiper', {
