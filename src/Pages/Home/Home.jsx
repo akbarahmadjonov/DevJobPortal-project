@@ -26,7 +26,7 @@ export const Home =  ()=>{
 
   const url = "https://jobas.onrender.com/api";
 
-
+  
 useEffect(()=>{
   axios.get(`${url}/category`).then((data)=>{
     setJobs(data.data)

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Jobs.scss";
 
 // Images
@@ -14,117 +14,187 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import { Button, Grid } from "@mui/material";
+import axios from "axios";
+import Header from "../../Widgets/Header/Header";
+import { Footer } from "../../Widgets";
 
-const mockJobsData = [
-  {
-    id: 1,
-    company: "Mousco Ltd number one.",
-    img: Flag,
-    location: "California, USA",
-    profession: "Lead Backend developer - Part time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    skills: [
-      "Software development",
-      "Mysql databases",
-      "Node.js",
-      "devop operations",
-    ],
-    info: ["In-office", "Contract", "120K USD"],
-  },
-  {
-    id: 2,
-    company: "Mousco Ltd number one.",
-    img: Flag,
-    location: "California, USA",
-    profession: "Lead Backend developer - Part time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    skills: [
-      "Software development",
-      "Mysql databases",
-      "Node.js",
-      "devop operations",
-    ],
-    info: ["In-office", "Contract", "120K USD"],
-  },
-  {
-    id: 3,
-    company: "Mousco Ltd number one.",
-    img: Flag,
-    location: "California, USA",
-    profession: "Lead Backend developer - Part time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    skills: [
-      "Software development",
-      "Mysql databases",
-      "Node.js",
-      "devop operations",
-    ],
-    info: ["In-office", "Contract", "120K USD"],
-  },
-  {
-    id: 4,
-    company: "Mousco Ltd number one.",
-    img: Flag,
-    location: "California, USA",
-    profession: "Lead Backend developer - Part time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    skills: [
-      "Software development",
-      "Mysql databases",
-      "Node.js",
-      "devop operations",
-    ],
-    info: ["In-office", "Contract", "120K USD"],
-  },
-  {
-    id: 5,
-    company: "Mousco Ltd number one.",
-    img: Flag,
-    location: "California, USA",
-    profession: "Lead Backend developer - Part time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    skills: [
-      "Software development",
-      "Mysql databases",
-      "Node.js",
-      "devop operations",
-    ],
-    info: ["In-office", "Contract", "120K USD"],
-  },
+// const mockJobsData = [
+//   {
+//     id: 1,
+//     company: "Mousco Ltd number one.",
+//     img: Flag,
+//     location: "California, USA",
+//     profession: "Lead Backend developer - Part time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+//     skills: [
+//       "Software development",
+//       "Mysql databases",
+//       "Node.js",
+//       "devop operations",
+//     ],
+//     info: ["In-office", "Contract", "120K USD"],
+//   },
+//   {
+//     id: 2,
+//     company: "Mousco Ltd number one.",
+//     img: Flag,
+//     location: "California, USA",
+//     profession: "Lead Backend developer - Part time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+//     skills: [
+//       "Software development",
+//       "Mysql databases",
+//       "Node.js",
+//       "devop operations",
+//     ],
+//     info: ["In-office", "Contract", "120K USD"],
+//   },
+//   {
+//     id: 3,
+//     company: "Mousco Ltd number one.",
+//     img: Flag,
+//     location: "California, USA",
+//     profession: "Lead Backend developer - Part time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+//     skills: [
+//       "Software development",
+//       "Mysql databases",
+//       "Node.js",
+//       "devop operations",
+//     ],
+//     info: ["In-office", "Contract", "120K USD"],
+//   },
+//   {
+//     id: 4,
+//     company: "Mousco Ltd number one.",
+//     img: Flag,
+//     location: "California, USA",
+//     profession: "Lead Backend developer - Part time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+//     skills: [
+//       "Software development",
+//       "Mysql databases",
+//       "Node.js",
+//       "devop operations",
+//     ],
+//     info: ["In-office", "Contract", "120K USD"],
+//   },
+//   {
+//     id: 5,
+//     company: "Mousco Ltd number one.",
+//     img: Flag,
+//     location: "California, USA",
+//     profession: "Lead Backend developer - Part time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+//     skills: [
+//       "Software development",
+//       "Mysql databases",
+//       "Node.js",
+//       "devop operations",
+//     ],
+//     info: ["In-office", "Contract", "120K USD"],
+//   },
   
-  {
-    id: 6,
-    company: "Mousco Ltd number one.",
-    img: Flag,
-    location: "California, USA",
-    profession: "Lead Backend developer - Part time",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-    skills: [
-      "Software development",
-      "Mysql databases",
-      "Node.js",
-      "devop operations",
-    ],
-    info: ["In-office", "Contract", "120K USD"],
-  },
-];
+//   {
+//     id: 6,
+//     company: "Mousco Ltd number one.",
+//     img: Flag,
+//     location: "California, USA",
+//     profession: "Lead Backend developer - Part time",
+//     description:
+//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
+//     skills: [
+//       "Software development",
+//       "Mysql databases",
+//       "Node.js",
+//       "devop operations",
+//     ],
+//     info: ["In-office", "Contract", "120K USD"],
+//   },
+// ];
+
+
+
 
 export const Jobs = () => {
   const [visibleCards, setVisibleCards] = useState(5); //* Initial number of cards to show
-  const [job, setJob] = useState(null);
+  const [jobs, setJobs] = useState(null);
+  const [jobCard, setJobCard] = useState(null);
+  const [jobCardOpen, setJobCardOpen] = useState(false);
+  const [locations, setLocations] = useState(null);
   const [modal, setModal] = useState(false);
+  const [jobsSearch, setJobsSearch] = useState("")
+  const [locationOption, setLocationOption] = useState()
+
+  const url = "https://jobas.onrender.com/api";
+
+useEffect(()=>{
+  axios.get(`${url}/job`).then((data)=>{
+    setJobs(data.data)
+  }).catch(()=>{
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+}, [])
+
+useEffect(()=>{
+  axios.get(`${url}/job/location`).then((data)=>{
+    setLocations(data.data)
+  }).catch(()=>{
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+}, [])
+
+
+const handleCardClick = (evt) =>{
+  evt.preventDefault()
+
+  setJobCardOpen(true) 
+  const jobId = evt.target.dataset.id
+
+  console.log(jobId);
+
+  axios.get(`${url}/job/${jobId}`).then((data)=>{
+    setJobCard(data.data)
+  }).catch(()=>{
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+}
+
+
+
+const handleSearchSubmit = (evt)=>{
+  evt.preventDefault()
+
+  axios.get(`${url}/job/search`, {
+    params: {comLocation: locationOption, jobTitle: jobsSearch }
+  }).then((data)=>{
+    setJobs(data.data)
+  }).catch(()=>{
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+
+
+}
+
+
 
   //* Handles more button event
   const handleLoadMore = () => {
     setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
   };
-  console.log(job);
   return (
     <>
       {/* JOBS */}
@@ -144,21 +214,21 @@ export const Jobs = () => {
               >
                 <div className="modal-wrap">
                   {/* Backendan kegan rasm qo'yiladi */}
-                  <img src={job?.img} alt={job?.company} />
+                  <img src={""} alt={""} />
                   <div>
                     <Typography
                       component="h5"
                       variant="h5"
                       className="font-semibold text-black text-[10px]"
                     >
-                      {job?.company}
+                      {/* {job?.company} */}
                     </Typography>
                     <Typography
                       component="h6"
                       variant="h6"
                       className="text-[#999] text-[16px] font-normal"
                     >
-                      Apply as a {job?.profession}
+                      {/* Apply as a {job?.profession} */}
                     </Typography>
                   </div>
                   <span className="xIcon" onClick={() => setModal(false)}>
@@ -215,6 +285,7 @@ export const Jobs = () => {
       ) : (
         ""
       )}
+      <Header></Header>
       <div className="jobs">
         <div className="container">
           <div className="jobs-inner">
@@ -222,40 +293,44 @@ export const Jobs = () => {
               <h2 className="jobs-title">Jobs</h2>
               <p className="jobs-text">Find your dream job</p>
             </div>
-            <div className="jobs-inner__hero jobs-inputs">
+            <form onSubmit={handleSearchSubmit} className="jobs-inner__hero jobs-inputs">
               <input
+                onChange={(e)=>setJobsSearch(e.target.value)}
                 className="jobs-inner__input"
                 type="text"
                 name="job"
-                placeholder="The kind of job you want"
+                placeholder="What the kind of job you want"
               />
-              <select className="jobs-inner__select" name="location-job">
-                <option disabled>Choose job location</option>
-                <option value="usa">USA</option>
-                <option value="canada">Canada</option>
+              <select 
+              onChange={(e)=>setLocationOption(e.target.value)}
+              className="jobs-inner__select" name="location-job">
+                {locations?.map((loc)=>(
+                   <option key={loc.id} value={loc.location}>{loc.location} </option> 
+                ))}
               </select>
-              <button className="jobs-inner__button">Search</button>
-            </div>
+              <button type="submit" className="jobs-inner__button">Search</button>
+            </form>
           </div>
         </div>
       </div>
       {/* JOBS POSTS */}
       <div className="job-posts">
         <div className="container">
-          <h3 className="job-posts__title">Latest added</h3>
+          <h3 className="job-posts__title">Latest added</h3>{
           <div className="job-posts__inner">
-            {mockJobsData.slice(0, visibleCards).map((job) => (
+            {jobs?.map((job) => (
               <div
-                onClick={() => setJob(job)}
+                data-id={job._id}
+                onClick={handleCardClick}
                 className="job-posts__static"
-                key={job.id}
+                key={job._id}
               >
                 <div className="job-posts__card">
                   <div className="inner-wrapper">
-                    <img src={job?.img} alt="flag country" />
+                    <img width={46} height={48} src={job.comImg} alt="flag country" />
                     <div className="job-posts__items">
-                      <h3 className="job-posts__company">{job.company}</h3>
-                      <p className="job-posts__location">{job.location}</p>
+                      <h3 className="job-posts__company">{job.comName}</h3>
+                      <p className="job-posts__location">{job.comLocation}</p>
                     </div>
                     <div className="save-button">
                       <button className="save-button__btn">
@@ -268,15 +343,15 @@ export const Jobs = () => {
                       </button>
                     </div>
                   </div>
-                  <h4 className="job-posts__profession">{job.profession}</h4>
+                  <h4 className="job-posts__profession">{job.jobTitle}</h4>
                   <div className="job-post__wrapper">
-                    <p className="job-posts__text">{job.description}</p>
+                    <p className="job-posts__text">{job.jobInfo}</p>
                   </div>
                   <span className="job-posts__skills">Skills:</span>
                   <ul className="job-posts__list">
-                    {job.skills.map((skill, index) => (
-                      <li className="job-posts__item" key={index}>
-                        {skill}
+                    {job.jobSkills?.map((skill) => (
+                      <li className="job-posts__item" key={skill._id}>
+                        {skill.skillName}
                       </li>
                     ))}
                   </ul>
@@ -284,11 +359,16 @@ export const Jobs = () => {
                 {/* Info block */}
                 <div className="info-block">
                   <ul className="info-list">
-                    {job.info.map((info, index) => (
-                      <li className="info-item" key={index}>
-                        {info}
+                      <li className="info-item">
+                        {job.jobType}
                       </li>
-                    ))}
+                      <li className="info-item">
+                        {/* {job.jobCooperate} */}
+                        Contract
+                      </li>
+                      <li className="info-item">
+                        {job.jobPrice}&nbsp;{job.moneyTypeId?.moneyType}
+                      </li>
                   </ul>
                 </div>
               </div>
@@ -304,95 +384,93 @@ export const Jobs = () => {
                 Click on a job to preview its full job details here
               </p> */}
               {/* Card more info */}
-              {job ? (
-                <div className="more-upper">
-                  <div className="more-inner">
-                    <h3 className="more-title">Job Details</h3>
-                    <div className="more-wrapper__img">
-                      <img
-                        className="more-img"
-                        src={Cancel}
-                        alt="cancel button"
-                      />
-                    </div>
-                    {/* Career */}
-                  </div>
-                  <div className="more-down">
-                    <div className="more-down__inner">
-                      <img
-                        className="more-adjust__img"
-                        src={job?.img}
-                        alt="flag more"
-                      />
-                      <div className="more-info">
-                        <h4 className="more-info__company">{job.company}</h4>
-                        <span className="more-info__location">
-                          {job.location}
-                        </span>
-                      </div>
-                      <div className="more-save__button">
-                        <button className="save-button__btn">
-                          <img
-                            className="save-button__img"
-                            src={SaveButton}
-                            alt="save button"
-                          />
-                          <span className="save-button__text">save</span>
-                        </button>
-                      </div>
-                    </div>
-                    <h3 className="more-down__title">
-                      Lead Backend developer-Part time
-                    </h3>
-                    <div className="more-down__text">
-                      <p className="more-down__desc">{job.description}</p>
-                      <div className="more-down__outer">
-                        <p className="more-down__skills">Skills:</p>
-                        <ul className="more-down__list">
-                          {/* <li className="more-down__item">
-                            Software development
-                          </li>
-                          <li className="more-down__item">MySQL databases</li>
-                          <li className="more-down__item">Node.js</li> */}
-                          {job.skills.map((skill, index) => (
-                            <li className="more-down__item" key={index}>
-                              {skill}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <p className="more-down__more">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore
-                        magna aliqua. Ut enim ad minim veniam, quis nostrud
-                        exercitationLorem ipsum dolor sit amet, consectetur
-                        adipiscing elit sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation
-                      </p>
-                    </div>
-                    {/* More down - Job requirements */}
-                    <div className="job-req">
-                      <ul className="job-req__list">
-                        {/* <li className="job-req__item">In-office</li>
-                        <li className="job-req__item">Contract</li>
-                        <li className="job-req__item">120K - 140K USD</li> */}
-                        {job.info.map((info, index) => (
-                          <li className="job-req__item" key={index}>
-                            {info}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setModal(true)}
-                    className="more-upper__applyBtn"
-                  >
-                    Apply for this job
-                  </button>
-                </div>
-              ) : (
+              {jobCardOpen ?
+  <div className="more-upper">
+  <div className="more-inner">
+    <h3 className="more-title">Job Details</h3>
+    <div className="more-wrapper__img">
+      <img
+        onClick={()=>setJobCardOpen(false)}
+        className="more-img"
+        src={Cancel}
+        alt="cancel button"
+      />
+    </div>
+    {/* Career */}
+  </div>
+  <div className="more-down">
+    <div className="more-down__inner">
+      <img
+        width={48}
+        height={48}
+        className="more-adjust__img"
+        src={jobCard?.comImg}
+        alt="flag more"
+      />
+      <div className="more-info">
+        <h4 className="more-info__company">{jobCard?.comName}</h4>
+        <span className="more-info__location">
+          {jobCard?.comLocation}
+        </span>
+      </div>
+      <div className="more-save__button">
+        <button className="save-button__btn">
+          <img
+            className="save-button__img"
+            src={SaveButton}
+            alt="save button"
+          />
+          <span className="save-button__text">save</span>
+        </button>
+      </div>
+    </div>
+    <h3 className="more-down__title">
+     {jobCard?.jobTitle}
+    </h3>
+    <div className="more-down__text">
+      <p className="more-down__desc">{jobCard?.jobInfo}</p>
+      <div className="more-down__outer">
+        <p className="more-down__skills">Skills:</p>
+        <ul className="more-down__list">
+          {jobCard?.jobSkills.map((skill) => (
+            <li className="more-down__item" key={skill._id}>
+              {skill.skillName}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p className="more-down__more">
+       {jobCard?.moreInfo[0].jobText}
+      </p>
+    </div>
+    {/* More down - Job requirements */}
+    <div className="job-req">
+      <ul className="job-req__list">
+        {/* <li className="job-req__item">In-office</li>
+        <li className="job-req__item">Contract</li>
+        <li className="job-req__item">120K - 140K USD</li> */}
+      
+          <li className="job-req__item" >
+            {jobCard?.jobType}
+          </li>
+          <li className="job-req__item">
+          {/* {jobCard?.jobCooperate} */}
+          Contract
+          </li>
+          <li className="job-req__item">
+          {jobCard?.jobPrice}
+          </li>
+     
+      </ul>
+    </div>
+  </div>
+  <button
+    onClick={() => setModal(true)}
+    className="more-upper__applyBtn"
+  >
+    Apply for this job
+  </button>
+</div> : (
                 <>
                   <img
                     className="layer-img"
@@ -408,8 +486,10 @@ export const Jobs = () => {
             </div>
           </div>
 
+          }
+
           {/* Load more button */}
-          {visibleCards < mockJobsData.length && (
+          {/* {visibleCards < mockJobsData.length && (
             <button
               className="load-more__btn"
               type="button"
@@ -417,8 +497,12 @@ export const Jobs = () => {
             >
               Load more
             </button>
-          )}
+          )} */}
         </div>
+      </div>
+      <div className="jobs__footer-container">
+      <Footer></Footer>
+
       </div>
     </>
   );
