@@ -47,7 +47,7 @@ export default function Register() {
           setShowConfirmationCode(false);
           localStorage.setItem("token", token);
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
-          localStorage.setItem('verify', JSON.stringify(true));
+          localStorage.setItem("verify", JSON.stringify(true));
           setTimeout(() => {
             navigate("/auth/login");
           }, 1000);
@@ -56,14 +56,14 @@ export default function Register() {
       })
       .catch((err) => {
         console.log(err);
-        const unexpectedError = err?.message
-        const serverError = err?.response?.data?.message
-        if(unexpectedError){
-          setErrorMsg(unexpectedError)
+        const unexpectedError = err?.message;
+        const serverError = err?.response?.data?.message;
+        if (unexpectedError) {
+          setErrorMsg(unexpectedError);
         }
-        if(serverError){
-          setErrorMsg(serverError)
-        };
+        if (serverError) {
+          setErrorMsg(serverError);
+        }
         setOpenError(true);
         setOpenLoader(false);
       });

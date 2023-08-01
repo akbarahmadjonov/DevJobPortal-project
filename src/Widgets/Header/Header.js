@@ -6,7 +6,7 @@ import schIco from "./../../Assets/Images/search.svg";
 export default function Header({ headerClassName, style, inputStyle }) {
   const verify = localStorage.getItem("verify") || false;
   const user = localStorage.getItem("userData");
-  const fullName  = JSON.parse(user && user)?.fullName;
+  const fullName = JSON.parse(user && user)?.fullName;
 
   return (
     <>
@@ -68,6 +68,7 @@ export default function Header({ headerClassName, style, inputStyle }) {
                 <div className="flex  items-center justify-start space-x-[10px]">
                   <img src={userVector} alt="userIcon" />
                   <NavLink
+                    style={verify && { color: "#b2b7bd" }}
                     className={`active:text-blue-500 text-black font-bold`}
                     to={"/auth/login"}
                   >
