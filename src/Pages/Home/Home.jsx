@@ -41,7 +41,7 @@ useEffect(()=>{
   new Swiper('.swiper', {
     direction: 'horizontal',
     spaceBetween: 103,
-    slidesPerView: 3.5,
+    slidesPerView: 3.4,
     loop: false,
     
   });
