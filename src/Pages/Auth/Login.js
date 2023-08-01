@@ -41,7 +41,7 @@ export default function Login() {
           setOpenSuccess(true);
           localStorage.setItem("token", token);
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
-          localStorage.setItem('verify', JSON.stringify(true));
+          localStorage.setItem("verify", JSON.stringify(true));
           setTimeout(() => {
             navigate("/");
           }, 1000);
@@ -81,7 +81,7 @@ export default function Login() {
           <div className="container max-w-[1728px] mx-auto">
             <Verify />
             {/* Footer */}
-            <Footer />
+            <Footer footerTop='1300' />
           </div>
         </>
       ) : (
