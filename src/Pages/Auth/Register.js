@@ -1,39 +1,93 @@
-import { React, useState } from "react";
+import { React, useRef, useState } from "react";
 import hBg from "./../../Assets/Images/Header bg.png";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
-import { Button, Grid } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import {
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Snackbar,
+} from "@mui/material";
+import Header from "../../Widgets/Header/Header";
+import { Footer } from "../../Widgets";
+import axios from "axios";
 
 export default function Register() {
-  const handleSubmit = (event) => {
+  const privacy_check = useRef(false);
+  const [showConfirmationCode, setShowConfirmationCode] = useState(false);
+  const [openLoader, setOpenLoader] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("This is a success message!");
+  const [errorMsg, setErrorMsg] = useState("This is a error message!");
+  const url = "https://jobas.onrender.com/api";
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-  const handleSubmitSub = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("emailForSub"),
-    });
+    setOpenLoader(true);
+    await axios
+      .post(url + "/user", data)
+      .then((res) => {
+        const token = res?.data?.token;
+        const msg = res?.data?.message;
+        if (msg === "Confirmation code sent to the email") {
+          setSuccessMsg(msg);
+          setOpenSuccess(true);
+          setShowConfirmationCode(true);
+        }
+        if (token) {
+          setSuccessMsg("Successfully Signed Up!");
+          setOpenSuccess(true);
+          setShowConfirmationCode(false);
+          localStorage.setItem("token", token);
+          localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+          localStorage.setItem("verify", JSON.stringify(true));
+          setTimeout(() => {
+            navigate("/auth/login");
+          }, 1000);
+        }
+        setOpenLoader(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        const unexpectedError = err?.message;
+        const serverError = err?.response?.data?.message;
+        if (unexpectedError) {
+          setErrorMsg(unexpectedError);
+        }
+        if (serverError) {
+          setErrorMsg(serverError);
+        }
+        setOpenError(true);
+        setOpenLoader(false);
+      });
   };
   return (
     <>
+      {/* Backdrop - Loader */}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {/* Header */}
+      <Header />
+      {/* Background Image */}
       <img
         src={hBg}
         alt="header background"
         className="w-full   max-h-[1200px] absolute -z-20 object-cover"
       />
+      {/* Main sect  */}
       <div className="container max-w-[1728px] mx-auto">
+        {/* Main Register Card */}
         <main className="relative w-full">
           <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
             <CssBaseline />
@@ -92,9 +146,9 @@ export default function Register() {
                     <TextField
                       required
                       fullWidth
-                      id="email"
+                      id="userEmail"
                       label="Email Address"
-                      name="email"
+                      name="userEmail"
                       autoComplete="email"
                     />
                   </Grid>
@@ -109,16 +163,38 @@ export default function Register() {
                       autoComplete="new-password"
                     />
                   </Grid>
-                  <Grid item xs={12}  >
-                    {/* <FormControlLabel
-                      style={{ paddingLeft: "30px", paddingTop:'20px', fontSize:'100px !important' , color: "#2F2F2F" }}
-                      className='ooo'
-                      control={<Checkbox value="allowExtraEmails" />}
-                      label="I accept the terms of  service and privacy policy"
-                    /> */}
-                    <label htmlFor="checkbox" className="flex space-x-4 text-[20px] items-center mt-[49px]" >
-                      <input type="checkbox" className="h-[20px] w-[20px]" />
-                      <p>I accept the terms of  service and privacy policy</p>
+                  {showConfirmationCode ? (
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        name="confirmationCode"
+                        label="Confirmation Code"
+                        type="number"
+                        id="confirmationCode"
+                      />
+                    </Grid>
+                  ) : (
+                    ""
+                  )}
+                  <Grid item xs={12}>
+                    <label
+                      htmlFor="checkbox"
+                      className="flex space-x-4 text-[20px] items-center mt-[49px]"
+                    >
+                      <input
+                        type="checkbox"
+                        ref={privacy_check}
+                        className="h-[20px] w-[20px]"
+                      />
+                      <p
+                        onClick={() => {
+                          privacy_check.current.checked =
+                            !privacy_check.current.checked;
+                        }}
+                      >
+                        I accept the terms of service and privacy policy
+                      </p>
                     </label>
                   </Grid>
                 </Grid>
@@ -127,7 +203,7 @@ export default function Register() {
                     type="submit"
                     className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
                   >
-                    Login
+                    Sign up
                   </button>
                   <span className="text-[#999999] text-[16px]">OR</span>
                   <button
@@ -142,97 +218,37 @@ export default function Register() {
             </Box>
           </div>
         </main>
-        <footer className="relative w-full bg-white">
-          <div className="flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px] ">
-            <div className="flex justify-between mb-[84px] items-center w-full">
-              <div className="flex flex-col items-start w-[50%]">
-                <h2 className="text-[24px] text-black font-semibold ">
-                  Subscribe to our newslettter
-                </h2>
-                <p className=" text-[16px] font-normal text-[#999]">
-                  Get informed on every update
-                </p>
-              </div>
-              <div className="max-w-[50%] text-[16px] w-[602px]  flex items-end ">
-                <form onSubmit={handleSubmitSub} className="w-full">
-                  <label
-                    className="flex w-full text-[16px]"
-                    htmlFor="emailForSub"
-                  >
-                    <TextField
-                      required
-                      fullWidth
-                      type="email"
-                      id="emailForSub"
-                      label="Your email address"
-                      name="emailForSub"
-                      style={{ color: "#999", textSize: "16px" }}
-                      autoComplete="email"
-                    />
-                    <button
-                      type="submit"
-                      className="w-[30%] py-[10px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-sm"
-                    >
-                      Subscribe
-                    </button>
-                  </label>
-                </form>
-              </div>
-            </div>
-            <hr className="bg-[#0050c81a] flex " />
-            {/*  */}
-            <div className="flex space-x-[190px]  pt-[55px] items-start">
-              <div>
-                <h1 className="text-[#0050C8] text-[20px] font-bold">
-                  TheJobportal
-                </h1>
-              </div>
-              <div className="flex space-x-[170px] pt-[10px]">
-                <div>
-                  <h2 className="text-black text-[20px] mb-[14px] font-normal">
-                    Sitemap
-                  </h2>
-                  <ul
-                    style={{ fontFamily: "Lato, sans-serif" }}
-                    className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
-                  >
-                    <Link to={"/"}>Home</Link>
-                    <Link to={"/"}>Jobs</Link>
-                    <Link to={"/"}>FAQs</Link>
-                    <Link to={"/"}>Support</Link>
-                    <Link to={"/"}>About</Link>
-                  </ul>
-                </div>
-                <div>
-                  <h2 className="text-black text-[20px] mb-[14px] font-normal">
-                    FAQs
-                  </h2>
-                  <ul
-                    style={{ fontFamily: "Lato, sans-serif" }}
-                    className=" flex flex-col items-start w-full text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
-                  >
-                    <Link to={"/"}>How can I search for a specific job ?</Link>
-                    <Link to={"/"}>Are there freelance jobs ?</Link>
-                    <Link to={"/"}>Can I post a jobs also</Link>
-                  </ul>
-                </div>
-                <div>
-                  <h2 className="text-black text-[20px] mb-[14px] font-normal">
-                    Contact us
-                  </h2>
-                  <ul
-                    style={{ fontFamily: "Lato, sans-serif" }}
-                    className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
-                  >
-                    <Link to={"/"}>Github</Link>
-                    <Link to={"/"}>Twitter</Link>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </footer>
+        {/* Footer sect */}
+        <Footer footerTop="1200" />
       </div>
+      {/* Error Alert */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      {/* Success Alert */}
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {successMsg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
