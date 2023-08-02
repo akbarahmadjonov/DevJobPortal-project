@@ -14,6 +14,7 @@ import Layer from "../../Assets/Images/layer.png";
 import Cancel from "../../Assets/Images/X-icon.svg";
 import { Footer } from "../../Widgets";
 import Header from "../../Widgets/Header/Header";
+import { current } from "@reduxjs/toolkit";
 
 export const Jobs = () => {
   const [openLoader, setOpenLoader] = useState(false);
@@ -44,8 +45,6 @@ export const Jobs = () => {
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
   let currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
 
-
-
   // Refreshes the current jobs
   // const search = () => {
   //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -74,7 +73,7 @@ export const Jobs = () => {
         }));
       })
       .catch(() => {
-        setError(true)
+        setError(true);
       })
       .finally(() => {
         setOpenLoader(false);
@@ -94,7 +93,7 @@ export const Jobs = () => {
         }));
       })
       .catch(() => {
-        setError(true)
+        setError(true);
       })
       .finally(() => {
         // setLoading(false)
@@ -126,7 +125,7 @@ export const Jobs = () => {
         setJobCard(data?.data);
       })
       .catch(() => {
-        setError(true)
+        setError(true);
       })
       .finally(() => {
         setOpenLoader(false);
@@ -136,7 +135,7 @@ export const Jobs = () => {
 
   const handleSearchSubmit = (evt) => {
     evt.preventDefault();
-    setJobCardOpen(false)
+    setJobCardOpen(false);
     setOpenLoader(true);
     axios
       .get(`${url}/job/search`, {
@@ -147,7 +146,7 @@ export const Jobs = () => {
         //   console.log('NO')
         //   setShowBtnLoadMore()
         // }
-       setJobs(data?.data);
+        setJobs(data?.data);
         setState((prevState) => ({
           ...prevState,
           todos: data?.data,
@@ -157,7 +156,7 @@ export const Jobs = () => {
         // currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
       })
       .catch(() => {
-        setError(true)
+        setError(true);
       })
       .finally(() => {
         setLoading(false);
@@ -177,8 +176,7 @@ export const Jobs = () => {
   //   setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
   // };
 
-  if (error) return <p className="error">Something went wrong. Try again...</p>
-
+  if (error) return <p className="error">Something went wrong. Try again...</p>;
 
   return (
     <>
@@ -311,7 +309,9 @@ export const Jobs = () => {
                 <option value="" disabled selected hidden>
                   Where Choose job location
                 </option>
-                <option value="" disabled selected hidden>Where Choose job location</option>
+                <option value="" disabled selected hidden>
+                  Where Choose job location
+                </option>
                 <option value="All">All locations</option>
                 {locations?.map((loc) => (
                   <option key={loc.id} value={loc.location}>
@@ -330,14 +330,22 @@ export const Jobs = () => {
       <div className="job-posts">
         <div className="container jobs-container">
           <h3 className="job-posts__title">Latest added</h3>
-          {
+          {currentTodos.length > 0 ? (
             <div className="job-posts__inner-wrapper">
               {/* Pagination */}
               {/* <div className="flex  items-center flex-col justify-between w-full"> */}
               <div className="job-post__left">
-              <ul style={jobCardOpen ? {
-                    flexDirection: "column", alignItems: "flex-start"
-                }: {}} className="job-posts__inner">
+                <ul
+                  style={
+                    jobCardOpen
+                      ? {
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                        }
+                      : {}
+                  }
+                  className="job-posts__inner"
+                >
                   {currentTodos?.length &&
                     currentTodos.map((job) => (
                       <li key={job?._id}>
@@ -369,6 +377,8 @@ export const Jobs = () => {
                                     className="save-button__img"
                                     src={SaveButton}
                                     alt="save button"
+                                    width={14}
+                                    height={14}
                                   />
                                   <span className="save-button__text">
                                     save
@@ -385,10 +395,7 @@ export const Jobs = () => {
                             <span className="job-posts__skills">Skills:</span>
                             <ul className="job-posts__list">
                               {job?.jobSkills?.map((skill) => (
-                                <li
-                                  className="job-posts__item"
-                                  key={skill._id}
-                                >
+                                <li className="job-posts__item" key={skill._id}>
                                   {skill.skillName}
                                 </li>
                               ))}
@@ -413,108 +420,111 @@ export const Jobs = () => {
                     ))}
                 </ul>
                 {showBtnLoadMore ? (
-                      <button
-                        onClick={() => handleLoadMore()}
-                        className="job__load-more-button"
-                      >
-                        Load More
-                      </button>
-                  ) : (
-                    ""
-                  )}
-              </div>
-                {/* Card more info */}
-                <div className="job-post__right">
-                {jobCardOpen ? (
-                    <div
-                    className="job-more-wrapper"
+                  <button
+                    onClick={() => handleLoadMore()}
+                    className="job__load-more-button"
                   >
-                  <div className="more-upper">
-                    <div className="more-inner">
-                      <h3 className="more-title">Job Details</h3>
-                      <div className="more-wrapper__img">
-                        <img
-                          onClick={() => setJobCardOpen(false)}
-                          className="more-img"
-                          src={Cancel}
-                          alt="cancel button"
-                        />
-                      </div>
-                      {/* Career */}
-                    </div>
-                    <div className="more-down">
-                      <div className="more-down__inner">
-                        {loading ? (
-                          ""
-                        ) : (
+                    Load More
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
+              {/* Card more info */}
+              <div className="job-post__right">
+                {jobCardOpen ? (
+                  <div className="job-more-wrapper">
+                    <div className="more-upper">
+                      <div className="more-inner">
+                        <h3 className="more-title">Job Details</h3>
+                        <div className="more-wrapper__img">
                           <img
-                            width={48}
-                            height={48}
-                            className="more-adjust__img"
-                            src={jobCard?.comImg}
-                            alt="flag more"
+                            onClick={() => setJobCardOpen(false)}
+                            className="more-img"
+                            src={Cancel}
+                            alt="cancel button"
                           />
-                        )}
-                        <div className="more-info">
-                          <h4 className="more-info__company">
-                            {jobCard?.comName}
-                          </h4>
-                          <span className="more-info__location">
-                            {jobCard?.comLocation}
-                          </span>
                         </div>
-                        <div className="more-save__button">
-                          <button className="save-button__btn">
-                            <img
-                              className="save-button__img"
-                              src={SaveButton}
-                              alt="save button"
-                            />
-                            <span className="save-button__text">save</span>
-                          </button>
-                        </div>
+                        {/* Career */}
                       </div>
-                      <h3 className="more-down__title">{jobCard?.jobTitle}</h3>
-                      <div className="more-down__text">
-                        <p className="more-down__desc">{jobCard?.jobInfo}</p>
-                        <div className="more-down__outer">
-                          <p className="more-down__skills">Skills:</p>
-                          <ul className="more-down__list">
-                            {jobCard?.jobSkills.map((skill) => (
-                              <li className="more-down__item" key={skill?._id}>
-                                {skill?.skillName}
-                              </li>
-                            ))}
+                      <div className="more-down">
+                        <div className="more-down__inner">
+                          {loading ? (
+                            ""
+                          ) : (
+                            <img
+                              width={48}
+                              height={48}
+                              className="more-adjust__img"
+                              src={jobCard?.comImg}
+                              alt="flag more"
+                            />
+                          )}
+                          <div className="more-info">
+                            <h4 className="more-info__company">
+                              {jobCard?.comName}
+                            </h4>
+                            <span className="more-info__location">
+                              {jobCard?.comLocation}
+                            </span>
+                          </div>
+                          <div className="more-save__button">
+                            <button className="save-button__btn">
+                              <img
+                                className="save-button__img"
+                                src={SaveButton}
+                                alt="save button"
+                              />
+                              <span className="save-button__text">save</span>
+                            </button>
+                          </div>
+                        </div>
+                        <h3 className="more-down__title">
+                          {jobCard?.jobTitle}
+                        </h3>
+                        <div className="more-down__text">
+                          <p className="more-down__desc">{jobCard?.jobInfo}</p>
+                          <div className="more-down__outer">
+                            <p className="more-down__skills">Skills:</p>
+                            <ul className="more-down__list">
+                              {jobCard?.jobSkills.map((skill) => (
+                                <li
+                                  className="more-down__item"
+                                  key={skill?._id}
+                                >
+                                  {skill?.skillName}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <p className="more-down__more">
+                            {jobCard?.moreInfo[0]?.jobText}
+                          </p>
+                        </div>
+                        {/* More down - Job requirements */}
+                        <div className="job-req">
+                          <ul className="job-req__list">
+                            <li className="job-req__item">
+                              {jobCard?.jobType}
+                            </li>
+                            <li className="job-req__item">
+                              {jobCard?.jobCooperate ? "Contract" : "Intern"}
+                            </li>
+                            <li className="job-req__item">
+                              {jobCard?.jobPrice}&nbsp;
+                              {jobCard?.moneyTypeId?.moneyType}
+                            </li>
                           </ul>
                         </div>
-                        <p className="more-down__more">
-                          {jobCard?.moreInfo[0]?.jobText}
-                        </p>
+                        <button
+                          onClick={handleApply}
+                          className="more-upper__applyBtn"
+                        >
+                          Apply for this job
+                        </button>
                       </div>
-                      {/* More down - Job requirements */}
-                      <div className="job-req">
-                        <ul className="job-req__list">
-                          <li className="job-req__item">{jobCard?.jobType}</li>
-                          <li className="job-req__item">
-                            {jobCard?.jobCooperate ? "Contract" : "Intern"}
-                          </li>
-                          <li className="job-req__item">
-                            {jobCard?.jobPrice}&nbsp;
-                            {jobCard?.moneyTypeId?.moneyType}
-                          </li>
-                        </ul>
-                      </div>
-                      <button
-                      onClick={handleApply}
-                      className="more-upper__applyBtn"
-                    >
-                      Apply for this job
-                    </button>
-                    </div>  
-                  
+                    </div>
                   </div>
-                  </div>
-                
                 ) : (
                   <div className="job-posts__static job-posts__static-view compatible ">
                     <img
@@ -528,11 +538,16 @@ export const Jobs = () => {
                     </p>
                   </div>
                 )}
-                </div>
-                
+              </div>
+
               {/* </div> */}
             </div>
-          }
+          ) : (
+            //* Shows this message if no any job
+            <p className="no-results-message">
+              No jobs found matching your search criteria.
+            </p>
+          )}
         </div>
       </div>
       <div className="jobs__footer-container">
