@@ -391,7 +391,7 @@ export const Jobs = () => {
                 </ul>
               </div>
 
-              <div style={jobCardOpen ? {maxHeight: "883px", top: 50, } : {}} className="job-posts__static compatible">
+              <div style={jobCardOpen ? {maxHeight: "883px", top: 50, } : {}} className="job-posts__static-side compatible">
                 {/* <img
                 className="layer-img"
                 src={Layer}
@@ -479,13 +479,14 @@ export const Jobs = () => {
                           <li className="job-req__item">{jobCard?.jobPrice}&nbsp;{jobCard?.moneyTypeId?.moneyType}</li>
                         </ul>
                       </div>
-                    </div>
-                    <button
+                      <button
                       onClick={handleApply}
                       className="more-upper__applyBtn"
                     >
                       Apply for this job
                     </button>
+                    </div>  
+                  
                   </div>
                 ) : (
                   <>

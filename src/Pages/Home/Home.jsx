@@ -218,7 +218,7 @@ same thing. Find them here</p>
     </ul>
     <p style={{textAlign: "center", marginBottom: 60}} className="text">Convinced ?</p>
     <div style={{textAlign: "center"}}>
-    <BlueButton>Get started</BlueButton>
+    <BlueButton to={"/jobs"}>Get started</BlueButton>
     </div>
     </div>
   </section>

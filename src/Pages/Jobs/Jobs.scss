@@ -308,7 +308,6 @@
         right: 0;
         width: 1rem;
         height: 1rem;
-        background: white;
       }
     }
   }
@@ -549,7 +548,7 @@
 
     //* Margin, paddings
     margin-top: 28px;
-    padding: 10px 22px;
+    // padding: 10px 22px;
   }
 
   .more-adjust__img {
@@ -604,6 +603,10 @@
     }
 
     background-color: #f6f7f7;
+  }
+
+  .more-down {
+    padding: 36px;
   }
 
   .more-down__title {
@@ -679,7 +682,7 @@
       display: block;
 
       //* Margin, paddings
-      margin-right: 5px;
+      // margin-right: 5px;
 
       background-image: url("../../Assets/Images/info-inOffice.svg");
       background-repeat: no-repeat;
@@ -693,7 +696,7 @@
       display: block;
 
       //* Margin, paddings
-      margin-right: 5px;
+      // margin-right: 5px;
 
       background-image: url("../../Assets/Images/info-handshake.svg");
       background-repeat: no-repeat;
@@ -707,7 +710,7 @@
       display: block;
 
       //* Margin, paddings
-      margin-right: 5px;
+      // margin-right: 5px;
 
       background-image: url("../../Assets/Images/info-money.svg");
       background-repeat: no-repeat;
@@ -717,9 +720,10 @@
 
   .job-req__item {
     display: flex;
-
+    align-items: center;
+    gap: 5px;
+    margin-right: 40px;
     //* Margin, paddings
-    margin-right: 60px;
 
     color: #000;
     font-size: 12px;
