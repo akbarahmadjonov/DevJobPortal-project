@@ -381,7 +381,7 @@ export const Jobs = () => {
                 className="jobs-inner__select"
                 name="location-job"
               >
-                <option value="all"></option>
+                <option value="all">All</option>
                 {locations?.map((loc) => (
                   <option key={loc.id} value={loc.location}>
                     {loc.location}{" "}
