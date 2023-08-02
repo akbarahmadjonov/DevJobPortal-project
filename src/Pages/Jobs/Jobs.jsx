@@ -285,7 +285,7 @@ export const Jobs = () => {
       )}
       <Header />
       <div className="jobs">
-        <div className="container job-container">
+        <div className="container">
           <div className="jobs-inner">
             <div className="jobs-inner__hero">
               <h2 className="jobs-title">Jobs</h2>
@@ -328,7 +328,7 @@ export const Jobs = () => {
       </div>
       {/* JOBS POSTS */}
       <div className="job-posts">
-        <div className="container">
+        <div className="container jobs-container">
           <h3 className="job-posts__title">Latest added</h3>
           {
             <div className="job-posts__inner-wrapper">
