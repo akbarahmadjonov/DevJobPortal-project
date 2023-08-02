@@ -285,6 +285,7 @@ export const Jobs = () => {
                 className="jobs-inner__select"
                 name="location-job"
               >
+                <option value="all">All</option>
                 <option value="" disabled selected hidden>Where Choose job location</option>
                 <option value="all">All locations</option>
                 {locations?.map((loc) => (
