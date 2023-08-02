@@ -6,7 +6,6 @@ import '../../index.css'
 
 export function Footer (props)  {
   const [openSuccess, setOpenSuccess] = useState(false);
-  console.log(props)
   const [successMsg, setSuccessMsg] = useState("Successfully Subscribed!");
   const [subValue, setSubValue] = useState("");
 

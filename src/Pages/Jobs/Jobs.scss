@@ -58,10 +58,14 @@
   }
 }
 
+.jobs-container {
+  max-width: 1440px;
+}
+
 .jobs-inner {
   //* Custom properties
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
 
   .jobs-inner__hero {
@@ -188,35 +192,38 @@
     color: #000;
   }
 
-  .job-posts__inner {
-    display: grid;
+  .job-posts__inner-wrapper {
+    display: flex;
+    align-items: flex-start;
     justify-content: space-between;
-    align-items: center;
+  }
 
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 20px;
+  .job-posts__inner {
     width: 100%;
+    max-width: 882px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 48px;
+    row-gap: 32px;
+    margin-bottom: 118px;
+    // justify-content: space-between;
+    // display: grid;
+    // flex-direction: column;
 
-    max-width: 416px;
+    // grid-template-columns: 1fr 1fr;
+    // grid-gap: 20px;
+    // width: 100%;
+
+    // max-width: 416px;
     height: 100%;
     // max-height: 369px;
-
-    .preview__text {
-      width: 100%;
-      max-width: 452px;
-
-      //* Margin, paddings
-      margin-top: 10px;
-
-      text-align: center;
-      color: #dadada;
-    }
   }
 
   .job-posts__static {
     //* Margin, paddings
-    margin-right: 48px;
-    margin-bottom: 32px;
+    // margin-right: 48px;
+    // margin-bottom: 32px;
     padding: 29px;
     height: 369px;
     // border-left: 1px solid #f9f9f9;
@@ -308,7 +315,6 @@
         right: 0;
         width: 1rem;
         height: 1rem;
-        background: white;
       }
     }
   }
@@ -357,7 +363,7 @@
       display: inline-block;
       vertical-align: sub;
       width: 5px;
-      height: 4px;
+      height: 5px;
       border-radius: 50%;
       background-color: #5a5a5a;
 
@@ -487,9 +493,9 @@
   }
 
   .compatible {
-    position: absolute;
-    top: 0;
-    right: 0;
+    // position: absolute;
+    // top: 0;
+    // right: 0;
 
     //* Custom properties
     width: 492px;
@@ -500,7 +506,6 @@
     align-items: start;
     flex-direction: column;
 
-    border-left: 1px solid #f9f9f9;
     height: 100%;
     max-height: 1171px;
     box-shadow: none;
@@ -511,6 +516,24 @@
 
     & .layer-img {
       margin: 0 auto;
+    }
+  }
+
+  .job-posts__static-view {
+    border-left: 1px solid #f9f9f9;
+    display: flex;
+    align-items: center;
+    margin-top: -75px;
+
+    .preview__text {
+      width: 100%;
+      max-width: 262px;
+
+      //* Margin, paddings
+      margin-top: 27px;
+
+      text-align: left;
+      color: #dadada;
     }
   }
 
@@ -536,20 +559,19 @@
     }
   }
 
-  //* More info
-  .more-upper {
-    width: 100%;
-    max-width: 450px;
-    //* Margin, paddings
-    margin-top: 40px;
+  .job-more-wrapper {
+    border-left: 1px solid #f9f9f9;
+    margin-top: -22px;
   }
+
+  //* More info
 
   .more-down__inner {
     display: flex;
 
     //* Margin, paddings
     margin-top: 28px;
-    padding: 10px 22px;
+    // padding: 10px 22px;
   }
 
   .more-adjust__img {
@@ -582,7 +604,8 @@
     justify-content: space-between;
 
     //* Margin, paddings
-    padding: 10px 22px;
+    padding: 20px 22px;
+    background-color: #f6f7f7;
 
     .more-title {
       color: #000;
@@ -602,8 +625,10 @@
 
       cursor: pointer;
     }
+  }
 
-    background-color: #f6f7f7;
+  .more-down {
+    padding: 36px;
   }
 
   .more-down__title {
@@ -679,7 +704,7 @@
       display: block;
 
       //* Margin, paddings
-      margin-right: 5px;
+      // margin-right: 5px;
 
       background-image: url("../../Assets/Images/info-inOffice.svg");
       background-repeat: no-repeat;
@@ -693,7 +718,7 @@
       display: block;
 
       //* Margin, paddings
-      margin-right: 5px;
+      // margin-right: 5px;
 
       background-image: url("../../Assets/Images/info-handshake.svg");
       background-repeat: no-repeat;
@@ -707,7 +732,7 @@
       display: block;
 
       //* Margin, paddings
-      margin-right: 5px;
+      // margin-right: 5px;
 
       background-image: url("../../Assets/Images/info-money.svg");
       background-repeat: no-repeat;
@@ -717,9 +742,10 @@
 
   .job-req__item {
     display: flex;
-
+    align-items: center;
+    gap: 5px;
+    margin-right: 40px;
     //* Margin, paddings
-    margin-right: 60px;
 
     color: #000;
     font-size: 12px;
@@ -753,6 +779,18 @@
   max-width: 1490px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+.job__load-more-button {
+  padding: 21px 74px;
+  font-size: 16px;
+  border: 1px solid #c4c4c4;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #0050c8;
+    color: #fff;
+  }
 }
 
 //* Jobs posts
