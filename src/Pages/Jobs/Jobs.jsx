@@ -12,11 +12,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
-import { Button, Grid } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
 import axios from "axios";
 import Header from "../../Widgets/Header/Header";
 import { Footer } from "../../Widgets";
+import { BlueButton } from "./../../Components/TitleText/TitleText";
 
 // const mockJobsData = [
 //   {
@@ -99,7 +100,7 @@ import { Footer } from "../../Widgets";
 //     ],
 //     info: ["In-office", "Contract", "120K USD"],
 //   },
-  
+
 //   {
 //     id: 6,
 //     company: "Mousco Ltd number one.",
@@ -118,89 +119,160 @@ import { Footer } from "../../Widgets";
 //   },
 // ];
 
-
-
-
 export const Jobs = () => {
   const [visibleCards, setVisibleCards] = useState(5); //* Initial number of cards to show
+  const [openLoader, setOpenLoader] = useState(false);
+  const [showBtnLoadMore, setShowBtnLoadMore] = useState(true);
   const [jobs, setJobs] = useState(null);
   const [jobCard, setJobCard] = useState(null);
   const [jobCardOpen, setJobCardOpen] = useState(false);
   const [locations, setLocations] = useState(null);
   const [modal, setModal] = useState(false);
-  const [jobsSearch, setJobsSearch] = useState("")
-  const [locationOption, setLocationOption] = useState()
+  const [jobsSearch, setJobsSearch] = useState("");
+  const [locationOption, setLocationOption] = useState();
 
   const url = "https://jobas.onrender.com/api";
+  const navigate = useNavigate();
 
-useEffect(()=>{
-  axios.get(`${url}/job`).then((data)=>{
-    setJobs(data.data)
-  }).catch(()=>{
-    // setError(true)
-  }).finally(()=>{
-    // setLoading(false)
-  })
-}, [])
+  // Pagination start
+  const [state, setState] = useState({
+    todos: [],
+    currentPage: 1, // Current page number
+    todosPerPage: 5, // Number of items to display per page
+  });
 
-useEffect(()=>{
-  axios.get(`${url}/job/location`).then((data)=>{
-    setLocations(data.data)
-  }).catch(()=>{
-    // setError(true)
-  }).finally(()=>{
-    // setLoading(false)
-  })
-}, [])
+  const { todos, currentPage, todosPerPage } = state;
 
+  const indexOfLastTodo = currentPage * todosPerPage;
+  const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+  const currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  function handleLoadMore() {
+    setState((prevState) => ({
+      ...prevState,
+      todosPerPage: todosPerPage + 3,
+    }));
+    if (todosPerPage + 3 >= todos.length) {
+      return setShowBtnLoadMore(false);
+    }
+  }
+  // Pagination end
+  // Get Jobs
+  useEffect(() => {
+    setOpenLoader(true);
+    axios
+      .get(`${url}/job`)
+      .then((data) => {
+        setJobs(data?.data);
+        setState((prevState) => ({
+          ...prevState,
+          todos: data?.data,
+        }));
+      })
+      .catch(() => {
+        // setError(true)
+      })
+      .finally(() => {
+        setOpenLoader(false);
+        // setLoading(false)
+      });
+  }, []);
 
-const handleCardClick = (evt) =>{
-  evt.preventDefault()
+  // Get Jobs Location
+  useEffect(() => {
+    axios
+      .get(`${url}/job/location`)
+      .then((data) => {
+        setLocations(data?.data);
+      })
+      .catch(() => {
+        // setError(true)
+      })
+      .finally(() => {
+        // setLoading(false)
+      });
+  }, []);
 
-  setJobCardOpen(true) 
-  const jobId = evt.target.dataset.id
+  // Get Job Info
+  const handleCardClick = (evt) => {
+    evt.preventDefault();
 
-  console.log(jobId);
+    setJobCardOpen(true);
+    let jobId = evt?.target?.dataset?.id;
 
-  axios.get(`${url}/job/${jobId}`).then((data)=>{
-    setJobCard(data.data)
-  }).catch(()=>{
-    // setError(true)
-  }).finally(()=>{
-    // setLoading(false)
-  })
-}
+    if (!jobId) {
+      // If jobId2 is not available, try getting the parent element's id
+      jobId = evt?.target?.parentElement?.id;
 
+      // If still not found, try recursively checking the parent elements until a valid jobId2 is found
+      let parentElement = evt?.target?.parentElement?.parentElement;
+      while (!jobId && parentElement) {
+        jobId = parentElement.id;
+        parentElement = parentElement.parentElement;
+      }
+    }
+    setOpenLoader(true);
+    axios
+      .get(`${url}/job/${jobId}`)
+      .then((data) => {
+        setJobCard(data?.data);
+      })
+      .catch(() => {
+        // setError(true)
+      })
+      .finally(() => {
+        setOpenLoader(false);
+        // setLoading(false)
+      });
+  };
 
+  const handleSearchSubmit = (evt) => {
+    evt.preventDefault();
 
-const handleSearchSubmit = (evt)=>{
-  evt.preventDefault()
+    axios
+      .get(`${url}/job/search`, {
+        params: { comLocation: locationOption, jobTitle: jobsSearch },
+      })
+      .then((data) => {
+        setJobs(data.data);
+      })
+      .catch(() => {
+        // setError(true)
+      })
+      .finally(() => {
+        // setLoading(false)
+      });
+  };
 
-  axios.get(`${url}/job/search`, {
-    params: {comLocation: locationOption, jobTitle: jobsSearch }
-  }).then((data)=>{
-    setJobs(data.data)
-  }).catch(()=>{
-    // setError(true)
-  }).finally(()=>{
-    // setLoading(false)
-  })
-
-
-}
-
-
+  const handleApply = () => {
+    const verified = localStorage.getItem("verify");
+    if (verified) {
+      if (JSON.parse(verified) === true) return setModal(true);
+    } else navigate("/auth/login");
+  };
 
   //* Handles more button event
-  const handleLoadMore = () => {
-    setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
-  };
+  // const handleLoadMore = () => {
+  //   setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
+  // };
   return (
     <>
+      {/* Backdrop Loader */}
+
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          width: "100%",
+        }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+
       {/* JOBS */}
       {modal ? (
-        <div className="container max-w-[1728px] mx-auto position-relative">
-          <main className="relative w-full">
+        <div className="container max-w-[1728px]  mx-auto position-relative">
+          <main className=" w-full ">
             <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
               <CssBaseline />
               <Box
@@ -285,7 +357,7 @@ const handleSearchSubmit = (evt)=>{
       ) : (
         ""
       )}
-      <Header></Header>
+      <Header />
       <div className="jobs">
         <div className="container">
           <div className="jobs-inner">
@@ -293,22 +365,32 @@ const handleSearchSubmit = (evt)=>{
               <h2 className="jobs-title">Jobs</h2>
               <p className="jobs-text">Find your dream job</p>
             </div>
-            <form onSubmit={handleSearchSubmit} className="jobs-inner__hero jobs-inputs">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="jobs-inner__hero jobs-inputs"
+            >
               <input
-                onChange={(e)=>setJobsSearch(e.target.value)}
+                onChange={(e) => setJobsSearch(e.target.value)}
                 className="jobs-inner__input"
                 type="text"
                 name="job"
                 placeholder="What the kind of job you want"
               />
-              <select 
-              onChange={(e)=>setLocationOption(e.target.value)}
-              className="jobs-inner__select" name="location-job">
-                {locations?.map((loc)=>(
-                   <option key={loc.id} value={loc.location}>{loc.location} </option> 
+              <select
+                onChange={(e) => setLocationOption(e.target.value)}
+                className="jobs-inner__select"
+                name="location-job"
+              >
+                <option value="all"></option>
+                {locations?.map((loc) => (
+                  <option key={loc.id} value={loc.location}>
+                    {loc.location}{" "}
+                  </option>
                 ))}
               </select>
-              <button type="submit" className="jobs-inner__button">Search</button>
+              <button type="submit" className="jobs-inner__button">
+                Search
+              </button>
             </form>
           </div>
         </div>
@@ -316,65 +398,96 @@ const handleSearchSubmit = (evt)=>{
       {/* JOBS POSTS */}
       <div className="job-posts">
         <div className="container">
-          <h3 className="job-posts__title">Latest added</h3>{
-          <div className="job-posts__inner">
-            {jobs?.map((job) => (
-              <div
-                data-id={job._id}
-                onClick={handleCardClick}
-                className="job-posts__static"
-                key={job._id}
-              >
-                <div className="job-posts__card">
-                  <div className="inner-wrapper">
-                    <img width={46} height={48} src={job.comImg} alt="flag country" />
-                    <div className="job-posts__items">
-                      <h3 className="job-posts__company">{job.comName}</h3>
-                      <p className="job-posts__location">{job.comLocation}</p>
-                    </div>
-                    <div className="save-button">
-                      <button className="save-button__btn">
-                        <img
-                          className="save-button__img"
-                          src={SaveButton}
-                          alt="save button"
-                        />
-                        <span className="save-button__text">save</span>
+          <h3 className="job-posts__title">Latest added</h3>
+          {
+            <div className="job-posts__inner">
+              {/* Pagination */}
+              <div className="flex  items-center flex-col justify-between w-full">
+                <ul className="job-posts__inner">
+                  {currentTodos.map((job, index) => (
+                    <li key={index}>
+                      <div
+                        data-id={job?._id}
+                        id={job?._id}
+                        onClick={handleCardClick}
+                        className="job-posts__static"
+                        key={job._id}
+                      >
+                        <div className="job-posts__card">
+                          <div className="inner-wrapper">
+                            <img
+                              width={46}
+                              height={48}
+                              src={job?.comImg}
+                              alt="flag country"
+                            />
+                            <div className="job-posts__items">
+                              <h3 className="job-posts__company">
+                                {job?.comName}
+                              </h3>
+                              <p className="job-posts__location">
+                                {job?.comLocation}
+                              </p>
+                            </div>
+                            <div className="save-button">
+                              <button className="save-button__btn">
+                                <img
+                                  className="save-button__img"
+                                  src={SaveButton}
+                                  alt="save button"
+                                />
+                                <span className="save-button__text">save</span>
+                              </button>
+                            </div>
+                          </div>
+                          <h4 className="job-posts__profession">
+                            {job?.jobTitle}
+                          </h4>
+                          <div className="job-post__wrapper">
+                            <p className="job-posts__text">{job?.jobInfo}</p>
+                          </div>
+                          <span className="job-posts__skills">Skills:</span>
+                          <ul className="job-posts__list">
+                            {job?.jobSkills?.map((skill) => (
+                              <li className="job-posts__item" key={skill?._id}>
+                                {skill?.skillName}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        {/* Info block */}
+                        <div className="info-block">
+                          <ul className="info-list">
+                            <li className="info-item">{job?.jobType}</li>
+                            <li className="info-item">
+                              {/* {job.jobCooperate} */}
+                              Contract
+                            </li>
+                            <li className="info-item">
+                              {job?.jobPrice}&nbsp;{job?.moneyTypeId?.moneyType}
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                  {showBtnLoadMore ? (
+                    <li>
+                      <button
+                        onClick={() => handleLoadMore()}
+                        className="blue-button p-[15px] rounded-md bg-blue-400 z-50 text-2xl text-black flex items-center justify-center font-bold"
+                      >
+                        Load More
                       </button>
-                    </div>
-                  </div>
-                  <h4 className="job-posts__profession">{job.jobTitle}</h4>
-                  <div className="job-post__wrapper">
-                    <p className="job-posts__text">{job.jobInfo}</p>
-                  </div>
-                  <span className="job-posts__skills">Skills:</span>
-                  <ul className="job-posts__list">
-                    {job.jobSkills?.map((skill) => (
-                      <li className="job-posts__item" key={skill._id}>
-                        {skill.skillName}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                {/* Info block */}
-                <div className="info-block">
-                  <ul className="info-list">
-                      <li className="info-item">
-                        {job.jobType}
-                      </li>
-                      <li className="info-item">
-                        {/* {job.jobCooperate} */}
-                        Contract
-                      </li>
-                      <li className="info-item">
-                        {job.jobPrice}&nbsp;{job.moneyTypeId?.moneyType}
-                      </li>
-                  </ul>
-                </div>
+                    </li>
+                  ) : (
+                    ""
+                  )}
+                </ul>
               </div>
-            ))}
-            <div className="job-posts__static compatible">
-              {/* <img
+
+              <div className="job-posts__static compatible">
+                {/* <img
                 className="layer-img"
                 src={Layer}
                 alt="Layer img"
@@ -383,135 +496,191 @@ const handleSearchSubmit = (evt)=>{
               <p className="preview__text">
                 Click on a job to preview its full job details here
               </p> */}
-              {/* Card more info */}
-              {jobCardOpen ?
-  <div className="more-upper">
-  <div className="more-inner">
-    <h3 className="more-title">Job Details</h3>
-    <div className="more-wrapper__img">
-      <img
-        onClick={()=>setJobCardOpen(false)}
-        className="more-img"
-        src={Cancel}
-        alt="cancel button"
-      />
-    </div>
-    {/* Career */}
-  </div>
-  <div className="more-down">
-    <div className="more-down__inner">
-      <img
-        width={48}
-        height={48}
-        className="more-adjust__img"
-        src={jobCard?.comImg}
-        alt="flag more"
-      />
-      <div className="more-info">
-        <h4 className="more-info__company">{jobCard?.comName}</h4>
-        <span className="more-info__location">
-          {jobCard?.comLocation}
-        </span>
-      </div>
-      <div className="more-save__button">
-        <button className="save-button__btn">
-          <img
-            className="save-button__img"
-            src={SaveButton}
-            alt="save button"
-          />
-          <span className="save-button__text">save</span>
-        </button>
-      </div>
-    </div>
-    <h3 className="more-down__title">
-     {jobCard?.jobTitle}
-    </h3>
-    <div className="more-down__text">
-      <p className="more-down__desc">{jobCard?.jobInfo}</p>
-      <div className="more-down__outer">
-        <p className="more-down__skills">Skills:</p>
-        <ul className="more-down__list">
-          {jobCard?.jobSkills.map((skill) => (
-            <li className="more-down__item" key={skill._id}>
-              {skill.skillName}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <p className="more-down__more">
-       {jobCard?.moreInfo[0].jobText}
-      </p>
-    </div>
-    {/* More down - Job requirements */}
-    <div className="job-req">
-      <ul className="job-req__list">
-        {/* <li className="job-req__item">In-office</li>
+                {/* Card more info */}
+                {jobCardOpen ? (
+                  <div className="more-upper">
+                    <div className="more-inner">
+                      <h3 className="more-title">Job Details</h3>
+                      <div className="more-wrapper__img">
+                        <img
+                          onClick={() => setJobCardOpen(false)}
+                          className="more-img"
+                          src={Cancel}
+                          alt="cancel button"
+                        />
+                      </div>
+                      {/* Career */}
+                    </div>
+                    <div className="more-down">
+                      <div className="more-down__inner">
+                        <img
+                          width={48}
+                          height={48}
+                          className="more-adjust__img"
+                          src={jobCard?.comImg}
+                          alt="flag more"
+                        />
+                        <div className="more-info">
+                          <h4 className="more-info__company">
+                            {jobCard?.comName}
+                          </h4>
+                          <span className="more-info__location">
+                            {jobCard?.comLocation}
+                          </span>
+                        </div>
+                        <div className="more-save__button">
+                          <button className="save-button__btn">
+                            <img
+                              className="save-button__img"
+                              src={SaveButton}
+                              alt="save button"
+                            />
+                            <span className="save-button__text">save</span>
+                          </button>
+                        </div>
+                      </div>
+                      <h3 className="more-down__title">{jobCard?.jobTitle}</h3>
+                      <div className="more-down__text">
+                        <p className="more-down__desc">{jobCard?.jobInfo}</p>
+                        <div className="more-down__outer">
+                          <p className="more-down__skills">Skills:</p>
+                          <ul className="more-down__list">
+                            {jobCard?.jobSkills.map((skill) => (
+                              <li className="more-down__item" key={skill?._id}>
+                                {skill?.skillName}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <p className="more-down__more">
+                          {jobCard?.moreInfo[0]?.jobText}
+                        </p>
+                      </div>
+                      {/* More down - Job requirements */}
+                      <div className="job-req">
+                        <ul className="job-req__list">
+                          {/* <li className="job-req__item">In-office</li>
         <li className="job-req__item">Contract</li>
         <li className="job-req__item">120K - 140K USD</li> */}
-      
-          <li className="job-req__item" >
-            {jobCard?.jobType}
-          </li>
-          <li className="job-req__item">
-          {/* {jobCard?.jobCooperate} */}
-          Contract
-          </li>
-          <li className="job-req__item">
-          {jobCard?.jobPrice}
-          </li>
-     
-      </ul>
-    </div>
-  </div>
-  <button
-    onClick={() => setModal(true)}
-    className="more-upper__applyBtn"
-  >
-    Apply for this job
-  </button>
-</div> : (
-                <>
-                  <img
-                    className="layer-img"
-                    src={Layer}
-                    alt="Layer img"
-                    width={145}
-                  />
-                  <p className="preview__text">
-                    Click on a job to preview its full job details here
-                  </p>
-                </>
-              )}
+
+                          <li className="job-req__item">{jobCard?.jobType}</li>
+                          <li className="job-req__item">
+                            {/* {jobCard?.jobCooperate} */}
+                            Contract
+                          </li>
+                          <li className="job-req__item">{jobCard?.jobPrice}</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleApply}
+                      className="more-upper__applyBtn"
+                    >
+                      Apply for this job
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <img
+                      className="layer-img"
+                      src={Layer}
+                      alt="Layer img"
+                      width={145}
+                    />
+                    <p className="preview__text">
+                      Click on a job to preview its full job details here
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-
           }
-
-          {/* Load more button */}
-          {/* {visibleCards < mockJobsData.length && (
-            <button
-              className="load-more__btn"
-              type="button"
-              onClick={handleLoadMore}
-            >
-              Load more
-            </button>
-          )} */}
         </div>
       </div>
       <div className="jobs__footer-container">
-      <Footer></Footer>
-
+        <Footer />
       </div>
     </>
   );
 };
 
+// {/* Load more button */}
+// {/* {visibleCards < mockJobsData.length && (
+//   <button
+//     className="load-more__btn"
+//     type="button"
+//     onClick={handleLoadMore}
+//   >
+//     Load more
+//   </button>
+// )} */}
+
 // when this button onclick make page darker for modal show noticable
 // <button
-                  //   onClick={() => setModal(true)}
-                  //   className="more-upper__applyBtn"
-                  // >
-                  //   Apply for this job
-                  // </button>
+//   onClick={() => setModal(true)}
+//   className="more-upper__applyBtn"
+// >
+//   Apply for this job
+// </button>
+
+// {jobs?.map((job) => (
+//   <div
+//     data-id={job?._id}
+//     id={job?._id}
+//     onClick={handleCardClick}
+//     className="job-posts__static"
+//     key={job._id}
+//   >
+//     <div className="job-posts__card">
+//       <div className="inner-wrapper">
+//         <img
+//           width={46}
+//           height={48}
+//           src={job?.comImg}
+//           alt="flag country"
+//         />
+//         <div className="job-posts__items">
+//           <h3 className="job-posts__company">{job?.comName}</h3>
+//           <p className="job-posts__location">
+//             {job?.comLocation}
+//           </p>
+//         </div>
+//         <div className="save-button">
+//           <button className="save-button__btn">
+//             <img
+//               className="save-button__img"
+//               src={SaveButton}
+//               alt="save button"
+//             />
+//             <span className="save-button__text">save</span>
+//           </button>
+//         </div>
+//       </div>
+//       <h4 className="job-posts__profession">{job?.jobTitle}</h4>
+//       <div className="job-post__wrapper">
+//         <p className="job-posts__text">{job?.jobInfo}</p>
+//       </div>
+//       <span className="job-posts__skills">Skills:</span>
+//       <ul className="job-posts__list">
+//         {job?.jobSkills?.map((skill) => (
+//           <li className="job-posts__item" key={skill?._id}>
+//             {skill?.skillName}
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//     {/* Info block */}
+//     <div className="info-block">
+//       <ul className="info-list">
+//         <li className="info-item">{job?.jobType}</li>
+//         <li className="info-item">
+//           {/* {job.jobCooperate} */}
+//           Contract
+//         </li>
+//         <li className="info-item">
+//           {job?.jobPrice}&nbsp;{job?.moneyTypeId?.moneyType}
+//         </li>
+//       </ul>
+//     </div>
+//   </div>
+// ))}

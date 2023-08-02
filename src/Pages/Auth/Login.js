@@ -81,7 +81,7 @@ export default function Login() {
           <div className="container max-w-[1728px] mx-auto">
             <Verify />
             {/* Footer */}
-            <Footer footerTop='1300' />
+            <Footer footerTop="1300" />
           </div>
         </>
       ) : (
