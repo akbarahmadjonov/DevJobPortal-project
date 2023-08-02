@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
@@ -41,7 +41,7 @@ useEffect(()=>{
   new Swiper('.swiper', {
     direction: 'horizontal',
     spaceBetween: 103,
-    slidesPerView: 3.5,
+    slidesPerView: 3.4,
     loop: false,
     
   });
@@ -137,7 +137,7 @@ full time, part time
     <h3 className="sub-title-text home__jobs-sub-title-text">The choice is yours</h3>
     <h3 className="text home__jobs-text">Choose the job type you want</h3>
     <ul className="home__jobs-cards-list">
-    {loading ? <div className="loader"></div> :
+    {loading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>:
       jobs?.map((job)=>(
              <li key={job._id} className="home__jobs-cards-item">
              <Link to={"/jobs"} >
@@ -226,14 +226,14 @@ same thing. Find them here</p>
     <div className="feedback-container">
 <h5 style={{color: "#2F2F2F"}} className="sub-title-text">What others say about us</h5>
 <p className="text home-feedbacks__text">Not yet convinced to get started?  Here are what other job seekers say about us.</p>
-<div class="swiper">
-  <div class="swiper-wrapper swiper-wrapper-custom">
-    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
-    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
-    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
-    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
-    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
-    <div class="swiper-slide slide-feedback"><FeedbackItem/></div>
+<div className="swiper">
+  <div className="swiper-wrapper swiper-wrapper-custom">
+    <div className="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div className="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div className="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div className="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div className="swiper-slide slide-feedback"><FeedbackItem/></div>
+    <div className="swiper-slide slide-feedback"><FeedbackItem/></div>
 </div>
  <div className="swiper-shadow"></div>
     </div>

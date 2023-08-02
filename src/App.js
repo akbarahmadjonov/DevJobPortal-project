@@ -1,10 +1,10 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Login from "./Pages/Auth/Login";
-import Register from "./Pages/Auth/Register";
+import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
+import Login from "./Pages/Auth/Login";
+import Register from "./Pages/Auth/Register";
 import { Jobs } from "./Pages/Jobs/Jobs";
 
 const App = () => {
