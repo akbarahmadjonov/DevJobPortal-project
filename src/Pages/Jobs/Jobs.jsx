@@ -307,6 +307,8 @@ export const Jobs = () => {
                 <option value="" disabled selected hidden>
                   Where Choose job location
                 </option>
+                <option value="all">All</option>
+                <option value="" disabled selected hidden>Where Choose job location</option>
                 <option value="all">All locations</option>
                 {locations?.map((loc) => (
                   <option key={loc.id} value={loc.location}>
