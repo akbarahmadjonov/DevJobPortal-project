@@ -19,105 +19,6 @@ import Header from "../../Widgets/Header/Header";
 import { Footer } from "../../Widgets";
 import { BlueButton } from "./../../Components/TitleText/TitleText";
 
-// const mockJobsData = [
-//   {
-//     id: 1,
-//     company: "Mousco Ltd number one.",
-//     img: Flag,
-//     location: "California, USA",
-//     profession: "Lead Backend developer - Part time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-//     skills: [
-//       "Software development",
-//       "Mysql databases",
-//       "Node.js",
-//       "devop operations",
-//     ],
-//     info: ["In-office", "Contract", "120K USD"],
-//   },
-//   {
-//     id: 2,
-//     company: "Mousco Ltd number one.",
-//     img: Flag,
-//     location: "California, USA",
-//     profession: "Lead Backend developer - Part time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-//     skills: [
-//       "Software development",
-//       "Mysql databases",
-//       "Node.js",
-//       "devop operations",
-//     ],
-//     info: ["In-office", "Contract", "120K USD"],
-//   },
-//   {
-//     id: 3,
-//     company: "Mousco Ltd number one.",
-//     img: Flag,
-//     location: "California, USA",
-//     profession: "Lead Backend developer - Part time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-//     skills: [
-//       "Software development",
-//       "Mysql databases",
-//       "Node.js",
-//       "devop operations",
-//     ],
-//     info: ["In-office", "Contract", "120K USD"],
-//   },
-//   {
-//     id: 4,
-//     company: "Mousco Ltd number one.",
-//     img: Flag,
-//     location: "California, USA",
-//     profession: "Lead Backend developer - Part time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-//     skills: [
-//       "Software development",
-//       "Mysql databases",
-//       "Node.js",
-//       "devop operations",
-//     ],
-//     info: ["In-office", "Contract", "120K USD"],
-//   },
-//   {
-//     id: 5,
-//     company: "Mousco Ltd number one.",
-//     img: Flag,
-//     location: "California, USA",
-//     profession: "Lead Backend developer - Part time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-//     skills: [
-//       "Software development",
-//       "Mysql databases",
-//       "Node.js",
-//       "devop operations",
-//     ],
-//     info: ["In-office", "Contract", "120K USD"],
-//   },
-
-//   {
-//     id: 6,
-//     company: "Mousco Ltd number one.",
-//     img: Flag,
-//     location: "California, USA",
-//     profession: "Lead Backend developer - Part time",
-//     description:
-//       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation",
-//     skills: [
-//       "Software development",
-//       "Mysql databases",
-//       "Node.js",
-//       "devop operations",
-//     ],
-//     info: ["In-office", "Contract", "120K USD"],
-//   },
-// ];
 
 export const Jobs = () => {
   const [visibleCards, setVisibleCards] = useState(5); //* Initial number of cards to show
@@ -130,6 +31,7 @@ export const Jobs = () => {
   const [modal, setModal] = useState(false);
   const [jobsSearch, setJobsSearch] = useState("");
   const [locationOption, setLocationOption] = useState();
+  const [loading, setLoading] = useState(false);
 
   const url = "https://jobas.onrender.com/api";
   const navigate = useNavigate();
@@ -195,7 +97,7 @@ export const Jobs = () => {
   // Get Job Info
   const handleCardClick = (evt) => {
     evt.preventDefault();
-
+    setLoading(true)
     setJobCardOpen(true);
     let jobId = evt?.target?.dataset?.id;
 
@@ -214,6 +116,7 @@ export const Jobs = () => {
     axios
       .get(`${url}/job/${jobId}`)
       .then((data) => {
+        
         setJobCard(data?.data);
       })
       .catch(() => {
@@ -221,7 +124,7 @@ export const Jobs = () => {
       })
       .finally(() => {
         setOpenLoader(false);
-        // setLoading(false)
+        setLoading(false)
       });
   };
 
@@ -374,14 +277,16 @@ export const Jobs = () => {
                 className="jobs-inner__input"
                 type="text"
                 name="job"
-                placeholder="What the kind of job you want"
+                placeholder="What The kind of job you  want"
               />
               <select
+               placeholder="Where Choose job location"
                 onChange={(e) => setLocationOption(e.target.value)}
                 className="jobs-inner__select"
                 name="location-job"
               >
-                <option value="all"></option>
+                <option value="" disabled selected hidden>Where Choose job location</option>
+                <option value="all">All locations</option>
                 {locations?.map((loc) => (
                   <option key={loc.id} value={loc.location}>
                     {loc.location}{" "}
@@ -404,14 +309,13 @@ export const Jobs = () => {
               {/* Pagination */}
               <div className="flex  items-center flex-col justify-between w-full">
                 <ul className="job-posts__inner">
-                  {currentTodos.map((job, index) => (
-                    <li key={index}>
+                  {currentTodos.map((job) => (
+                    <li key={job?._id}>
                       <div
                         data-id={job?._id}
                         id={job?._id}
                         onClick={handleCardClick}
                         className="job-posts__static"
-                        key={job._id}
                       >
                         <div className="job-posts__card">
                           <div className="inner-wrapper">
@@ -459,10 +363,11 @@ export const Jobs = () => {
                         <div className="info-block">
                           <ul className="info-list">
                             <li className="info-item">{job?.jobType}</li>
-                            <li className="info-item">
-                              {/* {job.jobCooperate} */}
-                              Contract
+                            <li className="info-item">{job?.jobCooperate ?
+                              "Contract" : "Intern"
+                            }
                             </li>
+                            
                             <li className="info-item">
                               {job?.jobPrice}&nbsp;{job?.moneyTypeId?.moneyType}
                             </li>
@@ -486,7 +391,7 @@ export const Jobs = () => {
                 </ul>
               </div>
 
-              <div className="job-posts__static compatible">
+              <div style={jobCardOpen ? {maxHeight: "883px", top: 50, } : {}} className="job-posts__static compatible">
                 {/* <img
                 className="layer-img"
                 src={Layer}
@@ -513,13 +418,16 @@ export const Jobs = () => {
                     </div>
                     <div className="more-down">
                       <div className="more-down__inner">
-                        <img
-                          width={48}
-                          height={48}
-                          className="more-adjust__img"
-                          src={jobCard?.comImg}
-                          alt="flag more"
-                        />
+                        {loading ? "" :
+                          <img
+                            width={48}
+                            height={48}
+                            className="more-adjust__img"
+                            src={jobCard?.comImg}
+                            alt="flag more"
+                          />
+
+                        }
                         <div className="more-info">
                           <h4 className="more-info__company">
                             {jobCard?.comName}
@@ -565,10 +473,10 @@ export const Jobs = () => {
 
                           <li className="job-req__item">{jobCard?.jobType}</li>
                           <li className="job-req__item">
-                            {/* {jobCard?.jobCooperate} */}
-                            Contract
+                            {jobCard?.jobCooperate ? "Contract" : "Intern"}
+                            
                           </li>
-                          <li className="job-req__item">{jobCard?.jobPrice}</li>
+                          <li className="job-req__item">{jobCard?.jobPrice}&nbsp;{jobCard?.moneyTypeId?.moneyType}</li>
                         </ul>
                       </div>
                     </div>

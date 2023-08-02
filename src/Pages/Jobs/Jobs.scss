@@ -150,6 +150,19 @@
   }
 }
 
+.jobs-inner__input {
+  font-size: 16px;
+}
+
+.jobs-inner__select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Remove default arrow */
+  // background-image: url(...);
+  /* Add custom arrow */
+}
+
 //* JOBS part
 
 //* Jobs posts
@@ -205,6 +218,8 @@
     margin-right: 48px;
     margin-bottom: 32px;
     padding: 29px;
+    height: 369px;
+    // border-left: 1px solid #f9f9f9;
 
     cursor: pointer;
     box-shadow: 0px 0px 13px 0px #0000000d;
@@ -216,7 +231,8 @@
 
   .job-posts__skills {
     //* Margin, paddings
-    margin-top: 5px;
+    margin-top: 2.5px;
+    margin-bottom: 2.5px;
     display: block;
 
     //* Custom styles
@@ -276,6 +292,25 @@
 
   .job-posts__text {
     width: 351px;
+    max-height: 51px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      position: absolute;
+      content: "...";
+      bottom: 0;
+      right: 0;
+
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        width: 1rem;
+        height: 1rem;
+        background: white;
+      }
+    }
   }
 
   .job-posts__text {
@@ -297,15 +332,37 @@
 
     line-height: 16.8px;
     color: #5a5a5a;
+    height: 53px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      position: absolute;
+      content: "...";
+      bottom: -3.5px;
+      left: 0;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      width: 1rem;
+      height: 1rem;
+      background: white;
+    }
 
     & li::before {
-      content: "•";
+      content: "";
       display: inline-block;
       vertical-align: sub;
-      width: 10px;
+      width: 5px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: #5a5a5a;
 
       //* Margin, paddings
-      margin-right: 5px;
+      margin-right: 9px;
       font-size: 30px;
 
       color: #5a5a5a;
@@ -313,10 +370,16 @@
     }
   }
 
+  .job-posts__item {
+    display: flex;
+    align-items: center;
+  }
+
   .info-list {
     display: flex;
-    justify-content: space-between;
-
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
     margin-top: 20px;
 
     & .info-item {
@@ -372,7 +435,8 @@
       content: "";
       width: 14px;
       height: 14px;
-      display: block;
+      display: flex;
+      align-items: center;
 
       //* Margin, paddings
       margin-right: 5px;
@@ -424,6 +488,7 @@
 
   .compatible {
     position: absolute;
+    top: 0;
     right: 0;
 
     //* Custom properties
@@ -435,8 +500,9 @@
     align-items: start;
     flex-direction: column;
 
-    border-left: 2px solid #f2f2f2;
+    border-left: 1px solid #f9f9f9;
     height: 100%;
+    max-height: 1171px;
     box-shadow: none;
     cursor: auto;
     &:hover {
@@ -474,7 +540,6 @@
   .more-upper {
     width: 100%;
     max-width: 450px;
-
     //* Margin, paddings
     margin-top: 40px;
   }
@@ -574,19 +639,28 @@
   }
 
   .more-down__item {
+    display: flex;
+    align-items: center;
     &::before {
-      content: "•";
+      content: "";
       display: inline-block;
       vertical-align: sub;
-      width: 10px;
+      width: 5px;
+      height: 5px;
+      background-color: #5a5a5a;
+      border-radius: 50%;
 
       //* Margin, paddings
       margin-right: 5px;
-      font-size: 30px;
+      // font-size: 30px;
 
-      color: #5a5a5a;
-      text-align: center;
+      // color: #5a5a5a;
+      // text-align: center;
     }
+  }
+
+  .more-down__skills {
+    margin-bottom: 3px;
   }
 
   .job-req {
