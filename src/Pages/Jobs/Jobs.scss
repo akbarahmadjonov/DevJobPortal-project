@@ -1,8 +1,22 @@
 //* JOBS part
+
+.modal-wrapper {
+  // display: none;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba($color: #000, $alpha: 0.5);
+}
+
+.modal-content {
+  top: 50px;
+}
 .modal-wrap {
   display: flex;
   align-items: center;
-
   margin-right: 10px !important;
 }
 
