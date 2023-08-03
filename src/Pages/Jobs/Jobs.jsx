@@ -198,23 +198,6 @@ export const Jobs = () => {
     } else navigate("/auth/login");
   };
 
-
-  //Classes
-
-  const styles = theme => ({
-    textField: {
-        width: '90%',
-        marginLeft: 'auto',
-        marginRight: 'auto',            
-        paddingBottom: 0,
-        marginTop: 0,
-        fontWeight: 500
-    },
-    input: {
-        color: 'white'
-    }
-});
-
   //* Handles more button event
   // const handleLoadMore = () => {
   //   setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
@@ -239,7 +222,8 @@ export const Jobs = () => {
 
       {/* JOBS */}
       {modal ? (
-  <div className="container max-w-[1728px]  mx-auto position-relative modal-wrapper">
+        <div className="modal-wrapper">
+ <div className="container max-w-[1728px]  mx-auto position-relative">
           <main className=" w-full ">
             <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white modal-content">
               <CssBaseline />
@@ -322,6 +306,8 @@ export const Jobs = () => {
             </div>
           </main>
         </div>
+        </div>
+ 
      
 
      
