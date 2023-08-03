@@ -19,9 +19,7 @@ import Header from "../../Widgets/Header/Header";
 import { Footer } from "../../Widgets";
 import { BlueButton } from "./../../Components/TitleText/TitleText";
 
-
 export const Jobs = () => {
-  const [visibleCards, setVisibleCards] = useState(5); //* Initial number of cards to show
   const [openLoader, setOpenLoader] = useState(false);
   const [showBtnLoadMore, setShowBtnLoadMore] = useState(true);
   const [jobs, setJobs] = useState(null);
@@ -47,7 +45,12 @@ export const Jobs = () => {
 
   const indexOfLastTodo = currentPage * todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-  const currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  let currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  // Refreshes the current jobs
+  // const search = () => {
+  //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  //   return;
+  // };
   function handleLoadMore() {
     setState((prevState) => ({
       ...prevState,
@@ -85,6 +88,10 @@ export const Jobs = () => {
       .get(`${url}/job/location`)
       .then((data) => {
         setLocations(data?.data);
+        setState((prevState) => ({
+          ...prevState,
+          todos: data?.data,
+        }));
       })
       .catch(() => {
         // setError(true)
@@ -97,7 +104,7 @@ export const Jobs = () => {
   // Get Job Info
   const handleCardClick = (evt) => {
     evt.preventDefault();
-    setLoading(true)
+    setLoading(true);
     setJobCardOpen(true);
     let jobId = evt?.target?.dataset?.id;
 
@@ -116,7 +123,6 @@ export const Jobs = () => {
     axios
       .get(`${url}/job/${jobId}`)
       .then((data) => {
-        
         setJobCard(data?.data);
       })
       .catch(() => {
@@ -124,25 +130,38 @@ export const Jobs = () => {
       })
       .finally(() => {
         setOpenLoader(false);
-        setLoading(false)
+        setLoading(false);
       });
   };
 
   const handleSearchSubmit = (evt) => {
     evt.preventDefault();
 
+    setOpenLoader(true);
     axios
       .get(`${url}/job/search`, {
         params: { comLocation: locationOption, jobTitle: jobsSearch },
       })
       .then((data) => {
-        setJobs(data.data);
+        // if(jobsSearch===''){
+        //   console.log('NO')
+        //   setShowBtnLoadMore()
+        // }
+        setJobs(data?.data);
+        setState((prevState) => ({
+          ...prevState,
+          todos: data?.data,
+        }));
+        setShowBtnLoadMore(false);
+        // currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+        // currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
       })
       .catch(() => {
         // setError(true)
       })
       .finally(() => {
-        // setLoading(false)
+        setLoading(false);
+        setOpenLoader(false);
       });
   };
 
@@ -280,12 +299,14 @@ export const Jobs = () => {
                 placeholder="What The kind of job you  want"
               />
               <select
-               placeholder="Where Choose job location"
+                placeholder="Where Choose job location"
                 onChange={(e) => setLocationOption(e.target.value)}
                 className="jobs-inner__select"
                 name="location-job"
               >
-                <option value="" disabled selected hidden>Where Choose job location</option>
+                <option value="" disabled selected hidden>
+                  Where Choose job location
+                </option>
                 <option value="all">All locations</option>
                 {locations?.map((loc) => (
                   <option key={loc.id} value={loc.location}>
@@ -309,73 +330,79 @@ export const Jobs = () => {
               {/* Pagination */}
               <div className="flex  items-center flex-col justify-between w-full">
                 <ul className="job-posts__inner">
-                  {currentTodos.map((job) => (
-                    <li key={job?._id}>
-                      <div
-                        data-id={job?._id}
-                        id={job?._id}
-                        onClick={handleCardClick}
-                        className="job-posts__static"
-                      >
-                        <div className="job-posts__card">
-                          <div className="inner-wrapper">
-                            <img
-                              width={46}
-                              height={48}
-                              src={job?.comImg}
-                              alt="flag country"
-                            />
-                            <div className="job-posts__items">
-                              <h3 className="job-posts__company">
-                                {job?.comName}
-                              </h3>
-                              <p className="job-posts__location">
-                                {job?.comLocation}
-                              </p>
+                  {currentTodos?.length &&
+                    currentTodos.map((job) => (
+                      <li key={job?._id}>
+                        <div
+                          data-id={job?._id}
+                          id={job?._id}
+                          onClick={handleCardClick}
+                          className="job-posts__static"
+                        >
+                          <div className="job-posts__card">
+                            <div className="inner-wrapper">
+                              <img
+                                width={46}
+                                height={48}
+                                src={job?.comImg}
+                                alt="flag country"
+                              />
+                              <div className="job-posts__items">
+                                <h3 className="job-posts__company">
+                                  {job?.comName}
+                                </h3>
+                                <p className="job-posts__location">
+                                  {job?.comLocation}
+                                </p>
+                              </div>
+                              <div className="save-button">
+                                <button className="save-button__btn">
+                                  <img
+                                    className="save-button__img"
+                                    src={SaveButton}
+                                    alt="save button"
+                                  />
+                                  <span className="save-button__text">
+                                    save
+                                  </span>
+                                </button>
+                              </div>
                             </div>
-                            <div className="save-button">
-                              <button className="save-button__btn">
-                                <img
-                                  className="save-button__img"
-                                  src={SaveButton}
-                                  alt="save button"
-                                />
-                                <span className="save-button__text">save</span>
-                              </button>
+                            <h4 className="job-posts__profession">
+                              {job?.jobTitle}
+                            </h4>
+                            <div className="job-post__wrapper">
+                              <p className="job-posts__text">{job?.jobInfo}</p>
                             </div>
+                            <span className="job-posts__skills">Skills:</span>
+                            <ul className="job-posts__list">
+                              {job?.jobSkills?.map((skill) => (
+                                <li
+                                  className="job-posts__item"
+                                  key={skill?._id}
+                                >
+                                  {skill?.skillName}
+                                </li>
+                              ))}
+                            </ul>
                           </div>
-                          <h4 className="job-posts__profession">
-                            {job?.jobTitle}
-                          </h4>
-                          <div className="job-post__wrapper">
-                            <p className="job-posts__text">{job?.jobInfo}</p>
-                          </div>
-                          <span className="job-posts__skills">Skills:</span>
-                          <ul className="job-posts__list">
-                            {job?.jobSkills?.map((skill) => (
-                              <li className="job-posts__item" key={skill?._id}>
-                                {skill?.skillName}
+                          {/* Info block */}
+                          <div className="info-block">
+                            <ul className="info-list">
+                              <li className="info-item">{job?.jobType}</li>
+                              <li className="info-item">
+                                {job?.jobCooperate ? "Contract" : "Intern"}
                               </li>
-                            ))}
-                          </ul>
+
+                              <li className="info-item">
+                                {job?.jobPrice}&nbsp;
+                                {job?.moneyTypeId?.moneyType}
+                              </li>
+                            </ul>
+                          </div>
                         </div>
-                        {/* Info block */}
-                        <div className="info-block">
-                          <ul className="info-list">
-                            <li className="info-item">{job?.jobType}</li>
-                            <li className="info-item">{job?.jobCooperate ?
-                              "Contract" : "Intern"
-                            }
-                            </li>
-                            
-                            <li className="info-item">
-                              {job?.jobPrice}&nbsp;{job?.moneyTypeId?.moneyType}
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
+                      </li>
+                    ))}
                   {showBtnLoadMore ? (
                     <li>
                       <button
@@ -391,7 +418,10 @@ export const Jobs = () => {
                 </ul>
               </div>
 
-              <div style={jobCardOpen ? {maxHeight: "883px", top: 50, } : {}} className="job-posts__static compatible">
+              <div
+                style={jobCardOpen ? { maxHeight: "883px", top: 50 } : {}}
+                className="job-posts__static compatible"
+              >
                 {/* <img
                 className="layer-img"
                 src={Layer}
@@ -418,7 +448,9 @@ export const Jobs = () => {
                     </div>
                     <div className="more-down">
                       <div className="more-down__inner">
-                        {loading ? "" :
+                        {loading ? (
+                          ""
+                        ) : (
                           <img
                             width={48}
                             height={48}
@@ -426,8 +458,7 @@ export const Jobs = () => {
                             src={jobCard?.comImg}
                             alt="flag more"
                           />
-
-                        }
+                        )}
                         <div className="more-info">
                           <h4 className="more-info__company">
                             {jobCard?.comName}
@@ -474,9 +505,11 @@ export const Jobs = () => {
                           <li className="job-req__item">{jobCard?.jobType}</li>
                           <li className="job-req__item">
                             {jobCard?.jobCooperate ? "Contract" : "Intern"}
-                            
                           </li>
-                          <li className="job-req__item">{jobCard?.jobPrice}&nbsp;{jobCard?.moneyTypeId?.moneyType}</li>
+                          <li className="job-req__item">
+                            {jobCard?.jobPrice}&nbsp;
+                            {jobCard?.moneyTypeId?.moneyType}
+                          </li>
                         </ul>
                       </div>
                     </div>
