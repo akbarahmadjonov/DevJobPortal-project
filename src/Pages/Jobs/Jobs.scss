@@ -94,6 +94,7 @@
     }
 
     .jobs-inner__input {
+      font-size: 16px;
       width: 314px;
 
       //* Margin, paddings
@@ -115,21 +116,16 @@
       }
     }
 
-    .jobs-inner__select {
-      width: 314px;
-
-      //* Margin, paddings
-      padding: 32px 27px;
-
-      outline: none;
-
-      //* Custom styles
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 400;
-
-      line-height: normal;
-      color: #c4c4c4;
+    .input-wrap {
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 21px;
+        // width: 1px;
+        height: 37px;
+        border-right: 1px solid rgba(31, 102, 207, 0.1);
+      }
     }
 
     .jobs-inner__button {
@@ -155,14 +151,74 @@
   }
 }
 
-.jobs-inner__input {
-  font-size: 16px;
+//Placeholder styling
+
+.placeholder-wrap {
+  display: inline-block;
+  position: relative;
+  background: #fff;
+  overflow: hidden;
 }
+.placeholder-wrap .placeholder {
+  position: absolute;
+  top: 45%;
+  left: 25px;
+  margin-top: -0.5em;
+  line-height: 1em;
+  z-index: 9;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  color: #c4c4c4;
+  font-size: 16px;
+  font-style: normal;
+  line-height: normal;
+}
+.placeholder-wrap input {
+  background-color: transparent;
+  padding: 4px 6px;
+  position: relative;
+  z-index: 10;
+}
+
+.placeholder-wrap input:focus + .placeholder,
+.placeholder-wrap input[required]:valid + .placeholder,
+.placeholder-wrap input.not-empty + .placeholder {
+  display: none;
+}
+
+.placeholder-important {
+  color: #2f2f2f;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+//
 
 .jobs-inner__select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  position: relative;
+  z-index: 15;
+  width: 314px;
+  background-color: transparent;
+
+  //* Margin, paddings
+  padding: 32px 27px;
+
+  outline: none;
+  border: none;
+
+  //* Custom styles
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+
+  line-height: normal;
+  color: #c4c4c4;
   /* Remove default arrow */
   // background-image: url(...);
   /* Add custom arrow */
@@ -573,6 +629,11 @@
     //* Margin, paddings
     margin-top: 28px;
     // padding: 10px 22px;
+  }
+
+  .more-down__desc {
+    // width: 100%;
+    width: 544px;
   }
 
   .more-adjust__img {

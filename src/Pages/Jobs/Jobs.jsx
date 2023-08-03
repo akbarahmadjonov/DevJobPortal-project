@@ -14,7 +14,6 @@ import Layer from "../../Assets/Images/layer.png";
 import Cancel from "../../Assets/Images/X-icon.svg";
 import { Footer } from "../../Widgets";
 import Header from "../../Widgets/Header/Header";
-import { current } from "@reduxjs/toolkit";
 
 export const Jobs = () => {
   const [openLoader, setOpenLoader] = useState(false);
@@ -28,6 +27,8 @@ export const Jobs = () => {
   const [locationOption, setLocationOption] = useState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [placeholder, setPlaceholder] = useState(false);
+  const [placeholderSelect, setPlaceholderSelect] = useState(false);
 
   const url = "https://jobas.onrender.com/api";
   const navigate = useNavigate();
@@ -132,6 +133,32 @@ export const Jobs = () => {
         setLoading(false);
       });
   };
+
+  const handleSearchInput = (evt) => {    
+    // console.log(evt.target.value !== "");
+    if(evt.target.value !== ""){
+      // document.querySelector(".placeholder").innerHTML = ""
+      setPlaceholder(true)
+    } else{
+      setPlaceholder(false)
+    }
+
+    setJobsSearch(evt.target.value)
+    
+  }
+
+  const handleSelectInput = (evt) => {    
+    console.log(evt.target.value);
+    if(evt.target.value !== ""){
+      // document.querySelector(".placeholder").innerHTML = ""
+      setPlaceholderSelect(true)
+    } else{
+      setPlaceholderSelect(false)
+    }
+
+    setLocationOption(evt.target.value)
+    
+  }
 
   const handleSearchSubmit = (evt) => {
     evt.preventDefault();
@@ -255,14 +282,16 @@ export const Jobs = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <TextField
+                           <TextField
                         required
                         fullWidth
-                        id="email"
+                        id="resume"
                         label="Resume"
-                        name="email"
-                        autoComplete="Email"
+                        name="resume"
+                        // autoComplete="Email"
+                        // type="file"
                       />
+                   
                     </Grid>
                   </Grid>
                   <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
@@ -293,25 +322,30 @@ export const Jobs = () => {
               onSubmit={handleSearchSubmit}
               className="jobs-inner__hero jobs-inputs"
             >
+              <div className="placeholder-wrap input-wrap">
               <input
-                onChange={(e) => setJobsSearch(e.target.value)}
+              onChange={handleSearchInput}
                 className="jobs-inner__input"
                 type="text"
                 name="job"
-                placeholder="What The kind of job you  want"
               />
+               <span style={placeholder ? {display: "none"} : {}} class="placeholder">
+         <b class="placeholder-important">What </b> The kind of job you  want
+    </span>
+              </div>
+              <div className="placeholder-wrap">
               <select
-                placeholder="Where Choose job location"
-                onChange={(e) => setLocationOption(e.target.value)}
+              onChange={
+                handleSelectInput
+              }
+                // onChange={(e) => setLocationOption(e.target.value)}
                 className="jobs-inner__select"
                 name="location-job"
               >
-                <option value="" disabled selected hidden>
-                  Where Choose job location
-                </option>
-                <option value="" disabled selected hidden>
-                  Where Choose job location
-                </option>
+                {/* <option value="" disabled selected hidden>
+                  <b className="placeholder-important">Where </b> Choose job location
+                </option> */}
+                <option hidden selected disabled value=""></option>
                 <option value="All">All locations</option>
                 {locations?.map((loc) => (
                   <option key={loc.id} value={loc.location}>
@@ -319,6 +353,11 @@ export const Jobs = () => {
                   </option>
                 ))}
               </select>
+              <span style={placeholderSelect ? {display: "none"} : {}} class="placeholder">
+         <b class="placeholder-important">Where </b> Choose your location
+    </span>
+              </div>
+             
               <button type="submit" className="jobs-inner__button">
                 Search
               </button>

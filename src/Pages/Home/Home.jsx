@@ -134,6 +134,8 @@ return (
                 </li>
               </ul>
               <img
+                width={627}
+                height={634}
                 className="home-careers__rectangle"
                 src={rectangle}
                 alt="rectangle"
