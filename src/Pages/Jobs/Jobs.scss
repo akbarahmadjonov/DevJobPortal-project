@@ -1,6 +1,48 @@
 //* JOBS part
 
-.modal-wrapper {
+//Modal
+
+// .modal-wrapper {
+//   // display: none;
+//   position: fixed;
+//   z-index: 100;
+//   top: 0;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   background: rgba($color: #000, $alpha: 0.5);
+// }
+
+// .modal-content {
+//   top: 50px;
+// }
+// .modal-wrap {
+//   display: flex;
+//   align-items: center;
+//   margin-right: 10px !important;
+// }
+
+.modal__com-name {
+  color: #000;
+  font-family: "Lato";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.modal__job-title {
+  color: #999;
+  font-family: "Lato";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+//Modal altering
+
+.jobs__modal {
   // display: none;
   position: fixed;
   z-index: 100;
@@ -11,14 +53,107 @@
   background: rgba($color: #000, $alpha: 0.5);
 }
 
-.modal-content {
-  top: 50px;
+.jobs__modal-content {
+  position: relative;
+  margin: 50px auto;
+  max-width: 762px;
+  height: 672px;
+  background: #fff;
+  padding: 72px 40px 80px 40px;
 }
-.modal-wrap {
+
+.jobs__modal-info-wrapper {
   display: flex;
   align-items: center;
-  margin-right: 10px !important;
+  gap: 17px;
+  margin-bottom: 33px;
 }
+
+.jobs__modal-texts-wrapper {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 3;
+}
+
+.jobs__modal-com-name {
+  color: #000;
+  font-family: "Lato";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.jobs__modal-job-title {
+  color: #999;
+  font-family: "Lato";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.jobs__modal-form {
+}
+
+.jobs__label {
+  color: #999;
+  font-size: 14px;
+  font-style: normal;
+  line-height: normal;
+  margin-bottom: 1px;
+  margin-left: 25px;
+}
+
+.jobs__input {
+  width: 100%;
+  padding: 25px 0 25px 25px;
+  outline: none;
+  border-bottom: 1px solid #0050c8;
+  background: rgba(218, 221, 221, 0.24);
+  margin-bottom: 32px;
+}
+
+.jobs__file-input::-webkit-file-upload-button {
+  visibility: hidden;
+  display: none;
+  margin-bottom: 64px;
+  &::before {
+    content: "Select some files";
+    display: inline-block;
+    background: linear-gradient(top, #f9f9f9, #e3e3e3);
+    border: 1px solid #999;
+    border-radius: 3px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 10pt;
+  }
+}
+
+.jobs__input-file-wrapper {
+  margin-bottom: 64px;
+}
+
+.jobs__form-button {
+  width: 100%;
+  padding: 24px 0;
+  background: #0050c8;
+  border-bottom: 1px solid #0050c8;
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+////
 
 .css-ag7rrr-MuiTypography-root {
   margin: 0;

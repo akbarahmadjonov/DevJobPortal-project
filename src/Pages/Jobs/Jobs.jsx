@@ -101,12 +101,16 @@ export const Jobs = () => {
       });
   }, []);
 
+  //Using this var on modal apply as well. So made it global
+
+  let jobId = ""
+
   // Get Job Info
   const handleCardClick = (evt) => {
     evt.preventDefault();
     setLoading(true);
     setJobCardOpen(true);
-    let jobId = evt?.target?.dataset?.id;
+    jobId = evt?.target?.dataset?.id;
 
     if (!jobId) {
       // If jobId2 is not available, try getting the parent element's id
@@ -135,9 +139,7 @@ export const Jobs = () => {
   };
 
   const handleSearchInput = (evt) => {    
-    // console.log(evt.target.value !== "");
     if(evt.target.value !== ""){
-      // document.querySelector(".placeholder").innerHTML = ""
       setPlaceholder(true)
     } else{
       setPlaceholder(false)
@@ -150,7 +152,6 @@ export const Jobs = () => {
   const handleSelectInput = (evt) => {    
     console.log(evt.target.value);
     if(evt.target.value !== ""){
-      // document.querySelector(".placeholder").innerHTML = ""
       setPlaceholderSelect(true)
     } else{
       setPlaceholderSelect(false)
@@ -198,6 +199,23 @@ export const Jobs = () => {
     } else navigate("/auth/login");
   };
 
+
+  const [applyFile, setApplyFile] = useState()
+
+
+  const handleApplySubmit = (evt)=>{
+    evt.preventDefault();
+       
+    const formData = new FormData()
+
+    formData.append("userEmail", evt.target.inputEmail.value)
+    formData.append("userFullName", evt.target.inputName.value)
+    formData.append("resume", applyFile)
+    formData.append("jobId", jobId)
+    
+
+  }
+
   //* Handles more button event
   // const handleLoadMore = () => {
   //   setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
@@ -222,95 +240,125 @@ export const Jobs = () => {
 
       {/* JOBS */}
       {modal ? (
-        <div className="modal-wrapper">
- <div className="container max-w-[1728px]  mx-auto position-relative">
-          <main className=" w-full ">
-            <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white modal-content">
-              <CssBaseline />
-              <Box
-                sx={{
-                  marginTop: 8,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "start",
-                  pb: "104px",
-                }}
-              >
-                <div className="modal-wrap">
-                  {/* Backendan kegan rasm qo'yiladi */}
-                  <img src={""} alt={""} />
-                  <div>
-                    <Typography
-                      component="h5"
-                      variant="h5"
-                      className="font-semibold text-black text-[10px]"
-                    >
-                      {/* {job?.company} */}
-                    </Typography>
-                    <Typography
-                      component="h6"
-                      variant="h6"
-                      className="text-[#999] text-[16px] font-normal"
-                    >
-                      {/* Apply as a {job?.profession} */}
-                    </Typography>
-                  </div>
-                  <span className="xIcon" onClick={() => setModal(false)}>
-                    X
-                  </span>
-                </div>
-                <Box component="form" noValidate sx={{ mt: 3 }}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <TextField
-                        autoComplete="given-name"
-                        name="email"
-                        required
-                        fullWidth
-                        id="email"
-                        label="Email address"
-                        autoFocus
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        required
-                        fullWidth
-                        id="full_name"
-                        label="Full names"
-                        name="full_name"
-                        autoComplete="full_name"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                           <TextField
-                        required
-                        fullWidth
-                        id="resume"
-                        label="Resume"
-                        name="resume"
-                        // type="file"
-                      > </TextField>
-                    </Grid>
-                  </Grid>
-                  <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
-                    <button
+//         <div className="modal-wrapper">
+//  <div className="container max-w-[1728px]  mx-auto position-relative">
+//           <main className=" w-full ">
+//             <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white modal-content">
+//               <CssBaseline />
+//               <Box
+//                 sx={{
+//                   marginTop: 8,
+//                   display: "flex",
+//                   flexDirection: "column",
+//                   alignItems: "start",
+//                   pb: "104px",
+//                 }}
+//               >
+//                 <div className="modal-wrap">
+//                   <img width={48} height={48} src={jobCard?.comImg} alt={"Company image"} />
+//                   <div>
+//                     <Typography
+//                       component="h5"
+//                       variant="h5"
+//                       className="font-semibold text-black text-[10px]"
+//                     >
+//                       <span className="modal__com-name">
+//                       {jobCard?.comName}
+//                       </span>
+//                     </Typography>
+//                     <Typography
+//                       component="h6"
+//                       variant="h6"
+//                       className="text-[#999] text-[16px] font-normal"
+//                     ><span className="modal__job-title">
+//                       Apply as a {jobCard?.jobTitle}
+//                     </span>
+//                     </Typography>
+//                   </div>
+//                   <span className="xIcon" onClick={() => setModal(false)}>
+//                     X
+//                   </span>
+//                 </div>
+//                 <Box component="form" noValidate sx={{ mt: 3 }}>
+//                   <Grid container spacing={2}>
+//                     <Grid item xs={12}>
+//                        <TextField
+//                         autoComplete="given-name"
+//                         name="email"
+//                         required
+//                         fullWidth
+//                         id="email"
+//                         label="Email address"
+//                         autoFocus
+//                       />
+//                     </Grid>
+//                     <Grid item xs={12}>
+//                       <TextField
+//                         required
+//                         fullWidth
+//                         id="full_name"
+//                         label="Full names"
+//                         name="full_name"
+//                         autoComplete="full_name"
+//                       />
+//                     </Grid>
+//                     <Grid item xs={12}>
+//                            <TextField
+//                         required
+//                         fullWidth
+//                         id="resume"
+//                         label="Resume"
+//                         name="resume"
+//                         // type="file"
+//                       > </TextField>
+//                     </Grid>
+//                   </Grid>
+//                   <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
+//                     <button
+//                       type="submit"
+//                       className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+//                     >
+//                       Apply
+//                     </button>
+//                   </div>
+//                 </Box>
+//               </Box>
+//             </div>
+//           </main>
+//         </div>
+//         </div>
+<div className="jobs__modal">
+  <div className="jobs__modal-content">
+  <span className="xIcon" onClick={() => setModal(false)}>
+X</span>
+<div className="jobs__modal-info-wrapper">
+<img width={48} height={48} src={jobCard?.comImg} alt={"Company image"} />
+<div className="jobs__modal-texts-wrapper">
+<span className="jobs__modal-com-name">
+{jobCard?.comName}</span>
+<span className="jobs__modal-job-title">
+Apply as a {jobCard?.jobTitle}</span>
+</div>
+</div>
+<form onSubmit={handleApplySubmit} className="jobs__modal-form">
+  <label className="jobs__label" htmlFor="inputEmail">Email address <span style={{color: "red"}}>*</span>
+  </label>
+<input placeholder="alex@gmail.com" id="inputEmail" type="email" className="jobs__input" />
+<label className="jobs__label" htmlFor="inputName">Full names<span style={{color: "red"}}>*</span>
+  </label>
+<input style={{marginBottom: 26}} placeholder="Alex Johnson" id="inputName" type="text" className="jobs__input" />
+<label className="jobs__label" htmlFor="inputFile">Resume<span style={{color: "red"}}>*</span>
+  </label>
+<input onChange={(e)=>setApplyFile(e.target.files[0])} style={{marginBottom: 26}} placeholder="" id="inputFile" type="file" className="jobs__input jobs__file-input" accept=".pdf" />
+<button
                       type="submit"
-                      className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                      className="jobs__form-button"
                     >
                       Apply
                     </button>
-                  </div>
-                </Box>
-              </Box>
-            </div>
-          </main>
-        </div>
-        </div>
- 
-     
-
-     
+</form>
+  </div>
+</div>
       ) : (
         ""
       )}
