@@ -8,7 +8,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useRouteLoaderData } from "react-router-dom";
 import SaveButton from "../../Assets/Images/jobs-posts_save.svg";
 import Layer from "../../Assets/Images/layer.png";
 import Cancel from "../../Assets/Images/X-icon.svg";
@@ -46,6 +46,12 @@ export const Jobs = () => {
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
   let currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
 
+
+  //User data
+
+  const {email, fullName} = JSON.parse(localStorage.getItem("userData"))
+
+
   // Refreshes the current jobs
   // const search = () => {
   //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -67,10 +73,10 @@ export const Jobs = () => {
     axios
       .get(`${url}/job`)
       .then((data) => {
-        setJobs(data?.data);
+        setJobs(data.data);
         setState((prevState) => ({
           ...prevState,
-          todos: data?.data,
+          todos: data.data,
         }));
       })
       .catch(() => {
@@ -200,20 +206,40 @@ export const Jobs = () => {
   };
 
 
-  const [applyFile, setApplyFile] = useState()
+  const [applyFile, setApplyFile] = useState(null)
+
+  const handleFileUpload = async (evt) => {
+    if (evt.target.files) {
+      setApplyFile(evt.target.files[0]);
+    }
+  };
 
 
-  const handleApplySubmit = (evt)=>{
+  const handleApplySubmit = async (evt)=>{
     evt.preventDefault();
-       
-    const formData = new FormData()
+    setLoading(true)
 
+  let formData = new FormData()
+       
+    formData.append("resume", applyFile)
     formData.append("userEmail", evt.target.inputEmail.value)
     formData.append("userFullName", evt.target.inputName.value)
-    formData.append("resume", applyFile)
     formData.append("jobId", jobId)
-    
 
+    await axios.post(`${url}/employees`, {
+formData, 
+      headers: {
+        token: localStorage.getItem("token")
+      }
+  }
+    ).then((res)=>{
+      console.log(res.status);
+    }).catch((err)=>{
+      console.log(err);
+      setError(true)
+    }).finally(()=>{
+      setLoading(false)
+    })
   }
 
   //* Handles more button event
@@ -222,6 +248,17 @@ export const Jobs = () => {
   // };
 
   if (error) return <p className="error">Something went wrong. Try again...</p>;
+
+  if(loading) return  <Backdrop
+  sx={{
+    color: "#fff",
+    zIndex: (theme) => theme.zIndex.drawer + 1,
+    width: "100%",
+  }}
+  open={openLoader}
+>
+  <CircularProgress color="inherit" />
+</Backdrop>
 
   return (
     <>
@@ -343,13 +380,14 @@ Apply as a {jobCard?.jobTitle}</span>
 <form onSubmit={handleApplySubmit} className="jobs__modal-form">
   <label className="jobs__label" htmlFor="inputEmail">Email address <span style={{color: "red"}}>*</span>
   </label>
-<input placeholder="alex@gmail.com" id="inputEmail" type="email" className="jobs__input" />
+<input defaultValue={email}
+placeholder="alex@gmail.com" id="inputEmail" type="email" className="jobs__input" />
 <label className="jobs__label" htmlFor="inputName">Full names<span style={{color: "red"}}>*</span>
   </label>
-<input style={{marginBottom: 26}} placeholder="Alex Johnson" id="inputName" type="text" className="jobs__input" />
+<input defaultValue={fullName}  style={{marginBottom: 26}} placeholder="Alex Johnson" id="inputName" type="text" className="jobs__input" />
 <label className="jobs__label" htmlFor="inputFile">Resume<span style={{color: "red"}}>*</span>
   </label>
-<input onChange={(e)=>setApplyFile(e.target.files[0])} style={{marginBottom: 26}} placeholder="" id="inputFile" type="file" className="jobs__input jobs__file-input" accept=".pdf" />
+<input onChange={handleFileUpload} style={{marginBottom: 26}} placeholder="" id="inputFile" type="file" className="jobs__input jobs__file-input"  />
 <button
                       type="submit"
                       className="jobs__form-button"
@@ -438,7 +476,7 @@ Apply as a {jobCard?.jobTitle}</span>
                   className="job-posts__inner"
                 >
                   {currentTodos?.length &&
-                    currentTodos.map((job) => (
+                    currentTodos?.map((job) => (
                       <li key={job?._id}>
                         <div
                           data-id={job?._id}
