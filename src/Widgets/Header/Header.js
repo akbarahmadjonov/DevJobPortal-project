@@ -18,31 +18,53 @@ export default function Header({ headerClassName, style, inputStyle }) {
           >
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center space-x-[90px] justify-between w-full">
-                <h1 className="text-[#0050C8] text-[20px] font-bold">
+                <p className="text-[#0050C8] text-[20px] font-bold">
                   TheJobportal
-                </h1>
+                </p>
                 <ul
                   style={{ fontFamily: "Lato, sans-serif" }}
                   className=" flex items-center w-[30%] text-[14px] font-[Lato] justify-between  text-[#999FA8]"
                 >
-                  <Link className="hover:text-blue-500 transition-all" to={"/"}>
-                    Home
-                  </Link>
-                  <Link
-                    className="hover:text-blue-500 transition-all"
-                    to={"/jobs"}
-                  >
-                    Jobs
-                  </Link>
-                  <Link className="hover:text-blue-500 transition-all" to={"/"}>
-                    FAQs
-                  </Link>
-                  <Link className="hover:text-blue-500 transition-all" to={"/"}>
-                    Support
-                  </Link>
-                  <Link className="hover:text-blue-500 transition-all" to={"/"}>
-                    About
-                  </Link>
+                  <li>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/jobs"}
+                    >
+                      Jobs
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      FAQs
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      Support
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      className="hover:text-blue-500 transition-all"
+                      to={"/"}
+                    >
+                      About
+                    </Link>
+                  </li>
                 </ul>
                 <div>
                   <label
