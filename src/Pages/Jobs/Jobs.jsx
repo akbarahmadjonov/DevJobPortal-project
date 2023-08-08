@@ -93,10 +93,10 @@ export const Jobs = () => {
     axios
       .get(`${url}/job/location`)
       .then((data) => {
-        setLocations(data?.data);
+        setLocations(data.data);
         setState((prevState) => ({
           ...prevState,
-          todos: data?.data,
+          todos: data.data,
         }));
       })
       .catch(() => {
@@ -133,7 +133,7 @@ export const Jobs = () => {
     axios
       .get(`${url}/job/${jobId}`)
       .then((data) => {
-        setJobCard(data?.data);
+        setJobCard(data.data);
       })
       .catch(() => {
         setError(true);
@@ -180,10 +180,10 @@ export const Jobs = () => {
         //   console.log('NO')
         //   setShowBtnLoadMore()
         // }
-        setJobs(data?.data);
+        setJobs(data.data);
         setState((prevState) => ({
           ...prevState,
-          todos: data?.data,
+          todos: data.data,
         }));
         setShowBtnLoadMore(false);
         // currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
