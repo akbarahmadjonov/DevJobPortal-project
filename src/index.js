@@ -12,6 +12,5 @@ root.render(
     <div>
       <BackTop  />
     </div>
-    ,
   </BrowserRouter>
 );
