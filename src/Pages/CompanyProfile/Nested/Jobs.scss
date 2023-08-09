@@ -1,0 +1,35 @@
+.job-nested {
+}
+
+.job-nested__inner {
+  display: flex;
+
+  //* Margin, paddings
+  margin-top: 15px;
+  padding: 8px;
+}
+
+.job-nested__title {
+  //* Margin, paddings
+  margin-right: 20px;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.job-nested__button {
+  //* Margin, paddings
+  width: 100%;
+  max-width: 140px;
+
+  //* Custom styles
+  font-size: 15px;
+  font-weight: 700;
+  background-color: #0050c8;
+  border-radius: 8px;
+  color: #fff;
+
+  &:hover {
+    background-color: #2f80fa;
+  }
+}
