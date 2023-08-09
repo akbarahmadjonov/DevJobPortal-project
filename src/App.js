@@ -9,6 +9,7 @@ import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
 
 const App = () => {
+//Test
   let hours = 5;
   let now = new Date().getTime();
   let setupTime = localStorage.getItem("setupTime");

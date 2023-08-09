@@ -49,7 +49,9 @@ export const Jobs = () => {
 
   //User data
 
-  const {email, fullName} = JSON.parse(localStorage.getItem("userData"))
+  const userData = JSON.parse(localStorage?.getItem("userData"))
+
+
 
 
   // Refreshes the current jobs
@@ -380,11 +382,11 @@ Apply as a {jobCard?.jobTitle}</span>
 <form onSubmit={handleApplySubmit} className="jobs__modal-form">
   <label className="jobs__label" htmlFor="inputEmail">Email address <span style={{color: "red"}}>*</span>
   </label>
-<input defaultValue={email}
+<input defaultValue={userData?.email}
 placeholder="alex@gmail.com" id="inputEmail" type="email" className="jobs__input" />
 <label className="jobs__label" htmlFor="inputName">Full names<span style={{color: "red"}}>*</span>
   </label>
-<input defaultValue={fullName}  style={{marginBottom: 26}} placeholder="Alex Johnson" id="inputName" type="text" className="jobs__input" />
+<input defaultValue={userData?.fullName}  style={{marginBottom: 26}} placeholder="Alex Johnson" id="inputName" type="text" className="jobs__input" />
 <label className="jobs__label" htmlFor="inputFile">Resume<span style={{color: "red"}}>*</span>
   </label>
 <input onChange={handleFileUpload} style={{marginBottom: 26}} placeholder="" id="inputFile" type="file" className="jobs__input jobs__file-input"  />
