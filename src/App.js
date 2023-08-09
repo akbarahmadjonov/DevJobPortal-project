@@ -5,10 +5,24 @@ import "./main.scss";
 import { Home } from "./Pages";
 import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
+import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
 import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
 
 const App = () => {
+//Test
+  let hours = 5;
+  let now = new Date().getTime();
+  let setupTime = localStorage.getItem("setupTime");
+  if (setupTime == null) {
+    localStorage.setItem("setupTime", now);
+  } else {
+    if (now - setupTime > hours * 60 * 60 * 1000) {
+      localStorage.clear();
+      localStorage.setItem("setupTime", now);
+    }
+  }
+
   return (
     <main>
       <div>
@@ -17,6 +31,7 @@ const App = () => {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/devs-profile" element={<DevProfile />} />
           <Route path="/comprofile" element={<CompanyProfile />} />
         </Routes>
       </div>
