@@ -37,6 +37,7 @@ const App = () => {
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/devs-profile" element={<DevProfile />} />
           <Route path="/comprofile" element={<CompanyProfile />}>
+            <Route index element={<JobsNested />} />
             <Route path="jobs" element={<JobsNested />} />
             <Route path="timeoff" element={<TimeOffNested />} />
             <Route path="evaluation" element={<Evaluation />} />
