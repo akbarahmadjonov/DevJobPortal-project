@@ -99,3 +99,102 @@
   font-style: normal;
   line-height: normal;
 }
+
+//main
+
+.dev-profile__main {
+  background: #f3f3f3;
+}
+
+.dev-profile__info-section-container {
+  max-width: 1290px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+.dev-profile__info-section {
+  padding-top: 30px;
+  //all child elements accept this font size as a default
+  font-size: 13px;
+}
+
+.dev-profile__dev-name {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: larger;
+}
+
+.dev-profile__info-wrapper {
+  padding: 12px 20px;
+  background-color: #627dac7b;
+  border-radius: 4px;
+  border: 1px solid rgba(19, 17, 154, 0.251);
+  margin-bottom: 10px;
+}
+
+.dev-profile__title {
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #2f2f2f;
+}
+
+.dev-profile__text {
+  color: #2f2f2f;
+  width: 330px;
+}
+
+.dev-profile__info-wrapper-2 {
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dev-profile__text-2 {
+  color: #2f2f2f;
+}
+
+.dev-profile__upload {
+  padding: 7px 9px;
+  background-color: #0050c8;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 2ms ease-in-out;
+
+  &:hover {
+    background-color: #0050c8b3;
+  }
+}
+
+.dev-profile__info-wrapper-3 {
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: #fff;
+  padding: 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dev-profile__required {
+  color: blue;
+}
+
+.dev-profile__info-wrapper-3a {
+  margin-bottom: 20px;
+}
+
+.dev-profile__input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+//General inforamtion modal
