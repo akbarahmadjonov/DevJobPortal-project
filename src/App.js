@@ -7,6 +7,7 @@ import Login from "./Pages/Auth/Login";
 import Register from "./Pages/Auth/Register";
 import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
+import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
 
 const App = () => {
 //Test
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/auth/register" element={<Register />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/devs-profile" element={<DevProfile />} />
+          <Route path="/comprofile" element={<CompanyProfile />} />
         </Routes>
       </div>
     </main>
