@@ -1,5 +1,5 @@
 import { React, useRef, useState } from "react";
-import hBg from "./../../Assets/Images/Header bg.png";
+import hBg from "./../../../Assets/Images/Header bg.png";
 
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -13,8 +13,8 @@ import {
   Grid,
   Snackbar,
 } from "@mui/material";
-import Header from "../../Widgets/Header/Header";
-import { Footer } from "../../Widgets";
+import Header from "../../../Widgets/Header/Header";
+import { Footer } from "../../../Widgets";
 import axios from "axios";
 
 export default function Register() {
