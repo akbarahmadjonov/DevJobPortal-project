@@ -1,7 +1,7 @@
 import SuperCoderLogo from "./../../../Assets/Images/SuperCoderLogo.svg";
 import NotSure from "../../../Assets/Images/Not_Sure.svg";
 import AppCard from "../../../Components/Authentification/AppCard";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Autocomplete,
   Box,
@@ -17,13 +17,15 @@ import {
   Typography,
   TextField,
   InputLabel,
+  LinearProgress,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import axios from "axios";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
-import { Link as LinkDom } from "react-router-dom";
+import { Link as LinkDom, useNavigate } from "react-router-dom";
 import successImg from "../../../Assets/Icons/request-meeting-success-bg2.svg";
+import { ChangeApp, unSelect } from "../../../Redux/AppSlice";
 
 function Copyright(props) {
   return (
@@ -62,6 +64,13 @@ export default function CompanyRegister() {
   const [step, setStep] = useState(1);
   const [disabled, setDisabled] = useState(true);
   const [disabled2, setDisabled2] = useState(true);
+  const [showProgress, setShowProgress] = useState(false);
+  const navigate = useNavigate();
+  const emailValidation = new RegExp(
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  );
+  const dispatch = useDispatch();
+  const [progress, setProgress] = useState(0);
   // const url = "http://localhost:3000";
 
   const handleChangeSelect = (event) => {
@@ -90,11 +99,11 @@ export default function CompanyRegister() {
       time: form.get("time"),
     });
   };
-  const handleSubmitStep2 = (e) => {
+  const handleSubmitStep2 = async (e) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     form.append("phoneNumber", phoneNumber);
-
+    LoadProgress();
     // axios
     //   .post("#" + url, form)
     //   .then((res) => {
@@ -104,9 +113,16 @@ export default function CompanyRegister() {
     //   .catch((err) => {
     //     console.log(err);
     //   });
+    //   .finally(() => {
+    //    setProgress( 100)
+    // setShowProgress(false);
+    //
+    // });
     // for (const [name, value] of form.entries()) {
     //   console.log(`${name}: ${value}`);
     // }
+    // setProgress(100);
+    // setShowProgress(true);
     setStep(3);
     // console.log({
     //   companyName: form.get("companyName"),
@@ -117,14 +133,31 @@ export default function CompanyRegister() {
     //   companyWebsite: form.get("companyWebsite"),
     // });
   };
+  const LoadProgress = () => {
+    setShowProgress(true);
+    setInterval(() => {
+      setProgress((oldProgress) => {
+        const diff = Math.random() * 10;
+        return Math.min(oldProgress + diff, 100);
+      });
+    }, 300);
+  };
 
   return (
     <>
+      <Box sx={{ width: "100%", position: "absolute", top: 0 }}>
+        {showProgress && (
+          <LinearProgress variant="determinate" value={progress} />
+        )}
+      </Box>
       <div className="container max-w-[1519px] ">
         <div className="flex flex-col">
           <div className="w-full flex justify-between py-[20px] items-center">
             <img src={SuperCoderLogo} alt="SuperCoderLogo" width={160} />
-            <button className="w-[200px] hover:bg-[#2144a5] transition-all rounded-3xl bg-[#3A6FFF] text-white font-bold py-[8px] text-sm">
+            <button
+              onClick={() => navigate("/company/login")}
+              className="w-[200px] hover:bg-[#2144a5] transition-all rounded-3xl bg-[#3A6FFF] text-white font-bold py-[8px] text-sm"
+            >
               Login
             </button>
           </div>
@@ -144,7 +177,7 @@ export default function CompanyRegister() {
                   <Chip
                     label={`STEP ${step}/3`}
                     sx={{
-                      fontWeight: 600,
+                      fontWeight: 500,
                       fontSize: "10px",
                       color: "#acb6c8",
                       p: 0,
@@ -160,7 +193,12 @@ export default function CompanyRegister() {
                       className="flex flex-wrap  justify-between items-start"
                       style={{ rowGap: "13px" }}
                     >
-                      <div className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none">
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
                         <img src={NotSure} alt="skill" width={30} height={30} />
                         <div className="text-center font-bold leading-4 ">
                           Not sure,
@@ -173,7 +211,7 @@ export default function CompanyRegister() {
                           title={app.title}
                           key={idx}
                           imgLink={app.imgLink}
-                          selected={app.selected}
+                          // selected={selected}
                         />
                       ))}
                     </div>
@@ -250,11 +288,7 @@ export default function CompanyRegister() {
                             color={color}
                             onChange={(e) => {
                               setEmail(e.target.value);
-                              if (
-                                e?.target?.value?.match(
-                                  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-                                )
-                              ) {
+                              if (emailValidation.test(e?.target?.value)) {
                                 if (time && e?.target?.value) {
                                   setDisabled(false);
                                   setColor("primary");
@@ -297,9 +331,9 @@ export default function CompanyRegister() {
                       Let us find the right software engineers
                     </p>
                     <Chip
-                      label={`STEP ${step}/3`}
+                      label={`Step ${step}/3`}
                       sx={{
-                        fontWeight: 600,
+                        fontWeight: 500,
                         fontSize: "10px",
                         color: "#acb6c8",
                         p: 0,
@@ -341,7 +375,6 @@ export default function CompanyRegister() {
                       } else {
                         setDisabled2(true);
                       }
-                      console.log(e);
                     }}
                   >
                     <CssBaseline />
@@ -478,7 +511,7 @@ export default function CompanyRegister() {
                               value={companyWebsite}
                               color={color}
                               onChange={(e) => {
-                                setCompanyWebsite(e.target.value);
+                                setCompanyWebsite(e.target.value.trim());
                                 if (
                                   companyWebsite.match(
                                     /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
@@ -506,7 +539,7 @@ export default function CompanyRegister() {
                           variant="contained"
                           sx={{ mt: 3, mb: 2 }}
                         >
-                          Sign Up
+                          Submit
                         </Button>
                         <Grid container justifyContent="flex-end">
                           <Grid item>

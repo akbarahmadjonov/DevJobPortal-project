@@ -1,19 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { AddApp } from "../../Redux/AppSlice";
+import { AddApp, ChangeApp } from "../../Redux/AppSlice";
 
-export default function AppCard({ title, imgLink }) {
+export default function AppCard({ title, imgLink,  }) {
   const dispatch = useDispatch();
   const apps = useSelector((state) => state.Apps);
-  const [selected, setSelected] = useState(false);
+  const app = apps.find((app) => app.title === title);
+  const [thisSelect, setThisSelect] = useState(app.selected);
+
+  console.log(apps);
+  const handleCardClick = () => {
+    const updatedSelect = !thisSelect; // Toggle the selection
+    setThisSelect(updatedSelect);
+    dispatch(ChangeApp({ title, imgLink, selected: updatedSelect }));
+  };
+
   return (
     <div
-      onClick={() => {
-        // dispatch(AddApp({title, imgLink}));
-        setSelected(!selected);
-      }}
+      onClick={handleCardClick}
       className={`flex cursor-pointer flex-col items-center min-h-[100px] w-[100px]  border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none ${
-        selected
+        thisSelect
           ? "border-blue-400 bg-[#3a6fff0d]"
           : "border-[#ACB6C8] bg-white"
       }`}

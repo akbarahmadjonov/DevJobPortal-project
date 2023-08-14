@@ -81,17 +81,24 @@ export const AppSlice = createSlice({
     AddApp: (state, action) => {
       state.push(action.payload);
     },
-    // ChangeApp: (state, action) => {
-    //   state.map((app)=>{
-    //     if(app.title === action.payload.title){
-    //         app = {...action.payload}          
-    //     }
-    //     return app
-    //   })
-    //   console.log(state)
-    // },
+    ChangeApp: (state, action) => {
+      state.map((app) => {
+        if (app.title === action.payload.title) {
+          app.selected = action.payload.selected;
+        }
+        return app;
+      });
+      
+    },
+    unSelect: (state, action) => {
+      state.map((app) => {
+        app.selected = action.payload;
+        return app;
+      });
+      console.log(state)
+    },
   },
 });
 
-export const { AddApp } = AppSlice.actions;
+export const { AddApp, ChangeApp, unSelect } = AppSlice.actions;
 export default AppSlice.reducer;
