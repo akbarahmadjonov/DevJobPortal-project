@@ -12,6 +12,8 @@ import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
 import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
 import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
 import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
+import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
+import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";
 
 const App = () => {
   //Test
@@ -38,7 +40,10 @@ const App = () => {
           <Route path="/devs-profile" element={<DevProfile />} />
           <Route path="/comprofile" element={<CompanyProfile />}>
             <Route index element={<JobsNested />} />
-            <Route path="jobs" element={<JobsNested />} />
+            <Route path="jobs" element={<JobsNested />}>
+              <Route index path="openpaused" element={<OpenPaused />} />
+              <Route path="archived" element={<Archived />} />
+            </Route>
             <Route path="timeoff" element={<TimeOffNested />} />
             <Route path="evaluation" element={<Evaluation />} />
             <Route path="talentpool" element={<TalentPool />} />
