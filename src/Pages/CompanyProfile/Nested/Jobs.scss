@@ -1,0 +1,71 @@
+.job-nested {
+}
+
+.job-nested__inner {
+  display: flex;
+  align-items: center;
+
+  //* Margin, paddings
+  margin-top: 15px;
+  padding: 8px;
+}
+
+.job-nested__title {
+  //* Margin, paddings
+  margin-right: 20px;
+  padding: 10px;
+
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.job-nested__button {
+  //* Margin, paddings
+  width: 100%;
+  max-width: 140px;
+
+  //* Custom styles
+  font-size: 15px;
+  font-weight: 700;
+  background-color: #0050c8;
+  border-radius: 8px;
+  color: #fff;
+
+  &:hover {
+    color: #fff !important;
+    background-color: #2f80fa;
+  }
+}
+
+:where(.css-dev-only-do-not-override-1w4v3hc).ant-btn-primary:not(
+    :disabled
+  ):not(.ant-btn-disabled) {
+  color: #fff;
+  background-color: #4096ff;
+}
+
+//* TAB ROUTER
+.tab__router {
+  //* Custom properties
+  display: flex;
+
+  //* Margin, paddings
+  margin-top: 50px;
+
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  padding: 0px 0 0 14px;
+}
+
+.tab__links {
+  font-weight: 800;
+  color: #c7c7c7;
+}
+
+.tab__links.active {
+  border-bottom: 3px solid #0050c8;
+}
+
+.tab__links:not(:last-child) {
+  margin-right: 30px;
+}

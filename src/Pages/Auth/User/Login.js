@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import hBg from "./../../Assets/Images/Header bg.png";
+import hBg from "./../../../Assets/Images/Header bg.png";
 
 // Material UI components
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,10 +11,10 @@ import Box from "@mui/material/Box";
 import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
 // Default components
 import { Link, useNavigate } from "react-router-dom";
-import Header from "../../Widgets/Header/Header";
-import { Footer } from "../../Widgets";
+import Header from "../../../Widgets/Header/Header";
+import { Footer } from "../../../Widgets";
 import axios from "axios";
-import Verify from "../../Components/Authentification/Verify";
+import Verify from "../../../Components/Authentification/Verify";
 
 export default function Login() {
   const url = "https://jobas.onrender.com/api";

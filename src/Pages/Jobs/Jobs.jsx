@@ -46,7 +46,6 @@ export const Jobs = () => {
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
   let currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
 
-
   //User data
 
   const userData = JSON.parse(localStorage?.getItem("userData"))
@@ -111,7 +110,7 @@ export const Jobs = () => {
 
   //Using this var on modal apply as well. So made it global
 
-  let jobId = ""
+  let jobId = "";
 
   // Get Job Info
   const handleCardClick = (evt) => {
@@ -146,28 +145,26 @@ export const Jobs = () => {
       });
   };
 
-  const handleSearchInput = (evt) => {    
-    if(evt.target.value !== ""){
-      setPlaceholder(true)
-    } else{
-      setPlaceholder(false)
+  const handleSearchInput = (evt) => {
+    if (evt.target.value !== "") {
+      setPlaceholder(true);
+    } else {
+      setPlaceholder(false);
     }
 
-    setJobsSearch(evt.target.value)
-    
-  }
+    setJobsSearch(evt.target.value);
+  };
 
-  const handleSelectInput = (evt) => {    
+  const handleSelectInput = (evt) => {
     console.log(evt.target.value);
-    if(evt.target.value !== ""){
-      setPlaceholderSelect(true)
-    } else{
-      setPlaceholderSelect(false)
+    if (evt.target.value !== "") {
+      setPlaceholderSelect(true);
+    } else {
+      setPlaceholderSelect(false);
     }
 
-    setLocationOption(evt.target.value)
-    
-  }
+    setLocationOption(evt.target.value);
+  };
 
   const handleSearchSubmit = (evt) => {
     evt.preventDefault();
@@ -207,8 +204,7 @@ export const Jobs = () => {
     } else navigate("/auth/login");
   };
 
-
-  const [applyFile, setApplyFile] = useState(null)
+  const [applyFile, setApplyFile] = useState(null);
 
   const handleFileUpload = async (evt) => {
     if (evt.target.files) {
@@ -216,33 +212,35 @@ export const Jobs = () => {
     }
   };
 
-
-  const handleApplySubmit = async (evt)=>{
+  const handleApplySubmit = async (evt) => {
     evt.preventDefault();
-    setLoading(true)
+    setLoading(true);
 
-  let formData = new FormData()
-       
-    formData.append("resume", applyFile)
-    formData.append("userEmail", evt.target.inputEmail.value)
-    formData.append("userFullName", evt.target.inputName.value)
-    formData.append("jobId", jobId)
+    let formData = new FormData();
 
-    await axios.post(`${url}/employees`, {
-formData, 
-      headers: {
-        token: localStorage.getItem("token")
-      }
-  }
-    ).then((res)=>{
-      console.log(res.status);
-    }).catch((err)=>{
-      console.log(err);
-      setError(true)
-    }).finally(()=>{
-      setLoading(false)
-    })
-  }
+    formData.append("resume", applyFile);
+    formData.append("userEmail", evt.target.inputEmail.value);
+    formData.append("userFullName", evt.target.inputName.value);
+    formData.append("jobId", jobId);
+
+    await axios
+      .post(`${url}/employees`, {
+        formData,
+        headers: {
+          token: localStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        console.log(res.status);
+      })
+      .catch((err) => {
+        console.log(err);
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   //* Handles more button event
   // const handleLoadMore = () => {
@@ -251,16 +249,19 @@ formData,
 
   if (error) return <p className="error">Something went wrong. Try again...</p>;
 
-  if(loading) return  <Backdrop
-  sx={{
-    color: "#fff",
-    zIndex: (theme) => theme.zIndex.drawer + 1,
-    width: "100%",
-  }}
-  open={openLoader}
->
-  <CircularProgress color="inherit" />
-</Backdrop>
+  if (loading)
+    return (
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          width: "100%",
+        }}
+        open={openLoader}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
 
   return (
     <>
@@ -415,41 +416,47 @@ placeholder="alex@gmail.com" id="inputEmail" type="email" className="jobs__input
               className="jobs-inner__hero jobs-inputs"
             >
               <div className="placeholder-wrap input-wrap">
-              <input
-              onChange={handleSearchInput}
-                className="jobs-inner__input"
-                type="text"
-                name="job"
-              />
-               <span style={placeholder ? {display: "none"} : {}} class="placeholder">
-         <b class="placeholder-important">What </b> The kind of job you  want
-    </span>
+                <input
+                  onChange={handleSearchInput}
+                  className="jobs-inner__input"
+                  type="text"
+                  name="job"
+                />
+                <span
+                  style={placeholder ? { display: "none" } : {}}
+                  class="placeholder"
+                >
+                  <b class="placeholder-important">What </b> The kind of job you
+                  want
+                </span>
               </div>
               <div className="placeholder-wrap">
-              <select
-              onChange={
-                handleSelectInput
-              }
-                // onChange={(e) => setLocationOption(e.target.value)}
-                className="jobs-inner__select"
-                name="location-job"
-              >
-                {/* <option value="" disabled selected hidden>
+                <select
+                  onChange={handleSelectInput}
+                  // onChange={(e) => setLocationOption(e.target.value)}
+                  className="jobs-inner__select"
+                  name="location-job"
+                >
+                  {/* <option value="" disabled selected hidden>
                   <b className="placeholder-important">Where </b> Choose job location
                 </option> */}
-                <option hidden selected disabled value=""></option>
-                <option value="All">All locations</option>
-                {locations?.map((loc) => (
-                  <option key={loc.id} value={loc.location}>
-                    {loc.location}{" "}
-                  </option>
-                ))}
-              </select>
-              <span style={placeholderSelect ? {display: "none"} : {}} class="placeholder">
-         <b class="placeholder-important">Where </b> Choose your location
-    </span>
+                  <option hidden selected disabled value=""></option>
+                  <option value="All">All locations</option>
+                  {locations?.map((loc) => (
+                    <option key={loc.id} value={loc.location}>
+                      {loc.location}{" "}
+                    </option>
+                  ))}
+                </select>
+                <span
+                  style={placeholderSelect ? { display: "none" } : {}}
+                  class="placeholder"
+                >
+                  <b class="placeholder-important">Where </b> Choose your
+                  location
+                </span>
               </div>
-             
+
               <button type="submit" className="jobs-inner__button">
                 Search
               </button>
