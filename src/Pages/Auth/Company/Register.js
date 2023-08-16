@@ -2,6 +2,7 @@ import SuperCoderLogo from "./../../../Assets/Images/SuperCoderLogo.svg";
 import NotSure from "../../../Assets/Images/Not_Sure.svg";
 import AppCard from "../../../Components/Authentification/AppCard";
 import { useDispatch, useSelector } from "react-redux";
+import eyeIcon from "../../../Assets/Icons/eye.png";
 import {
   Autocomplete,
   Box,
@@ -20,12 +21,12 @@ import {
   LinearProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-// import axios from "axios";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { Link as LinkDom, useNavigate } from "react-router-dom";
 import successImg from "../../../Assets/Icons/request-meeting-success-bg2.svg";
 import { ChangeApp, unSelect } from "../../../Redux/AppSlice";
+import axios from "axios";
 
 function Copyright(props) {
   return (
@@ -55,83 +56,67 @@ export default function CompanyRegister() {
   const [time, setTime] = useState(10);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [name, setUsername] = useState("");
   const [companyName, setCompanyName] = useState("");
-  const [companyWebsite, setCompanyWebsite] = useState("");
+  const [website, setCompanyWebsite] = useState("");
   const [teamSize, setTeamSize] = useState("");
   const [fundingRounds, setFundingRounds] = useState("");
   const [color, setColor] = useState("primary");
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [disabled, setDisabled] = useState(true);
   const [disabled2, setDisabled2] = useState(true);
   const [showProgress, setShowProgress] = useState(false);
+  const [password, setPassword] = useState("");
+  const [typeInput, setTypeInput] = useState("password");
   const navigate = useNavigate();
   const emailValidation = new RegExp(
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   );
+  const passwordValidation = new RegExp(
+    /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})/
+  );
   const dispatch = useDispatch();
   const [progress, setProgress] = useState(0);
-  // const url = "http://localhost:3000";
+  const url = "https://job-px4t.onrender.com/api";
 
   const handleChangeSelect = (event) => {
     setTime(event.target.value);
   };
 
-  // if (fundingRounds && teamSize && phoneNumber && companyName && username) {
-  //   setDisabled2(false);
-  // }
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    // axios
-    //   .post("#" + url, form)
-    //   .then((res) => {
-    //     console.log(res);
-    //     localStorage.setItem("email", email);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
     setStep(2);
-    console.log({
-      email: form.get("email"),
-      time: form.get("time"),
-    });
   };
   const handleSubmitStep2 = async (e) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     form.append("phoneNumber", phoneNumber);
+    form.append("email", email);
+    form.append("password", password);
     LoadProgress();
-    // axios
-    //   .post("#" + url, form)
-    //   .then((res) => {
-    //     console.log(res);
-    //     localStorage.setItem("email", email);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    //   .finally(() => {
-    //    setProgress( 100)
-    // setShowProgress(false);
-    //
-    // });
-    // for (const [name, value] of form.entries()) {
-    //   console.log(`${name}: ${value}`);
-    // }
-    // setProgress(100);
-    // setShowProgress(true);
+    axios
+      .post(url + "/recruiter", form)
+      .then((res) => {
+        localStorage.setItem("token", res?.data?.token);
+        localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setProgress(100);
+        setShowProgress(false);
+      });
     setStep(3);
-    // console.log({
-    //   companyName: form.get("companyName"),
-    //   username: form.get("username"),
-    //   teamSize: form.get("teamSize"),
-    //   phoneNumber: form.get("phoneNumber"),
-    //   fundingRounds: form.get("fundingRounds"),
-    //   companyWebsite: form.get("companyWebsite"),
-    // });
+    console.log({
+      companyName: form.get("companyName"),
+      name: form.get("name"),
+      teamSize: form.get("teamSize"),
+      phoneNumber: form.get("phoneNumber"),
+      fundingRounds: form.get("fundingRounds"),
+      website: form.get("website"),
+      email,
+    });
   };
   const LoadProgress = () => {
     setShowProgress(true);
@@ -289,7 +274,11 @@ export default function CompanyRegister() {
                             onChange={(e) => {
                               setEmail(e.target.value);
                               if (emailValidation.test(e?.target?.value)) {
-                                if (time && e?.target?.value) {
+                                if (
+                                  time &&
+                                  e?.target?.value &&
+                                  passwordValidation.test(e?.target?.value)
+                                ) {
                                   setDisabled(false);
                                   setColor("primary");
                                 } else {
@@ -306,6 +295,54 @@ export default function CompanyRegister() {
                             value={email}
                             autoComplete="current-email"
                           />
+                          <div className="w-full relative">
+                            <p className=" text-[16px] font-semibold leading-[16px] mb-[6px] mt-[18px]">
+                              Password
+                            </p>
+                            <TextField
+                              id="password"
+                              placeholder="Password"
+                              type={typeInput}
+                              name="password"
+                              required
+                              className="w-full"
+                              color={color}
+                              onChange={(e) => {
+                                setPassword(e.target.value);
+                                if (passwordValidation.test(e?.target?.value)) {
+                                  if (
+                                    time &&
+                                    e?.target?.value &&
+                                    emailValidation.test(email)
+                                  ) {
+                                    setDisabled(false);
+                                    setColor("primary");
+                                  } else {
+                                    setColor("error");
+                                    setDisabled(true);
+                                  }
+                                } else {
+                                  setDisabled(true);
+                                  setColor("error");
+                                }
+                              }}
+                              size="small"
+                              value={password}
+                              autoComplete={false}
+                            />
+                            <img
+                              width={17}
+                              height={17}
+                              className={`absolute cursor-pointer right-[10px] bottom-[10px]`}
+                              onClick={() => {
+                                if (typeInput === "password") {
+                                  setTypeInput("text");
+                                } else setTypeInput("password");
+                              }}
+                              src={eyeIcon}
+                              alt="toggle input type"
+                            />
+                          </div>
                           <Button
                             type="submit"
                             sx={{ width: "50%", mx: "auto", mt: "20px" }}
@@ -354,18 +391,18 @@ export default function CompanyRegister() {
                     width="100%"
                     onChange={(e) => {
                       if (
-                        username.length > 1 &&
+                        name.length > 1 &&
                         companyName.length > 1 &&
                         phoneNumber.length > 1 &&
                         fundingRounds.length > 1 &&
                         teamSize.length > 1
                       ) {
-                        if (companyWebsite) {
+                        if (website) {
                           if (
-                            companyWebsite.match(
+                            website.match(
                               /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
                             ) ||
-                            companyWebsite.match(
+                            website.match(
                               /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
                             )
                           ) {
@@ -477,11 +514,11 @@ export default function CompanyRegister() {
                             <TextField
                               required
                               fullWidth
-                              id="username"
-                              name="username"
+                              id="name"
+                              name="name"
                               size="small"
-                              value={username}
-                              // autoComplete="username"
+                              value={name}
+                              // autoComplete="name"
                               onChange={(e) => setUsername(e.target.value)}
                               label="Your Name"
                             />
@@ -502,21 +539,21 @@ export default function CompanyRegister() {
                             />
                           </Grid>
                           <Grid item xs={12}>
-                            {/* <label htmlFor="companyWebsite" className="text-[14px] font-bold top-[10px]">Company Website (Optional)</label> */}
+                            {/* <label htmlFor="website" className="text-[14px] font-bold top-[10px]">Company Website (Optional)</label> */}
                             <TextField
                               fullWidth
-                              id="companyWebsite"
-                              name="companyWebsite"
+                              id="website"
+                              name="website"
                               size="small"
-                              value={companyWebsite}
+                              value={website}
                               color={color}
                               onChange={(e) => {
                                 setCompanyWebsite(e.target.value.trim());
                                 if (
-                                  companyWebsite.match(
+                                  website.match(
                                     /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
                                   ) ||
-                                  companyWebsite.match(
+                                  website.match(
                                     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
                                   )
                                 ) {

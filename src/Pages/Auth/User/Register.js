@@ -5,17 +5,19 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as LinkDom } from "react-router-dom";
 import {
   Alert,
   Backdrop,
   CircularProgress,
   Grid,
+  Link,
   Snackbar,
 } from "@mui/material";
 import Header from "../../../Widgets/Header/Header";
 import { Footer } from "../../../Widgets";
 import axios from "axios";
+import { auth, signInWithGoole } from "../../../Components/Firebase";
 
 export default function Register() {
   const privacy_check = useRef(false);
@@ -25,8 +27,30 @@ export default function Register() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("This is a success message!");
   const [errorMsg, setErrorMsg] = useState("This is a error message!");
-  const url = "https://jobas.onrender.com/api";
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [userImg, setUserImg] = useState("");
+  const url = "https://job-px4t.onrender.com/api";
   const navigate = useNavigate();
+
+  const handleGoogleClick = async () => {
+    console.log(auth.currentUser);
+    signInWithGoole()
+      .then((result) => {
+        setEmail();
+        setUserImg(result?.user?.photoURL);
+        axios.post(url + "/user", {
+          fullName: result?.user?.displayName,
+          userEmail: result?.user?.email,
+          password: "googlestatic123password",
+        });
+        console.log(result.user.auth);
+      })
+      .catch((er) => {
+        console.log(er);
+      });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -97,7 +121,7 @@ export default function Register() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "start",
-                pb: "104px",
+                pb: "74px",
               }}
             >
               <Typography
@@ -209,11 +233,20 @@ export default function Register() {
                   <button
                     type="button"
                     className=" w-full py-[23px] transition-all bg-[#F65050] font-normal active:bg-red-600 hover:bg-red-400 text-[16px] text-white rounded-md "
-                    //   onClick={}
+                    onClick={handleGoogleClick}
                   >
-                    Login with google
+                    Sign Up Using Google
                   </button>
                 </div>
+                <Grid container justifyContent="center" pt={"20px"}>
+                  <Grid item>
+                    <Link variant="body2">
+                      <LinkDom to={"/user/login"}>
+                        Already have an account? Sign in
+                      </LinkDom>
+                    </Link>
+                  </Grid>
+                </Grid>
               </Box>
             </Box>
           </div>
