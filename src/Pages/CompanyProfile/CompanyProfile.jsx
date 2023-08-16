@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./CompanyProfile.scss";
 import BellIcon from "../../Assets/Images/admin/bell-icon.png";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBriefcase,
@@ -32,6 +32,15 @@ const dropdownMenu = (
 );
 
 export const CompanyProfile = () => {
+  const navigate = useNavigate();
+  function navigation() {
+    //* Automatically takes to route
+    navigate("jobs/openpaused");
+  }
+
+  useEffect(() => {
+    navigation();
+  }, []);
   return (
     <>
       <div className="com-profile">
