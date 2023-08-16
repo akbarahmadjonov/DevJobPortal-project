@@ -62,7 +62,7 @@ export default function CompanyRegister() {
   const [teamSize, setTeamSize] = useState("");
   const [fundingRounds, setFundingRounds] = useState("");
   const [color, setColor] = useState("primary");
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [disabled, setDisabled] = useState(true);
   const [disabled2, setDisabled2] = useState(true);
   const [showProgress, setShowProgress] = useState(false);
@@ -73,7 +73,7 @@ export default function CompanyRegister() {
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   );
   const passwordValidation = new RegExp(
-    /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})/
+    /((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20})/
   );
   const dispatch = useDispatch();
   const [progress, setProgress] = useState(0);
@@ -125,7 +125,7 @@ export default function CompanyRegister() {
         const diff = Math.random() * 10;
         return Math.min(oldProgress + diff, 100);
       });
-    }, 300);
+    }, 200);
   };
 
   return (
@@ -191,14 +191,170 @@ export default function CompanyRegister() {
                           Need advice
                         </div>
                       </div>
-                      {apps.map((app, idx) => (
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      <div
+                        onClick={() => {
+                          dispatch(unSelect(false));
+                        }}
+                        className="flex cursor-pointer flex-col items-center min-h-[100px] w-[100px] border-[#ACB6C8] border p-[13px]  rounded-[5px] text-[12px] break-words pt-[9px] justify-between font-bold select-none"
+                      >
+                        <img src={NotSure} alt="skill" width={30} height={30} />
+                        <div className="text-center font-bold leading-4 ">
+                          Not sure,
+                          <br />
+                          Need advice
+                        </div>
+                      </div>
+                      {/* {apps.map((app, idx) => (
                         <AppCard
                           title={app.title}
                           key={idx}
                           imgLink={app.imgLink}
                           // selected={selected}
                         />
-                      ))}
+                      ))} */}
                     </div>
                     {/* Select Bar */}
                     <div className="">
@@ -328,7 +484,7 @@ export default function CompanyRegister() {
                               }}
                               size="small"
                               value={password}
-                              autoComplete={false}
+                              autoComplete={"false"}
                             />
                             <img
                               width={17}
@@ -399,6 +555,7 @@ export default function CompanyRegister() {
                       ) {
                         if (website) {
                           if (
+                            website === "" ||
                             website.match(
                               /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
                             ) ||
