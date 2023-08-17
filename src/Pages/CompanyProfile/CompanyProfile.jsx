@@ -10,7 +10,7 @@ import {
   faStopwatch,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, Space, Menu } from "antd";
+import { Dropdown, Menu } from "antd";
 
 const dropdownMenu = (
   <Menu>

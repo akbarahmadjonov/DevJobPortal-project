@@ -3,6 +3,6 @@ import './Archived.scss'
 
 export const Archived = () => {
   return (
-    <div>Archived</div>
+    <div>No Archived jobs yet</div>
   )
 }

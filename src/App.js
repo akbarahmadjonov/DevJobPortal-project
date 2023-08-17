@@ -14,8 +14,12 @@ import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
 import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
 import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
 import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
+// Jobs
 import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
 import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";
+// Evaluation
+import { Pending } from "./Pages/CompanyProfile/Nested/Evaluation/Pending/Pending";
+import { Completed } from "./Pages/CompanyProfile/Nested/Evaluation/Completed/Completed";
 
 const App = () => {
   //Test
@@ -44,12 +48,19 @@ const App = () => {
           <Route path="/devs-profile" element={<DevProfile />} />
           <Route path="/comprofile" element={<CompanyProfile />}>
             <Route index element={<JobsNested />} />
+            {/* Jobs */}
             <Route path="jobs" element={<JobsNested />}>
               <Route index path="openpaused" element={<OpenPaused />} />
               <Route path="archived" element={<Archived />} />
+              {/* Jobs */}
             </Route>
             <Route path="timeoff" element={<TimeOffNested />} />
-            <Route path="evaluation" element={<Evaluation />} />
+            {/* Evaluation */}
+            <Route path="evaluation" element={<Evaluation />}>
+              <Route index path="pending" element={<Pending />} />
+              <Route path="completed" element={<Completed />} />
+            </Route>
+            {/* Evaluation */}
             <Route path="talentpool" element={<TalentPool />} />
           </Route>
         </Routes>
