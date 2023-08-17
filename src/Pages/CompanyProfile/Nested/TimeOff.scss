@@ -1,4 +1,5 @@
 .timeoff {
+  position: relative;
 }
 
 .timeoff__inner {
@@ -10,7 +11,35 @@
 .timeoff__title {
   //* Margin, paddings
   margin-right: 20px;
+  padding: 10px;
 
   font-size: 28px;
   font-weight: 700;
+}
+
+.timeoff__outer {
+  display: flex;
+  width: 100%;
+
+  //* Margin, paddings
+  margin-top: 50px;
+  padding: 0px 0 0 14px;
+
+  border-bottom: 2px solid #f3f3f3;
+}
+
+.timeoff__hired {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  margin-top: 200px;
+}
+
+.timeoff__hired-title {
+  margin-top: 16px;
+
+  font-weight: 800;
 }
