@@ -1,12 +1,15 @@
 import {
+  Alert,
   Box,
   Button,
   FormControl,
   FormHelperText,
   Input,
   LinearProgress,
+  Snackbar,
   TextField,
 } from "@mui/material";
+import successImg from "../../../Assets/Images/check-your-inbox.png";
 import SuperCoderLogo from "./../../../Assets/Images/SuperCoderLogo.svg";
 import eyeIcon from "../../../Assets/Icons/eye.png";
 import { useEffect, useState } from "react";
@@ -28,10 +31,14 @@ export default function CompanyLogin() {
   const emailValidation = new RegExp(
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,7}$/
   );
-  const passwordValidation = /[a-z]\d/;
-  // /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})/;
+  const passwordValidation = /^.{6,25}$/;
   const url = "https://job-px4t.onrender.com/api";
   const navigate = useNavigate();
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("Successfull Log In!");
+  const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
+  const [reset, setReset] = useState(false);
 
   const handleResetPassword = (e) => {
     e.preventDefault();
@@ -51,12 +58,40 @@ export default function CompanyLogin() {
         setTimeout(() => {
           navigate("/comprofile");
         }, 1000);
+        setSuccessMsg("Successfull Log In");
+        setOpenSuccess(true);
       })
       .catch((err) => {
         console.log(err);
+        setErrorMsg(err?.message);
+        setErrorMsg(err?.response?.data?.message);
+        setOpenError(true);
         setErrorInp(true);
       });
   };
+
+  const handleReset = () => {
+    if (emailValidation.test(email)) {
+      setSuccessMsg("Reset Successful");
+      setOpenSuccess(true);
+      setReset(true);
+    } else {
+      setErrorMsg("Please enter a valid email address!");
+      setOpenError(true);
+    }
+  };
+
+  useEffect(() => {
+    if (forgotEmail) {
+      if (emailValidation.test(email)) {
+        setDisabled(false);
+      } else setDisabled(true);
+    } else {
+      if (passwordValidation.test(password) && emailValidation.test(email)) {
+        setDisabled(false);
+      } else setDisabled(true);
+    }
+  }, [email, emailValidation, forgotEmail, password, passwordValidation]);
 
   return (
     <>
@@ -77,83 +112,118 @@ export default function CompanyLogin() {
           </Link>
         </div>
         {forgotEmail ? (
-          <div className="flex flex-col relative w-[512px] mx-auto items-center h-[80vh] justify-center">
-            <div className="flex flex-col items-center mb-[20px] justify-center relative">
-              <h1 className="text-[26px] font-bold text-center">
-                Enter your email address
-              </h1>
-              <button onClick={(e) => setForgotEmail(false)} className="">
-                <img
-                  src={backImg}
-                  alt="back btn"
-                  width={20}
-                  height={20}
-                  className="absolute left-[-110px] top-[10px]"
-                />
-              </button>
-            </div>
-            <div
-              style={{ rowGap: "13px" }}
-              className="w-full pb-[40px] bg-white rounded-lg px-[30px] pt-[50px] flex-col"
-            >
-              <form
-                onSubmit={handleResetPassword}
-                onChange={(e) => {
-                  if (e.target.id === "email") {
-                    if (emailValidation.test(e.target.value)) {
-                      setDisabled(false);
-                    } else setDisabled(true);
-                  }
-                }}
-                className="mt-[20px] flex flex-col "
-              >
-                <div className="flex flex-col mb-[100px]">
-                  <label className="font-bold" htmlFor="email">
-                    Email
-                  </label>
-                  <Input
-                    placeholder="Email Address"
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={email}
-                    color={colorE}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (!emailValidation.test(e.target.value)) {
-                        e.target.setAttribute("error", true);
-                        setColorE("error");
-                      } else {
-                        setColorE("primary");
-                        e.target.removeAttribute("error");
-                      }
-                    }}
-                    required
-                    inputProps={{ "aria-label": "description" }}
-                  />
-                </div>
-                <div className="flex items-center flex-col justify-center w-full space-y-[24px]">
+          reset ? (
+            <>
+              <div className="flex items-center justify-center w-full h-[80vh]">
+                <div className="flex flex-col relative w-[512px] mx-auto items-center justify-center">
+                  <div className="flex flex-col items-center mb-[20px] justify-center ">
+                    <p className="flex items-center mb-7 justify-center text-center  text-[26px] font-bold text-black">
+                      Check your inbox
+                    </p>
+                    <button onClick={(e) => setReset(false)} className="">
+                      <img
+                        src={backImg}
+                        alt="back btn"
+                        width={20}
+                        height={20}
+                        className="absolute left-[40px] top-[10px]"
+                      />
+                    </button>
+                    <img src={successImg} alt="successImg" className="mb-7" />
+                    <h1 className="text-[26px] font-black text-center mb-2 text-[#3A6FFF]">
+                      Can't find your email?
+                    </h1>
+                    <p className="text-[#2F2F2F] w-full font-normal mb-7 leading-[30px] text-center justify-start self-start text-[20px]">
+                      If you can't find the email in your inbox or spam folder,
+                      <br />
+                      click below and we will send you a new one.
+                    </p>
+                  </div>
                   <Button
-                    type="submit"
-                    sx={{
-                      paddingX: "16px",
-                      paddingY: "8px",
-                      width: "200px",
-                      color: "white",
-                      background: "#989898",
-                      fontSize: "14px",
-                      backgroundColor: "#3a6fff",
-                    }}
-                    style={{ color: "white" }}
+                    size="medium"
                     variant="contained"
-                    disabled={disabled}
+                    color="primary"
+                    sx={{ color: "white" }}
+                    onClick={handleReset}
                   >
-                    Reset Password
+                    Resent Email
                   </Button>
                 </div>
-              </form>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col relative w-[512px] mx-auto items-center h-[80vh] justify-center">
+              <div className="flex flex-col items-center mb-[20px] justify-center relative">
+                <h1 className="text-[26px] font-bold text-center">
+                  Enter your email address
+                </h1>
+                <button onClick={(e) => setForgotEmail(false)} className="">
+                  <img
+                    src={backImg}
+                    alt="back btn"
+                    width={20}
+                    height={20}
+                    className="absolute left-[-110px] top-[10px]"
+                  />
+                </button>
+              </div>
+              <div
+                style={{ rowGap: "13px" }}
+                className="w-full pb-[40px] bg-white rounded-lg px-[30px] pt-[50px] flex-col"
+              >
+                <form
+                  onSubmit={handleResetPassword}
+                  className="mt-[20px] flex flex-col "
+                >
+                  <div className="flex flex-col mb-[100px]">
+                    <label className="font-bold" htmlFor="email">
+                      Email
+                    </label>
+                    <Input
+                      placeholder="Email Address"
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={email}
+                      color={colorE}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (!emailValidation.test(e.target.value)) {
+                          e.target.setAttribute("error", true);
+                          setColorE("error");
+                        } else {
+                          setColorE("primary");
+                          e.target.removeAttribute("error");
+                        }
+                      }}
+                      required
+                      inputProps={{ "aria-label": "description" }}
+                    />
+                  </div>
+                  <div className="flex items-center flex-col justify-center w-full space-y-[24px]">
+                    <Button
+                      type="submit"
+                      sx={{
+                        paddingX: "16px",
+                        paddingY: "8px",
+                        width: "200px",
+                        color: "white",
+                        background: "#989898",
+                        fontSize: "14px",
+                        backgroundColor: "#3a6fff",
+                      }}
+                      style={{ color: "white" }}
+                      variant="contained"
+                      disabled={disabled}
+                      onClick={handleReset}
+                    >
+                      Reset Password
+                    </Button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
+          )
         ) : (
           <div className="flex flex-col relative w-[512px] mx-auto items-center h-[80vh] justify-center">
             <div className="flex flex-col items-center mb-[20px] justify-center">
@@ -176,24 +246,6 @@ export default function CompanyLogin() {
               </div>
               <form
                 onSubmit={handleLoginFormSubmit}
-                onChange={(e) => {
-                  if (e.target.id === "password") {
-                    if (
-                      passwordValidation.test(e.target.value) &&
-                      emailValidation.test(email)
-                    ) {
-                      setDisabled(false);
-                    } else setDisabled(true);
-                  }
-                  if (e.target.id === "email") {
-                    if (
-                      emailValidation.test(e.target.value) &&
-                      passwordValidation.test(password)
-                    ) {
-                      setDisabled(false);
-                    } else setDisabled(true);
-                  }
-                }}
                 className="mt-[20px] flex flex-col "
               >
                 <div className="flex flex-col mb-[20px]">
@@ -311,6 +363,37 @@ export default function CompanyLogin() {
             </div>
           </div>
         )}
+        {/* Success Alert */}
+        <Snackbar
+          open={openError}
+          autoHideDuration={6000}
+          onClose={() => setOpenError(false)}
+        >
+          <Alert
+            onClose={() => setOpenError(false)}
+            severity="error"
+            sx={{ width: "100%" }}
+            variant="filled"
+          >
+            {errorMsg}
+          </Alert>
+        </Snackbar>
+        {/* Success Alert */}
+        <Snackbar
+          open={openSuccess}
+          autoHideDuration={6000}
+          onClose={() => setOpenSuccess(false)}
+        >
+          <Alert
+            onClose={() => setOpenSuccess(false)}
+            severity="success"
+            color="info"
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {successMsg}
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );

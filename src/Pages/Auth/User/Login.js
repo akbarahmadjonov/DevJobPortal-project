@@ -141,7 +141,7 @@ export default function Login() {
             {/* Main Login Card */}
             <main className="relative w-full">
               <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
-                <CssBaseline />
+                {/* <CssBaseline /> */}
                 <Box
                   sx={{
                     marginTop: 8,
