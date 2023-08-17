@@ -8,16 +8,24 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import {
+  Link,
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Snackbar,
+} from "@mui/material";
 // Default components
-import { Link, useNavigate } from "react-router-dom";
+import { Link as LinkDom, useNavigate } from "react-router-dom";
 import Header from "../../../Widgets/Header/Header";
 import { Footer } from "../../../Widgets";
 import axios from "axios";
 import Verify from "../../../Components/Authentification/Verify";
+import { signInWithGoole } from "../../../Components/Firebase";
 
 export default function Login() {
-  const url = "https://jobas.onrender.com/api";
+  const url = "https://job-px4t.onrender.com/api";
   const [openLoader, setOpenLoader] = useState(false);
   const verify = JSON.parse(localStorage.getItem("verify")) || false;
   const [openError, setOpenError] = useState(false);
@@ -26,6 +34,7 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
   const [subValue, setSubValue] = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
   // LogIn Function
   const handleSubmit = async (event) => {
@@ -61,6 +70,42 @@ export default function Login() {
     // const data = new FormData(event.currentTarget);
     setOpenSuccess(true);
     setSubValue("");
+  };
+
+  const handleGoogleClick = async () => {
+    signInWithGoole()
+      .then((result) => {
+        setEmail(result?.user?.email);
+        console.log(result.user.auth);
+        axios
+          .post(url + "/user/login", {
+            userEmail: result?.user?.email,
+            password: "googlestatic123password",
+          })
+          .then((res) => {
+            const token = res?.data?.token;
+            if (token) {
+              setSuccessMsg("Successfully Logged In!");
+              setOpenSuccess(true);
+              localStorage.setItem("token", token);
+              localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+              localStorage.setItem("verify", JSON.stringify(true));
+              setTimeout(() => {
+                navigate("/");
+              }, 1000);
+            }
+            setOpenLoader(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setErrorMsg(err?.response?.data?.message);
+            setOpenError(true);
+            setOpenLoader(false);
+          });
+      })
+      .catch((er) => {
+        console.log(er);
+      });
   };
   return (
     <>
@@ -164,11 +209,20 @@ export default function Login() {
                       <button
                         type="button"
                         className=" w-full py-[23px] transition-all bg-[#F65050] font-normal active:bg-red-600 hover:bg-red-400 text-[16px] text-white rounded-md "
-                        //   onClick={}
+                        onClick={handleGoogleClick}
                       >
                         Login with google
                       </button>
                     </div>
+                    <Grid container justifyContent="center" pt={"20px"}>
+                      <Grid item>
+                        <Link variant="body2">
+                          <LinkDom to={"/user/register"}>
+                            Don't have an account? Sign up
+                          </LinkDom>
+                        </Link>
+                      </Grid>
+                    </Grid>
                   </Box>
                 </Box>
               </div>

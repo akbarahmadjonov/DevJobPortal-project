@@ -10,8 +10,9 @@ import {
 import SuperCoderLogo from "./../../../Assets/Images/SuperCoderLogo.svg";
 import eyeIcon from "../../../Assets/Icons/eye.png";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import backImg from "../../../Assets/Icons/back.svg";
+import axios from "axios";
 
 export default function CompanyLogin() {
   const [typeInput, setTypeInput] = useState("password");
@@ -20,16 +21,17 @@ export default function CompanyLogin() {
   const [color, setColor] = useState("error");
   const [colorE, setColorE] = useState("error");
   const [forgotEmail, setForgotEmail] = useState(false);
-  const [error, setError] = useState(false);
+  const [errorInp, setErrorInp] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [disabled, setDisabled] = useState(true);
   const emailValidation = new RegExp(
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,7}$/
   );
-
-  const passwordValidation =
-    /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})/;
-  const [disabled, setDisabled] = useState(true);
+  const passwordValidation = /[a-z]\d/;
+  // /((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})/;
+  const url = "https://job-px4t.onrender.com/api";
+  const navigate = useNavigate();
 
   const handleResetPassword = (e) => {
     e.preventDefault();
@@ -41,13 +43,19 @@ export default function CompanyLogin() {
   const handleLoginFormSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
-    setTimeout(() => {
-      setError(true);
-    }, 1000);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    axios
+      .post(url + "/recruiter/login", data)
+      .then((res) => {
+        localStorage.setItem("token", res?.data?.token);
+        localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
+        setTimeout(() => {
+          navigate("/comprofile");
+        }, 1000);
+      })
+      .catch((err) => {
+        console.log(err);
+        setErrorInp(true);
+      });
   };
 
   return (
@@ -226,7 +234,6 @@ export default function CompanyLogin() {
                     required
                     color={color}
                     type={typeInput}
-                    onMouseEnter={(e) => console.log(e)}
                     onChange={(e) => {
                       setPassword(e.target.value);
                       if (!passwordValidation.test(e.target.value)) {
@@ -241,7 +248,7 @@ export default function CompanyLogin() {
                   <img
                     width={17}
                     className={`absolute cursor-pointer right-[5px] ${
-                      error ? " bottom-[30px] " : " bottom-[5px] "
+                      errorInp ? " bottom-[30px] " : " bottom-[5px] "
                     }`}
                     onClick={() => {
                       if (typeInput === "password") {
@@ -252,7 +259,7 @@ export default function CompanyLogin() {
                     src={eyeIcon}
                     alt="toggle input type"
                   />
-                  {error && (
+                  {errorInp && (
                     <FormHelperText
                       sx={{
                         color: "red",

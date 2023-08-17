@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { AddApp, ChangeApp } from "../../Redux/AppSlice";
+import {  ChangeApp } from "../../Redux/AppSlice";
 
 export default function AppCard({ title, imgLink,  }) {
   const dispatch = useDispatch();
@@ -8,7 +8,6 @@ export default function AppCard({ title, imgLink,  }) {
   const app = apps.find((app) => app.title === title);
   const [thisSelect, setThisSelect] = useState(app.selected);
 
-  console.log(apps);
   const handleCardClick = () => {
     const updatedSelect = !thisSelect; // Toggle the selection
     setThisSelect(updatedSelect);

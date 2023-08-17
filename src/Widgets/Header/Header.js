@@ -1,13 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import userVector from "./../../Assets/Images/Vector.svg";
 import schIco from "./../../Assets/Images/search.svg";
+import { Button } from "@mui/material";
 
 export default function Header({ headerClassName, style, inputStyle }) {
   const verify = localStorage.getItem("verify") || false;
   const user = localStorage.getItem("userData");
   const fullName = JSON.parse(user && user)?.fullName;
-
+  const navigate = useNavigate();
   return (
     <>
       {verify ? (
@@ -156,21 +157,22 @@ export default function Header({ headerClassName, style, inputStyle }) {
                     />
                   </label>
                 </div>
-                <div className="flex  items-center justify-start space-x-[10px]">
-                  <img src={userVector} alt="userIcon" />
-                  <NavLink
-                    className={`active:text-blue-500 text-[#c2c2c2]`}
-                    to={"/auth/register"}
+                <div className="flex items-center justify-center space-x-[10px]">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="primary"
+                    onClick={() => navigate("/user/register")}
                   >
-                    Create account{" "}
-                  </NavLink>
-                  <span className="text-black">/</span>
-                  <NavLink
-                    className={`active:text-blue-500 text-[#c2c2c2]`}
-                    to={"/auth/login"}
+                    I'm a developer{" "}
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => navigate("/company/register")}
                   >
-                    login
-                  </NavLink>
+                    Hire developers
+                  </Button>
                 </div>
               </div>
             </div>
