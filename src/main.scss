@@ -33,6 +33,24 @@ a {
   text-decoration: none;
 }
 
+.jobsTalentButtons {
+  //* Margin, paddings
+  width: 100%;
+  max-width: 140px;
+
+  //* Custom styles
+  font-size: 15px;
+  font-weight: 700;
+  background-color: #0050c8;
+  border-radius: 8px;
+  color: #fff;
+
+  &:hover {
+    color: #fff !important;
+    background-color: #2f80fa;
+  }
+}
+
 //***   MOBILE   ***//
 
 @media only screen and (max-width: 576px) {

@@ -72,7 +72,7 @@ export const OpenPaused = () => {
           <div className="open-paused__block">
             <Select
               defaultValue="Paused"
-              style={{ width: 120 }}
+              style={{ width: "120px", borderBottom: "1px solid #d9d9d9" }}
               onChange={handleChange}
               options={[{ value: "Paused" }]}
             />
