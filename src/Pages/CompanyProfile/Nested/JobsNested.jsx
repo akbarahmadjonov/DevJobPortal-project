@@ -59,14 +59,14 @@ export const JobsNested = () => {
           to={"openpaused"}
           activeClassName="active"
         >
-          <h3 className="tab__innerTitle">Open and Paused</h3>
+          <h3 className="tab__innerTitle">Open and Paused 1</h3>
         </NavLink>
         <NavLink
           className="tab__links"
           to={"archived"}
           activeClassName="active"
         >
-          <h3 className="tab__innerTitle">Archived</h3>
+          <h3 className="tab__innerTitle">Archived 0</h3>
         </NavLink>
       </div>
       <Outlet />
