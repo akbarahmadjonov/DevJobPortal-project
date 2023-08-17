@@ -3,8 +3,11 @@
   )
   .ant-select-selector {
   border: none;
-  border-bottom: 1px solid #d9d9d9 !important;
   transition: all 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.ant-select-selection-item {
+  font-weight: 600 !important;
 }
 
 :where(.css-dev-only-do-not-override-1w4v3hc).ant-select-single

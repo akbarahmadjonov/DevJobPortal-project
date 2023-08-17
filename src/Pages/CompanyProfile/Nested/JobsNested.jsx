@@ -24,7 +24,7 @@ export const JobsNested = () => {
     <div className="job-nested">
       <div className="job-nested__inner">
         <h1 className="job-nested__title">Jobs</h1>
-        <Button className="job-nested__button" onClick={showModal}>
+        <Button className="jobsTalentButtons" onClick={showModal}>
           <FontAwesomeIcon
             className="icon"
             icon={faPlus}

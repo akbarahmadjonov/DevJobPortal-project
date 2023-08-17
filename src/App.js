@@ -20,6 +20,11 @@ import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";
 // Evaluation
 import { Pending } from "./Pages/CompanyProfile/Nested/Evaluation/Pending/Pending";
 import { Completed } from "./Pages/CompanyProfile/Nested/Evaluation/Completed/Completed";
+// Talentpool
+import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
+import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
+import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
+import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
 
 const App = () => {
   //Test
@@ -61,7 +66,14 @@ const App = () => {
               <Route path="completed" element={<Completed />} />
             </Route>
             {/* Evaluation */}
-            <Route path="talentpool" element={<TalentPool />} />
+            {/* Talentpool */}
+            <Route path="talentpool" element={<TalentPool />}>
+              <Route index path="all" element={<All />} />
+              <Route path="saved" element={<Saved />} />
+              <Route path="opened" element={<Opened />} />
+              <Route path="proposed" element={<Proposed />} />
+            </Route>
+            {/* Talentpool */}
           </Route>
         </Routes>
       </div>
