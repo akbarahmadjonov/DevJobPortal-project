@@ -1,12 +1,23 @@
 import React from "react";
 import "./TalentPool.scss";
 import { Button, Select } from "antd";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export const TalentPool = () => {
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
   };
+
+  const navigate = useNavigate();
+  function navigation() {
+    //* Automatically takes to route
+    navigate("all");
+  }
+
+  useEffect(() => {
+    navigation();
+  }, []);
 
   return (
     <div className="talentpool">

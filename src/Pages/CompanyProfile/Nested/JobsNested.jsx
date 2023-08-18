@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, Input } from "antd";
 import "./Jobs.scss";
+import { useEffect } from "react";
 
 export const JobsNested = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -19,6 +20,16 @@ export const JobsNested = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
+
+  const navigate = useNavigate();
+  function navigation() {
+    //* Automatically takes to route
+    navigate("openpaused");
+  }
+
+  useEffect(() => {
+    navigation();
+  }, []);
 
   return (
     <div className="job-nested">

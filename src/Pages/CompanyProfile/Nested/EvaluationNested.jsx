@@ -1,8 +1,19 @@
 import React from "react";
 import "./Evaluation.scss";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export const Evaluation = () => {
+  const navigate = useNavigate();
+  function navigation() {
+    //* Automatically takes to route
+    navigate("pending");
+  }
+
+  useEffect(() => {
+    navigation();
+  }, []);
+
   return (
     <div className="evaluation">
       <div className="evaluation__inner">
