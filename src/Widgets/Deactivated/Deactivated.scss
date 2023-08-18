@@ -1,0 +1,32 @@
+.all {
+}
+
+.all__inner {
+}
+
+.all__deactivated {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  //* Margin, paddings
+  margin-top: 200px;
+}
+
+.all__deactivated-title {
+  font-weight: 800;
+}
+
+.all__deactivated-text {
+  color: #c7c7c7;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.all__deactivated-link {
+  color: #0050c8;
+  font-size: 15px;
+  font-weight: 700;
+}
