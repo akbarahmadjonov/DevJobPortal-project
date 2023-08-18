@@ -4,6 +4,7 @@ import AppCard from "../../../Components/Authentification/AppCard";
 import { useDispatch, useSelector } from "react-redux";
 import eyeIcon from "../../../Assets/Icons/eye.png";
 import react from "./../../../Assets/Images/react.png";
+import backImg from "../../../Assets/Icons/back.svg";
 import {
   php,
   python,
@@ -32,13 +33,15 @@ import {
   TextField,
   InputLabel,
   LinearProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { Link as LinkDom, useNavigate } from "react-router-dom";
 import successImg from "../../../Assets/Icons/request-meeting-success-bg2.svg";
-import { ChangeApp, unSelect } from "../../../Redux/AppSlice";
+// import { ChangeApp, unSelect } from "../../../Redux/AppSlice";
 import axios from "axios";
 
 function Copyright(props) {
@@ -81,6 +84,10 @@ export default function CompanyRegister() {
   const [showProgress, setShowProgress] = useState(false);
   const [password, setPassword] = useState("");
   const [typeInput, setTypeInput] = useState("password");
+  const [errorMsg, setErrorMsg] = useState("Unexpected error!");
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("Successfull Sing Up!");
   const [select1, setSelect1] = useState(false);
   const [select2, setSelect2] = useState(false);
   const [select3, setSelect3] = useState(false);
@@ -93,13 +100,12 @@ export default function CompanyRegister() {
   const [select10, setSelect10] = useState(false);
   const [select11, setSelect11] = useState(false);
   const [select12, setSelect12] = useState(false);
+
   const navigate = useNavigate();
   const emailValidation = new RegExp(
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   );
-  const passwordValidation = new RegExp(
-    /((?=.*\d)(?=.*[a-z]).{6,20})/
-  );
+  const passwordValidation = new RegExp(/((?=.*\d)(?=.*[a-z]).{6,20})/);
   const [progress, setProgress] = useState(0);
   const url = "https://job-px4t.onrender.com/api";
 
@@ -138,15 +144,22 @@ export default function CompanyRegister() {
       .then((res) => {
         localStorage.setItem("token", res?.data?.token);
         localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
+        setStep(3);
+        setSuccessMsg("Successfull Sing Up!");
+        setOpenSuccess(true);
       })
       .catch((err) => {
         console.log(err);
+        setErrorMsg("Something went wrong! Try again");
+        if (err?.response?.data?.message?.includes("duplicate")) {
+          setErrorMsg("This email is already registered!");
+        }
+        setOpenError(true);
       })
       .finally(() => {
         setProgress(100);
         setShowProgress(false);
       });
-    setStep(3);
     console.log({
       companyName: form.get("companyName"),
       name: form.get("name"),
@@ -166,10 +179,32 @@ export default function CompanyRegister() {
       });
     }, 200);
   };
+  useEffect(() => {
+    if (
+      name.length > 1 &&
+      companyName.length > 1 &&
+      phoneNumber.length > 1 &&
+      fundingRounds.length > 1 &&
+      teamSize.length > 1
+    ) {
+      if (website) {
+        if (
+          website.match(
+            /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
+          ) ||
+          website.match(
+            /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
+          )
+        ) {
+          setDisabled2(false);
+        } else setDisabled2(true);
+      } else setDisabled2(false);
+    } else setDisabled2(true);
+  }, [name, companyName, phoneNumber, teamSize, website, fundingRounds]);
 
   return (
     <>
-      <Box sx={{ width: "100%", position: "absolute", top: 0 }}>
+      <Box sx={{ width: "100%", position: "fixed", top: 0 }}>
         {showProgress && (
           <LinearProgress variant="determinate" value={progress} />
         )}
@@ -635,6 +670,15 @@ export default function CompanyRegister() {
                       }}
                       className="absolute top-[40px] right-0"
                     />
+                    <button onClick={(e) => setStep(1)} className="">
+                      <img
+                        src={backImg}
+                        alt="back btn"
+                        width={20}
+                        height={20}
+                        className="absolute left-[-110px] top-[10px]"
+                      />
+                    </button>
                   </div>
                   <Container
                     sx={{
@@ -646,31 +690,7 @@ export default function CompanyRegister() {
                     }}
                     component="main"
                     width="100%"
-                    onChange={(e) => {
-                      if (
-                        name.length > 1 &&
-                        companyName.length > 1 &&
-                        phoneNumber.length > 1 &&
-                        fundingRounds.length > 1 &&
-                        teamSize.length > 1
-                      ) {
-                        if (website) {
-                          if (
-                            website === "" ||
-                            website.match(
-                              /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
-                            ) ||
-                            website.match(
-                              /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
-                            )
-                          ) {
-                            setDisabled2(false);
-                          } else setDisabled2(true);
-                        } else setDisabled2(false);
-                      } else {
-                        setDisabled2(true);
-                      }
-                    }}
+                    // onChange={}
                   >
                     <CssBaseline />
                     <Box
@@ -791,6 +811,7 @@ export default function CompanyRegister() {
                             <PhoneInput
                               inputStyle={{ width: "100%" }}
                               isValid={true}
+                              required={true}
                               country={"uz"} //KR - South Korea
                               onChange={(value) => setPhoneNumber(value)}
                               value={phoneNumber}
@@ -892,6 +913,37 @@ export default function CompanyRegister() {
           </main>
         </div>
       </div>
+      {/* Success Alert */}
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+          color="info"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {successMsg}
+        </Alert>
+      </Snackbar>
+      {/* Error Alert */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          variant="filled"
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
