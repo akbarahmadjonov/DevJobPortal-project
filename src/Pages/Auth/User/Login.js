@@ -8,6 +8,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import GoogleIcon from "../../../Assets/Icons/GoogleIcon.svg";
 import {
   Link,
   Alert,
@@ -15,6 +16,8 @@ import {
   CircularProgress,
   Grid,
   Snackbar,
+  Button,
+  FormHelperText,
 } from "@mui/material";
 // Default components
 import { Link as LinkDom, useNavigate } from "react-router-dom";
@@ -28,6 +31,7 @@ export default function Login() {
   const url = "https://job-px4t.onrender.com/api";
   const [openLoader, setOpenLoader] = useState(false);
   const verify = JSON.parse(localStorage.getItem("verify")) || false;
+  const [forgotPassword, setForgotPassword] = useState(false);
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("Success!");
@@ -119,7 +123,7 @@ export default function Login() {
       </Backdrop>
 
       {/* Header  */}
-      <Header />
+      {/* <Header /> */}
 
       {verify ? (
         <>
@@ -128,48 +132,66 @@ export default function Login() {
             {/* Footer */}
             <Footer footerTop="1300" />
           </div>
+          {/* #2144a5 */}
         </>
       ) : (
-        <>
+        <div className="w-full h-screen flex">
           {/* Main background-image */}
-          <img
+          {/* <img
             src={hBg}
             alt="header background"
             className="w-full   max-h-[1200px] absolute -z-20 object-cover"
-          />
-          <div className="container max-w-[1728px] mx-auto">
+          /> */}
+          <div className="w-1/4 bg-[#19378B] h-screen"></div>
+          <div className="bg-[#2144a5] w-3/4">
             {/* Main Login Card */}
-            <main className="relative w-full">
-              <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
+            <main className="relative w-full h-screen flex items-center justify-center">
+              <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
                 {/* <CssBaseline /> */}
                 <Box
                   sx={{
-                    marginTop: 8,
+                    marginTop: 4,
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "start",
+                    width: "100%",
+                    alignItems: "center",
                   }}
                 >
                   <Typography
                     component="h1"
-                    variant="h5"
-                    className="font-semibold text-black text-[24px]"
+                    variant="h4"
+                    sx={{
+                      fontSize: "26px",
+                      marginBottom: "15px",
+                      fontWeight: 700,
+                    }}
+                    className="mx-auto w-full text-center font-bold text-black "
                   >
-                    Login
-                  </Typography>
-                  <Typography
-                    component="h6"
-                    variant="h6"
-                    className="text-[#999] text-[16px] font-normal"
-                  >
-                    Welcome back! Login to continue
+                    Log in as a developer
                   </Typography>
                   <Box
                     component="form"
                     onSubmit={handleSubmit}
                     noValidate
-                    sx={{ mt: 1 }}
+                    sx={{ mt: 1, width: "100%" }}
                   >
+                    <Button
+                      onClick={handleGoogleClick}
+                      className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg  shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
+                    >
+                      <img
+                        src={GoogleIcon}
+                        alt="GoogleIcon"
+                        width={25}
+                        height={25}
+                      />
+                      <span>Continue with Google</span>
+                    </Button>
+                    <div className="w-full flex items-center justify-between my-[10px]">
+                      <hr className="h-[1px] bg-blue-300 flex w-[46%]" />
+                      <span className="text-blue-300 text-[16px]">or</span>
+                      <hr className="h-[1px] bg-blue-300 flex w-[46%]" />
+                    </div>
                     <TextField
                       margin="normal"
                       type="email"
@@ -178,11 +200,13 @@ export default function Login() {
                       id="userEmail"
                       label="Email Address"
                       name="userEmail"
+                      size="small"
                       style={{ color: "#999" }}
                       autoComplete="email"
                       autoFocus
                     />
                     <TextField
+                      size="small"
                       margin="normal"
                       required
                       fullWidth
@@ -193,33 +217,26 @@ export default function Login() {
                       style={{ color: "#999" }}
                       autoComplete="current-password"
                     />
-                    <FormControlLabel
-                      control={<Checkbox value="remember" color="primary" />}
-                      style={{ paddingLeft: "30px" }}
-                      label="Remember me"
-                    />
-                    <div className="flex flex-col items-center pt-[30px] justify-between w-full space-y-4">
+                    <FormHelperText
+                      id="password"
+                      className="hover:text-blue-700 text-blue-500 transition-all cursor-pointer"
+                    >
+                      Forgot Password?
+                    </FormHelperText>
+                    {/* <p className="flex text-center text-[16px]">Forgot Password?</p> */}
+                    <div className="flex flex-col items-center pt-[25px] justify-between w-full space-y-4">
                       <button
                         type="submit"
-                        className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                        className=" w-full py-[10px] transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
                       >
-                        Login
-                      </button>
-                      <span className="text-[#999999] text-[16px]">OR</span>
-                      <button
-                        type="button"
-                        className=" w-full py-[23px] transition-all bg-[#F65050] font-normal active:bg-red-600 hover:bg-red-400 text-[16px] text-white rounded-md "
-                        onClick={handleGoogleClick}
-                      >
-                        Login with google
+                        Log In
                       </button>
                     </div>
-                    <Grid container justifyContent="center" pt={"20px"}>
+                    <Grid container justifyContent="center" pt={"15px"}>
                       <Grid item>
+                        Don't have an account?{" "}
                         <Link variant="body2">
-                          <LinkDom to={"/user/register"}>
-                            Don't have an account? Sign up
-                          </LinkDom>
+                          <LinkDom to={"/user/register"} >Sign up</LinkDom>
                         </Link>
                       </Grid>
                     </Grid>
@@ -228,165 +245,8 @@ export default function Login() {
               </div>
             </main>
             {/* Footer */}
-            <footer className="relative w-full bg-white">
-              <div
-                className={`flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px]`}
-              >
-                <div className="flex justify-between mb-[84px] items-center w-full">
-                  <div className="flex flex-col items-start w-[50%]">
-                    <h2 className="text-[24px] text-black font-semibold ">
-                      Subscribe to our newslettter
-                    </h2>
-                    <p className=" text-[16px] font-normal text-[#999]">
-                      Get informed on every update
-                    </p>
-                  </div>
-                  <div className="max-w-[50%] text-[16px] w-[602px]  flex items-end ">
-                    <form onSubmit={handleSubmitSub} className="w-full">
-                      <label
-                        className="flex w-full text-[16px]"
-                        htmlFor="emailForSub"
-                      >
-                        <TextField
-                          required
-                          fullWidth
-                          type="email"
-                          id="emailForSub"
-                          label="Your email address"
-                          name="emailForSub"
-                          value={subValue}
-                          onChange={(e) => setSubValue(e.target.value)}
-                          style={{ color: "#999", textSize: "16px" }}
-                          autoComplete="email"
-                        />
-                        <button
-                          type="submit"
-                          className="w-[30%] py-[10px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-sm"
-                        >
-                          Subscribe
-                        </button>
-                      </label>
-                    </form>
-                  </div>
-                </div>
-                <hr className="bg-[#0050c81a] flex " />
-                {/*  */}
-                <div className="flex space-x-[190px]   pt-[55px] items-start">
-                  <div>
-                    <h1 className="text-[#0050C8] text-[20px] font-bold">
-                      TheJobportal
-                    </h1>
-                  </div>
-                  <div className="flex space-x-[170px] pt-[10px]">
-                    <div>
-                      <h2 className="text-black text-[20px] mb-[14px] font-normal">
-                        Sitemap
-                      </h2>
-                      <ul
-                        style={{ fontFamily: "Lato, sans-serif" }}
-                        className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
-                      >
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Home
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Jobs
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          FAQs
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Support
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          About
-                        </Link>
-                      </ul>
-                    </div>
-                    <div>
-                      <h2 className="text-black text-[20px] mb-[14px] font-normal">
-                        FAQs
-                      </h2>
-                      <ul
-                        style={{ fontFamily: "Lato, sans-serif" }}
-                        className=" flex flex-col items-start w-full text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
-                      >
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          How can I search for a specific job ?
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Are there freelance jobs ?
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Can I post a jobs also
-                        </Link>
-                      </ul>
-                    </div>
-                    <div>
-                      <h2 className="text-black text-[20px] mb-[14px] font-normal">
-                        Contact us
-                      </h2>
-                      <ul
-                        style={{ fontFamily: "Lato, sans-serif" }}
-                        className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
-                      >
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Github
-                        </Link>
-                        <Link
-                          className="hover:text-blue-500 transition-all"
-                          to={"/"}
-                        >
-                          Twitter
-                        </Link>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex w-full items-center pt-[197px] justify-center">
-                  <a
-                    href="*#"
-                    className="text-[#2F2F2F] text-[16px] font-normal "
-                    target="_blank"
-                  >
-                    Developer and maintained by{" "}
-                    <span className="hover:text-blue-500 transition-all">
-                      {" "}
-                      Regis
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </footer>
           </div>
-        </>
+        </div>
       )}
 
       {/* Success Alert */}
@@ -421,3 +281,161 @@ export default function Login() {
     </>
   );
 }
+
+// <footer className="relative w-full bg-white">
+//   <div
+//     className={`flex flex-col space-y-[20px] py-[80px] absolute w-full top-[1200px]`}
+//   >
+//     <div className="flex justify-between mb-[84px] items-center w-full">
+//       <div className="flex flex-col items-start w-[50%]">
+//         <h2 className="text-[24px] text-black font-semibold ">
+//           Subscribe to our newslettter
+//         </h2>
+//         <p className=" text-[16px] font-normal text-[#999]">
+//           Get informed on every update
+//         </p>
+//       </div>
+//       <div className="max-w-[50%] text-[16px] w-[602px]  flex items-end ">
+//         <form onSubmit={handleSubmitSub} className="w-full">
+//           <label
+//             className="flex w-full text-[16px]"
+//             htmlFor="emailForSub"
+//           >
+//             <TextField
+//               required
+//               fullWidth
+//               type="email"
+//               id="emailForSub"
+//               label="Your email address"
+//               name="emailForSub"
+//               value={subValue}
+//               onChange={(e) => setSubValue(e.target.value)}
+//               style={{ color: "#999", textSize: "16px" }}
+//               autoComplete="email"
+//             />
+//             <button
+//               type="submit"
+//               className="w-[30%] py-[10px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-sm"
+//             >
+//               Subscribe
+//             </button>
+//           </label>
+//         </form>
+//       </div>
+//     </div>
+//     <hr className="bg-[#0050c81a] flex " />
+//     {/*  */}
+//     <div className="flex space-x-[190px]   pt-[55px] items-start">
+//       <div>
+//         <h1 className="text-[#0050C8] text-[20px] font-bold">
+//           TheJobportal
+//         </h1>
+//       </div>
+//       <div className="flex space-x-[170px] pt-[10px]">
+//         <div>
+//           <h2 className="text-black text-[20px] mb-[14px] font-normal">
+//             Sitemap
+//           </h2>
+//           <ul
+//             style={{ fontFamily: "Lato, sans-serif" }}
+//             className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
+//           >
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Home
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Jobs
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               FAQs
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Support
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               About
+//             </Link>
+//           </ul>
+//         </div>
+//         <div>
+//           <h2 className="text-black text-[20px] mb-[14px] font-normal">
+//             FAQs
+//           </h2>
+//           <ul
+//             style={{ fontFamily: "Lato, sans-serif" }}
+//             className=" flex flex-col items-start w-full text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
+//           >
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               How can I search for a specific job ?
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Are there freelance jobs ?
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Can I post a jobs also
+//             </Link>
+//           </ul>
+//         </div>
+//         <div>
+//           <h2 className="text-black text-[20px] mb-[14px] font-normal">
+//             Contact us
+//           </h2>
+//           <ul
+//             style={{ fontFamily: "Lato, sans-serif" }}
+//             className=" flex flex-col items-start w-[30%] text-[16px] space-y-[14px] font-[Lato] justify-between  text-[#999]"
+//           >
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Github
+//             </Link>
+//             <Link
+//               className="hover:text-blue-500 transition-all"
+//               to={"/"}
+//             >
+//               Twitter
+//             </Link>
+//           </ul>
+//         </div>
+//       </div>
+//     </div>
+//     <div className="flex w-full items-center pt-[197px] justify-center">
+//       <a
+//         href="*#"
+//         className="text-[#2F2F2F] text-[16px] font-normal "
+//         target="_blank"
+//       >
+//         Developer and maintained by{" "}
+//         <span className="hover:text-blue-500 transition-all">
+//           {" "}
+//           Regis
+//         </span>
+//       </a>
+//     </div>
+//   </div>
+// </footer>
