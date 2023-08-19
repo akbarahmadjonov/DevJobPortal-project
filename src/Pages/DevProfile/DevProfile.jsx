@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom"
 import editPen from "../../Assets/Icons/edit-pen.svg"
 import closeIcon from "../../Assets/Icons/close-button.svg"
@@ -10,6 +10,7 @@ import PhoneInput from 'react-phone-number-input'
 import linkedin from "../../Assets/Icons/linkedin.svg"
 import 'react-phone-number-input/style.css'
 import "./DevProfile.scss"
+import { DropDownMenu } from "../../Components";
 
 
 
@@ -26,13 +27,40 @@ export const DevProfile = ()=>{
   const [expModal, setExpModal] = useState(false)
   const [aviaModal, setAviaModal] = useState(false)
   const [roleModal, setRoleModal] = useState(false)
+  const [skillsModal, setSkillsModal] = useState(false)
   //
-  const [openDropdown, setOpenDropdown] = useState(false)
 
   const [selectedNation, setSelectedNation] = useState("");
   const [selectedResidance, setSelectedResidance] = useState("");
   const [phone, setPhone] = useState()
+  const [currentSalary, setCurrentSalary] = useState(0);
 
+  // Input values
+
+  //refs
+const roleRef = useRef(null); //for role and salary dropdown
+  //
+
+  //Mock datas
+  const jobsOptions = [
+    "cloud engineer", "flutter developer", "web-designer", "ios developer", "admin"
+  ]
+
+  //
+
+  //Variables
+  
+  //
+
+  
+
+  //
+  //Handle
+
+  const handleCurrentSalaryChange = (evt) => {
+    const value = evt.target.value.replace(/\D/g, ''); // Remove non-digit characters
+    setCurrentSalary(value);
+  };
 
 
   const handleFileUpload =  (evt) => {
@@ -60,12 +88,6 @@ export const DevProfile = ()=>{
   }, [applyImg]);
 
 
-
-console.log(phone);
-
-
-
-
 return  <div className="dev-profile">
   <header className="dev-profile__header dev-profile__header-container">
     <div className="dev-profile__header-left-wrapper">
@@ -76,7 +98,6 @@ return  <div className="dev-profile">
                 <input placeholder="Search by skill or job position" className="dev-profile__header-search-input" type="text" name="" id="devProfileSearch" />
                 </label>
     </div>
- 
                 <div className="dev-profile__header-right-wrapper">
                 <nav className="dev-profile__nav">
                   <ul className="dev-profile__nav-list">
@@ -135,7 +156,7 @@ return  <div className="dev-profile">
     {/*Skills and Languages */}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+  <button onClick={()=>setSkillsModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Work experience */}
     <div className="dev-profile__info-wrapper-3">
@@ -286,7 +307,6 @@ ducting background checks).</p>
     <span className="dev-profile__avia-modal-text-2">I am looking for a remote job.</span>
     </div>
    </label>
-
    <label className="dev-profile__avia-modal-label" htmlFor="aviaInput2">
         <input className="dev-profile__avia-modal-input" id="aviaInput2" name="aviaInput" type="radio" />
     <div className="dev-profile__avia-modal-text-wrapper">
@@ -311,26 +331,46 @@ ducting background checks).</p>
     <p className="dev-profile__modal-title">Role and salary</p>
     <button type="button" onClick={()=>setRoleModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
-      <div className="dev-profile-modal-body">
-      {/* //do not change the class if not neccessary
-// it will affect to all input in the page */}
-      <div className="text-input-wrapper">
-   <input onClick={()=>setOpenDropdown(true)} className="text-input" id="roleTextInput" required="required"/>
-      <label className="text-label" for="roleTextInput">Preffered role
-        &nbsp;<span style={{color: "blue"}}>*</span>
+      <div className="dev-profile-modal-body dev-profile-role-modal-body">
+<DropDownMenu roleRef={roleRef} options={jobsOptions}  labelText={"Preffered role"}></DropDownMenu>
+       <div className="dev-profile-role-modal-inputs-wrapper">
+    <div className="dev-profile-role-modal-input-wrapper">
+   <input defaultValue={currentSalary.toLocaleString()} onChange={handleCurrentSalaryChange} type="number" id="salaryInputCurrent"    className="dev-profile-role-modal-salary-input" required="required"/>
+      <label htmlFor="salaryInputCurrent" className="dev-profile-role-modal-salary-label">Current monthly salary&nbsp;
+        <span style={{color: "blue"}}>*</span>
       </label>
     </div>
-    {openDropdown && <div className="text-input-dropdown-wrapper">
-      </div>}
+    <div  className="dev-profile-role-modal-input-wrapper">
+   <input type="number" defaultValue={"$ 0"}  id="salaryInputExp"  className="dev-profile-role-modal-salary-input" required="required"/>
+      <label htmlFor="salaryInputExp" className="dev-profile-role-modal-salary-label" >Expected salary&nbsp;
+        <span style={{color: "blue"}}>*</span>
+      </label>
+    </div>
+    </div>
      <div className="dev-profile__modal-save-btn-wrapper">
        <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
-      
-   
       </div>
     </div>
     </div>
   </div>}
+  {skillsModal && <div className="dev-profile__modal">
+    <div className="dev-profile__modal-wrapper">
+    <div className="dev-profile__modal-content">
+      <div className="dev-profile__modal-header">
+    <p className="dev-profile__modal-title">Skills and Languages</p>
+    <button type="button" onClick={()=>setSkillsModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
+      </div>
+      <div className="dev-profile-modal-body dev-profile-role-modal-body">
+        
+      <div className="dev-profile__modal-save-btn-wrapper">
+       <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       </div>
+      </div>
+    </div>
+    </div>
+  </div>
+  }
 
   
 </div>
