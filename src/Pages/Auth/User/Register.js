@@ -6,6 +6,9 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useNavigate, Link as LinkDom } from "react-router-dom";
+import Logo from "./../../../Assets/Images/SuperCoderLogoForDeveloper.svg";
+import mainImg from "../../../Assets/Images/authenticate-img.svg";
+
 import {
   Alert,
   Backdrop,
@@ -34,7 +37,6 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleGoogleClick = async () => {
-    console.log(auth.currentUser);
     signInWithGoole()
       .then((result) => {
         setEmail();
@@ -73,7 +75,7 @@ export default function Register() {
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
           localStorage.setItem("verify", JSON.stringify(true));
           setTimeout(() => {
-            navigate("/auth/login");
+            navigate("/user/login");
           }, 1000);
         }
         setOpenLoader(false);
@@ -101,158 +103,181 @@ export default function Register() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      {/* Header */}
-      <Header />
-      {/* Background Image */}
-      <img
-        src={hBg}
-        alt="header background"
-        className="w-full   max-h-[1200px] absolute -z-20 object-cover"
-      />
+
       {/* Main sect  */}
-      <div className="container max-w-[1728px] mx-auto">
-        {/* Main Register Card */}
-        <main className="relative w-full">
-          <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
-            <CssBaseline />
-            <Box
-              sx={{
-                marginTop: 8,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "start",
-                pb: "74px",
-              }}
-            >
-              <Typography
-                component="h1"
-                variant="h5"
-                className="font-semibold text-black text-[24px]"
-              >
-                Sign Up
-              </Typography>
-              <Typography
-                component="h6"
-                variant="h6"
-                className="text-[#999] text-[16px] font-normal"
-              >
-                Wow! You meade a great choice
-              </Typography>
+      <div className="w-full h-screen flex">
+        <div className="w-1/4 md:flex bg-[#19378b] p-[50px] relative h-screen hidden flex-col justify-between">
+          <div className="w-full  text-white">
+            <img
+              src={Logo}
+              width={70}
+              height={41}
+              className="mb-[60px]"
+              alt="site-logo"
+            />
+            <h2 className="mb-[25px] leading-tight text-[22px] font-bold ">
+              Upgrade your life with a global tech HR platform
+            </h2>
+            <p className="tracking-tight leading-tight">
+              Access to a wide range of remote jobs, allowing for a better
+              work-life balance, increased productivity, and reduced stress
+              levels. Join today and start experiencing the benefits of remote
+              work.
+            </p>
+          </div>
+          <img
+            src={mainImg}
+            alt="creative_image"
+            className="w-[420px] absolute bottom-[75px] h-[305px]"
+          />
+        </div>
+        <div className="bg-[#2144a5] w-full md:w-3/4">
+          {/* Main Register Card */}
+          <main className="relative w-full">
+            <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
+              <CssBaseline />
               <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 3 }}
+                sx={{
+                  marginTop: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "start",
+                  pb: "74px",
+                }}
               >
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      autoComplete="given-name"
-                      name="fullName"
-                      required
-                      fullWidth
-                      id="fullName"
-                      label="Full Name"
-                      autoFocus
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="userName"
-                      label="Username"
-                      name="userName"
-                      autoComplete="username"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      id="userEmail"
-                      label="Email Address"
-                      name="userEmail"
-                      autoComplete="email"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      autoComplete="new-password"
-                    />
-                  </Grid>
-                  {showConfirmationCode ? (
+                <Typography
+                  component="h1"
+                  variant="h5"
+                  className="font-semibold text-black text-[24px]"
+                >
+                  Sign Up
+                </Typography>
+                <Typography
+                  component="h6"
+                  variant="h6"
+                  className="text-[#999] text-[16px] font-normal"
+                >
+                  Wow! You meade a great choice
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit}
+                  sx={{ mt: 3 }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <TextField
+                        autoComplete="given-name"
+                        size="small"
+                        name="fullName"
+                        required
+                        fullWidth
+                        id="fullName"
+                        label="Full Name"
+                        autoFocus
+                      />
+                    </Grid>
                     <Grid item xs={12}>
                       <TextField
                         required
                         fullWidth
-                        name="confirmationCode"
-                        label="Confirmation Code"
-                        type="number"
-                        id="confirmationCode"
+                        id="userName"
+                        label="Username"
+                        size="small"
+                        name="userName"
+                        autoComplete="username"
                       />
                     </Grid>
-                  ) : (
-                    ""
-                  )}
-                  <Grid item xs={12}>
-                    <label
-                      htmlFor="checkbox"
-                      className="flex space-x-4 text-[20px] items-center mt-[49px]"
-                    >
-                      <input
-                        type="checkbox"
-                        ref={privacy_check}
-                        className="h-[20px] w-[20px]"
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        id="userEmail"
+                        size="small"
+                        label="Email Address"
+                        name="userEmail"
+                        autoComplete="email"
                       />
-                      <p
-                        onClick={() => {
-                          privacy_check.current.checked =
-                            !privacy_check.current.checked;
-                        }}
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        name="password"
+                        size="small"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="new-password"
+                      />
+                    </Grid>
+                    {showConfirmationCode ? (
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                        size="small"
+                          fullWidth
+                          name="confirmationCode"
+                          label="Confirmation Code"
+                          type="number"
+                          id="confirmationCode"
+                        />
+                      </Grid>
+                    ) : (
+                      ""
+                    )}
+                    <Grid item xs={12}>
+                      <label
+                        htmlFor="checkbox"
+                        className="flex space-x-4 text-[20px] items-center mt-[49px]"
                       >
-                        I accept the terms of service and privacy policy
-                      </p>
-                    </label>
+                        <input
+                          type="checkbox"
+                          ref={privacy_check}
+                          className="h-[20px] w-[20px]"
+                        />
+                        <p
+                          onClick={() => {
+                            privacy_check.current.checked =
+                              !privacy_check.current.checked;
+                          }}
+                        >
+                          I accept the terms of service and privacy policy
+                        </p>
+                      </label>
+                    </Grid>
                   </Grid>
-                </Grid>
-                <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
-                  <button
-                    type="submit"
-                    className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
-                  >
-                    Sign up
-                  </button>
-                  <span className="text-[#999999] text-[16px]">OR</span>
-                  <button
-                    type="button"
-                    className=" w-full py-[23px] transition-all bg-[#F65050] font-normal active:bg-red-600 hover:bg-red-400 text-[16px] text-white rounded-md "
-                    onClick={handleGoogleClick}
-                  >
-                    Sign Up Using Google
-                  </button>
-                </div>
-                <Grid container justifyContent="center" pt={"20px"}>
-                  <Grid item>
-                    <Link variant="body2">
-                      <LinkDom to={"/user/login"}>
-                        Already have an account? Sign in
-                      </LinkDom>
-                    </Link>
+                  <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
+                    <button
+                      type="submit"
+                      className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                    >
+                      Sign up
+                    </button>
+                    <span className="text-[#999999] text-[16px]">OR</span>
+                    <button
+                      type="button"
+                      className=" w-full py-[23px] transition-all bg-[#F65050] font-normal active:bg-red-600 hover:bg-red-400 text-[16px] text-white rounded-md "
+                      onClick={handleGoogleClick}
+                    >
+                      Sign Up Using Google
+                    </button>
+                  </div>
+                  <Grid container justifyContent="center" pt={"20px"}>
+                    <Grid item>
+                      <Link variant="body2">
+                        <LinkDom to={"/user/login"}>
+                          Already have an account? Sign in
+                        </LinkDom>
+                      </Link>
+                    </Grid>
                   </Grid>
-                </Grid>
+                </Box>
               </Box>
-            </Box>
-          </div>
-        </main>
-        {/* Footer sect */}
-        <Footer footerTop="1200" />
+            </div>
+          </main>
+        </div>
       </div>
       {/* Error Alert */}
       <Snackbar

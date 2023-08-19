@@ -7,6 +7,10 @@ import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
+import Logo from "./../../../Assets/Images/SuperCoderLogoForDeveloper.svg";
+import mainImg from "../../../Assets/Images/authenticate-img.svg";
+import backImg from "../../../Assets/Icons/back.svg";
+import forgotPasswordImg from "../../../Assets/Images/forgot-password-img.svg";
 import Box from "@mui/material/Box";
 import GoogleIcon from "../../../Assets/Icons/GoogleIcon.svg";
 import {
@@ -23,6 +27,7 @@ import {
 import { Link as LinkDom, useNavigate } from "react-router-dom";
 import Header from "../../../Widgets/Header/Header";
 import { Footer } from "../../../Widgets";
+import eyeIcon from "../../../Assets/Icons/eye.png";
 import axios from "axios";
 import Verify from "../../../Components/Authentification/Verify";
 import { signInWithGoole } from "../../../Components/Firebase";
@@ -38,35 +43,67 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
   const [subValue, setSubValue] = useState("");
   const navigate = useNavigate();
+  const [typeInput, setTypeInput] = useState("password");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // LogIn Function
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     setOpenLoader(true);
-    await axios
-      .post(url + "/user/login", data)
-      .then((res) => {
-        const token = res?.data?.token;
-        if (token) {
-          setSuccessMsg("Successfully Logged In!");
-          setOpenSuccess(true);
-          localStorage.setItem("token", token);
-          localStorage.setItem("userData", JSON.stringify(res?.data?.data));
-          localStorage.setItem("verify", JSON.stringify(true));
-          setTimeout(() => {
-            navigate("/");
-          }, 1000);
-        }
-        setOpenLoader(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setErrorMsg(err?.response?.data?.message);
-        setOpenError(true);
-        setOpenLoader(false);
-      });
+
+    if (forgotPassword) {
+      await axios
+        .post(url + "/user/login", data)
+        .then((res) => {
+          const token = res?.data?.token;
+          if (token) {
+            setSuccessMsg("Successfully Logged In!");
+            setOpenSuccess(true);
+            localStorage.setItem("token", token);
+            localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+            localStorage.setItem("verify", JSON.stringify(true));
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+          }
+          setOpenLoader(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrorMsg(err?.response?.data?.message);
+          setOpenError(true);
+          setOpenLoader(false);
+        });
+    } else {
+      await axios
+        .post(url + "/user/login", data)
+        .then((res) => {
+          const token = res?.data?.token;
+          if (token) {
+            setSuccessMsg("Successfully Logged In!");
+            setOpenSuccess(true);
+            localStorage.setItem("token", token);
+            localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+            localStorage.setItem("verify", JSON.stringify(true));
+            setTimeout(() => {
+              navigate("/");
+            }, 1000);
+          }
+          setOpenLoader(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setErrorMsg(err?.response?.data?.message);
+          setOpenError(true);
+          setOpenLoader(false);
+        });
+    }
+    console.log({
+      email: data.get("userEmail"),
+      password: data.get("password"),
+    });
   };
 
   const handleSubmitSub = (event) => {
@@ -78,13 +115,12 @@ export default function Login() {
 
   const handleGoogleClick = async () => {
     signInWithGoole()
-      .then((result) => {
+      .then(async (result) => {
         setEmail(result?.user?.email);
         console.log(result.user.auth);
-        axios
+        await axios
           .post(url + "/user/login", {
             userEmail: result?.user?.email,
-            password: "googlestatic123password",
           })
           .then((res) => {
             const token = res?.data?.token;
@@ -102,12 +138,15 @@ export default function Login() {
           })
           .catch((err) => {
             console.log(err);
+            setErrorMsg(err.message);
             setErrorMsg(err?.response?.data?.message);
             setOpenError(true);
             setOpenLoader(false);
           });
       })
       .catch((er) => {
+        setErrorMsg(er.message);
+        setOpenError(true);
         console.log(er);
       });
   };
@@ -142,109 +181,248 @@ export default function Login() {
             alt="header background"
             className="w-full   max-h-[1200px] absolute -z-20 object-cover"
           /> */}
-          <div className="w-1/4 bg-[#19378B] h-screen"></div>
-          <div className="bg-[#2144a5] w-3/4">
+          <div className="w-1/4 md:flex bg-[#19378b] p-[50px] relative h-screen hidden flex-col justify-between">
+            <div className="w-full  text-white">
+              <img
+                src={Logo}
+                width={70}
+                height={41}
+                className="mb-[60px]"
+                alt="site-logo"
+              />
+              <h2 className="mb-[25px] leading-tight text-[22px] font-bold ">
+                Upgrade your life with a global tech HR platform
+              </h2>
+              <p className="tracking-tight leading-tight">
+                Access to a wide range of remote jobs, allowing for a better
+                work-life balance, increased productivity, and reduced stress
+                levels. Join today and start experiencing the benefits of remote
+                work.
+              </p>
+            </div>
+            <img
+              src={mainImg}
+              alt="creative_image"
+              className="w-[420px] absolute bottom-[75px] h-[305px]"
+            />
+          </div>
+          <div className="bg-[#2144a5] w-full md:w-3/4">
             {/* Main Login Card */}
-            <main className="relative w-full h-screen flex items-center justify-center">
-              <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
-                {/* <CssBaseline /> */}
-                <Box
-                  sx={{
-                    marginTop: 4,
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "100%",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography
-                    component="h1"
-                    variant="h4"
-                    sx={{
-                      fontSize: "26px",
-                      marginBottom: "15px",
-                      fontWeight: 700,
-                    }}
-                    className="mx-auto w-full text-center font-bold text-black "
-                  >
-                    Log in as a developer
-                  </Typography>
+            {forgotPassword ? (
+              <main className="relative w-full h-screen flex items-center justify-center">
+                <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
+                  {/* <CssBaseline /> */}
                   <Box
-                    component="form"
-                    onSubmit={handleSubmit}
-                    noValidate
-                    sx={{ mt: 1, width: "100%" }}
+                    sx={{
+                      marginTop: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      alignItems: "center",
+                    }}
                   >
-                    <Button
-                      onClick={handleGoogleClick}
-                      className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg  shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
+                    <Typography
+                      component="h1"
+                      variant="h4"
+                      sx={{
+                        fontSize: "26px",
+                        marginBottom: "15px",
+                        fontWeight: 700,
+                      }}
+                      className="mx-auto w-full text-center font-bold text-black "
                     >
-                      <img
-                        src={GoogleIcon}
-                        alt="GoogleIcon"
-                        width={25}
-                        height={25}
+                      Log in as a developer
+                    </Typography>
+                    <img
+                      src={forgotPasswordImg}
+                      className=""
+                      width={"240px"}
+                      alt="forgot-password-img"
+                    />
+                    <Box
+                      component="form"
+                      onSubmit={handleSubmit}
+                      noValidate
+                      sx={{ mt: 1, width: "100%", position: "relative" }}
+                    >
+                      <TextField
+                        margin="normal"
+                        type="email"
+                        required
+                        fullWidth
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        id="userEmail"
+                        label="Email Address"
+                        name="userEmail"
+                        size="small"
+                        style={{ color: "#999" }}
+                        autoComplete="email"
+                        autoFocus
                       />
-                      <span>Continue with Google</span>
-                    </Button>
-                    <div className="w-full flex items-center justify-between my-[10px]">
-                      <hr className="h-[1px] bg-blue-300 flex w-[46%]" />
-                      <span className="text-blue-300 text-[16px]">or</span>
-                      <hr className="h-[1px] bg-blue-300 flex w-[46%]" />
-                    </div>
-                    <TextField
-                      margin="normal"
-                      type="email"
-                      required
-                      fullWidth
-                      id="userEmail"
-                      label="Email Address"
-                      name="userEmail"
-                      size="small"
-                      style={{ color: "#999" }}
-                      autoComplete="email"
-                      autoFocus
-                    />
-                    <TextField
-                      size="small"
-                      margin="normal"
-                      required
-                      fullWidth
-                      name="password"
-                      label="Password"
-                      type="password"
-                      id="password"
-                      style={{ color: "#999" }}
-                      autoComplete="current-password"
-                    />
-                    <FormHelperText
-                      id="password"
-                      className="hover:text-blue-700 text-blue-500 transition-all cursor-pointer"
-                    >
-                      Forgot Password?
-                    </FormHelperText>
-                    {/* <p className="flex text-center text-[16px]">Forgot Password?</p> */}
-                    <div className="flex flex-col items-center pt-[25px] justify-between w-full space-y-4">
-                      <button
-                        type="submit"
-                        className=" w-full py-[10px] transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
-                      >
-                        Log In
-                      </button>
-                    </div>
-                    <Grid container justifyContent="center" pt={"15px"}>
-                      <Grid item>
-                        Don't have an account?{" "}
-                        <Link variant="body2">
-                          <LinkDom to={"/user/register"} >Sign up</LinkDom>
-                        </Link>
+                      <div className="flex flex-col items-center pt-[40px] justify-between w-full space-y-4">
+                        <button
+                          type="submit"
+                          className=" w-full py-[10px] transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                        >
+                          Log In
+                        </button>
+                      </div>
+                      <Grid container justifyContent="center" pt={"15px"}>
+                        <Grid item>
+                          Having trouble logging in?{" "}
+                          <Link variant="body2">
+                            <a href="mailto:support@supercoder.co">
+                              Contact support
+                            </a>
+                          </Link>
+                        </Grid>
                       </Grid>
-                    </Grid>
+                    </Box>
                   </Box>
-                </Box>
-              </div>
-            </main>
-            {/* Footer */}
+                  <Link
+                    variant="body2"
+                    onClick={(e) => setForgotPassword(false)}
+                    className="flex items-center space-x-2 cursor-pointer justify-center"
+                  >
+                    <button>
+                      <img
+                        src={backImg}
+                        alt="back btn"
+                        width={13}
+                        height={13}
+                        className="fill-blue-500 left-[40px] top-[10px]"
+                      />
+                    </button>
+                    <p onClick={() => setForgotPassword(false)}>Sing In</p>
+                  </Link>
+                </div>
+              </main>
+            ) : (
+              <main className="relative w-full h-screen flex items-center justify-center">
+                <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
+                  {/* <CssBaseline /> */}
+                  <Box
+                    sx={{
+                      marginTop: 4,
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Typography
+                      component="h1"
+                      variant="h4"
+                      sx={{
+                        fontSize: "26px",
+                        marginBottom: "15px",
+                        fontWeight: 700,
+                      }}
+                      className="mx-auto w-full text-center font-bold text-black "
+                    >
+                      Log in as a developer
+                    </Typography>
+                    <Box
+                      component="form"
+                      onSubmit={handleSubmit}
+                      noValidate
+                      sx={{ mt: 1, width: "100%", position: "relative" }}
+                    >
+                      <Button
+                        onClick={handleGoogleClick}
+                        className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg  shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
+                      >
+                        <img
+                          src={GoogleIcon}
+                          alt="GoogleIcon"
+                          width={25}
+                          height={25}
+                        />
+                        <span>Continue with Google</span>
+                      </Button>
+                      <div className="w-full flex items-center justify-between my-[10px]">
+                        <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
+                        <span className="text-blue-300 text-[16px]">or</span>
+                        <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
+                      </div>
+                      <TextField
+                        margin="normal"
+                        type="email"
+                        required
+                        fullWidth
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        id="userEmail"
+                        label="Email Address"
+                        name="userEmail"
+                        size="small"
+                        style={{ color: "#999" }}
+                        autoComplete="email"
+                        autoFocus
+                      />
+                      <TextField
+                        size="small"
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type={typeInput}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        id="password"
+                        style={{ color: "#999" }}
+                        autoComplete="current-password"
+                      />
+                      <img
+                        width={17}
+                        className={`absolute cursor-pointer right-[10px] bottom-[170px] `}
+                        onClick={() => {
+                          if (typeInput === "password") {
+                            setTypeInput("text");
+                          } else setTypeInput("password");
+                        }}
+                        height={17}
+                        src={eyeIcon}
+                        alt="toggle input type"
+                      />
+                      <FormHelperText
+                        id="password"
+                        className="hover:text-blue-700  tracking-tight  transition-all cursor-pointer"
+                        sx={{
+                          color: "#3A6FFF",
+                          textAlign: "right",
+                          fontSize: "14px",
+                          marginLeft: "auto",
+                        }}
+                      >
+                        <span onClick={() => setForgotPassword(true)}>
+                          Forgot password?
+                        </span>
+                      </FormHelperText>
+                      {/* <p className="flex text-center text-[16px]">Forgot Password?</p> */}
+                      <div className="flex flex-col items-center pt-[40px] justify-between w-full space-y-4">
+                        <button
+                          type="submit"
+                          className=" w-full py-[10px] transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                        >
+                          Log In
+                        </button>
+                      </div>
+                      <Grid container justifyContent="center" pt={"15px"}>
+                        <Grid item>
+                          Don't have an account?{" "}
+                          <Link variant="body2">
+                            <LinkDom to={"/user/register"}>Sign up</LinkDom>
+                          </Link>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </Box>
+                </div>
+              </main>
+            )}
           </div>
         </div>
       )}
