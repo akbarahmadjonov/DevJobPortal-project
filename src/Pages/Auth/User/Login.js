@@ -142,7 +142,9 @@ export default function Login() {
             alt="header background"
             className="w-full   max-h-[1200px] absolute -z-20 object-cover"
           /> */}
-          <div className="w-1/4 bg-[#19378B] h-screen"></div>
+          <div className="w-1/4 bg-[#19378B] h-screen">
+            
+          </div>
           <div className="bg-[#2144a5] w-3/4">
             {/* Main Login Card */}
             <main className="relative w-full h-screen flex items-center justify-center">
@@ -188,9 +190,9 @@ export default function Login() {
                       <span>Continue with Google</span>
                     </Button>
                     <div className="w-full flex items-center justify-between my-[10px]">
-                      <hr className="h-[1px] bg-blue-300 flex w-[46%]" />
+                      <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
                       <span className="text-blue-300 text-[16px]">or</span>
-                      <hr className="h-[1px] bg-blue-300 flex w-[46%]" />
+                      <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
                     </div>
                     <TextField
                       margin="normal"
