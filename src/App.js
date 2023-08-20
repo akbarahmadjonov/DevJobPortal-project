@@ -25,6 +25,8 @@ import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
 import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
+// Profile
+import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 
 const App = () => {
   //Test
@@ -74,7 +76,9 @@ const App = () => {
               <Route path="proposed" element={<Proposed />} />
             </Route>
             {/* Talentpool */}
+            {/* Profile */}
           </Route>
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </div>
     </main>

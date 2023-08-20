@@ -1,0 +1,25 @@
+.profile {
+  //* Margin, paddings
+  padding: 5px;
+}
+
+.profile__form-inner {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.profile-form__title {
+  //* Margin, paddings
+  margin-bottom: 20px;
+
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.profile__form {
+  width: 30%;
+}
+
+.profile__details-titles:not(:last-child) {
+  margin-bottom: 20px;
+}
