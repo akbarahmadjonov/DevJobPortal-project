@@ -8,6 +8,8 @@ import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
 import { Select } from "antd";
 import { Dropdown, Menu } from "antd";
+import { useEffect } from "react";
+import JobService from "../../../../../API/Jobs.service";
 
 export const OpenPaused = () => {
   const handleChange = (value: string) => {
@@ -21,6 +23,21 @@ export const OpenPaused = () => {
       </Menu.Item>
     </Menu>
   );
+
+  //* GET REQUEST | FETCH
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await JobService.jobGet();
+        console.log(response);
+        // setData(response.data);
+      } catch (error) {
+        console.error("Error occurred while fetching user profile", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
 
   return (
     <div className="open-paused">

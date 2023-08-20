@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./CompanyProfile.scss";
 import BellIcon from "../../Assets/Images/admin/bell-icon.png";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBriefcase,
@@ -10,26 +10,7 @@ import {
   faStopwatch,
   faUserGroup,
 } from "@fortawesome/free-solid-svg-icons";
-import { Dropdown, Menu } from "antd";
-
-const dropdownMenu = (
-  <Menu>
-    {/* <Menu.Item key="1">
-      <a
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://www.antgroup.com"
-      >
-        1st menu item
-      </a>
-    </Menu.Item> */}
-    <Menu.Item key="2">Change profile</Menu.Item>
-    <Menu.Item key="3">Settings</Menu.Item>
-    <Menu.Item key="4" danger>
-      Log out
-    </Menu.Item>
-  </Menu>
-);
+import { ComHeader } from "../../Widgets/CompanyProfileHeader/ComHeader";
 
 export const CompanyProfile = () => {
   const navigate = useNavigate();
@@ -45,33 +26,7 @@ export const CompanyProfile = () => {
     <>
       <div className="com-profile">
         <div className="container">
-          <div className="com-profile__inner">
-            <h1 className="text-[#0050C8] text-[20px] font-bold">
-              TheJobportal
-            </h1>
-            <div className="com-profile__bar">
-              <div className="bell-wrapper">
-                <img
-                  className="com-profile__bell"
-                  src={BellIcon}
-                  alt="bell-icon"
-                  width={25}
-                  height={25}
-                />
-              </div>
-              <div className="borderHeight"></div>
-              <span className="com-profile__company">
-                <Dropdown overlay={dropdownMenu} trigger={["click"]}>
-                  <a
-                    className="profile__com"
-                    onClick={(e) => e.preventDefault()}
-                  >
-                    HP
-                  </a>
-                </Dropdown>
-              </span>
-            </div>
-          </div>
+          <ComHeader />
           {/* Inner section */}
           <div className="sidebar">
             <div className="sidebar__inner">
