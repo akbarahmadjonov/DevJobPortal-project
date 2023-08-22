@@ -201,7 +201,7 @@ export const Jobs = () => {
     const verified = localStorage.getItem("verify");
     if (verified) {
       if (JSON.parse(verified) === true) return setModal(true);
-    } else navigate("/auth/login");
+    } else navigate("/user/login");
   };
 
   const [applyFile, setApplyFile] = useState(null);

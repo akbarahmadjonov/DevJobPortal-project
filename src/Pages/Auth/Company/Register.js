@@ -147,6 +147,9 @@ export default function CompanyRegister() {
         setStep(3);
         setSuccessMsg("Successfull Sing Up!");
         setOpenSuccess(true);
+        setTimeout(() => {
+          navigate("/comprofile");
+        }, 1000);
       })
       .catch((err) => {
         console.log(err);
