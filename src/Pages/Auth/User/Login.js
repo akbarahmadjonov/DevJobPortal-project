@@ -301,7 +301,6 @@ export default function Login() {
             ) : (
               <main className="relative w-full h-screen flex items-center justify-center">
                 <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
-                  {/* <CssBaseline /> */}
                   <Box
                     sx={{
                       marginTop: 4,
@@ -313,7 +312,7 @@ export default function Login() {
                   >
                     <Typography
                       component="h1"
-                      variant="h4"
+                      variant="h5"
                       sx={{
                         fontSize: "26px",
                         marginBottom: "15px",

@@ -1,4 +1,4 @@
-import { React, useRef, useState } from "react";
+import { React, useEffect, useRef, useState } from "react";
 import hBg from "./../../../Assets/Images/Header bg.png";
 
 import CssBaseline from "@mui/material/CssBaseline";
@@ -6,12 +6,17 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useNavigate, Link as LinkDom } from "react-router-dom";
+import GoogleIcon from "../../../Assets/Icons/GoogleIcon.svg";
+import eyeIcon from "../../../Assets/Icons/eye.png";
 import Logo from "./../../../Assets/Images/SuperCoderLogoForDeveloper.svg";
+import checkIcon from "../../../Assets/Icons/check.png";
+import crossIcon from "../../../Assets/Icons/cross.png";
 import mainImg from "../../../Assets/Images/authenticate-img.svg";
 
 import {
   Alert,
   Backdrop,
+  Button,
   CircularProgress,
   Grid,
   Link,
@@ -26,11 +31,13 @@ export default function Register() {
   const privacy_check = useRef(false);
   const [showConfirmationCode, setShowConfirmationCode] = useState(false);
   const [openLoader, setOpenLoader] = useState(false);
+  const [typeInput, setTypeInput] = useState("password");
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("This is a success message!");
   const [errorMsg, setErrorMsg] = useState("This is a error message!");
   const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userImg, setUserImg] = useState("");
   const url = "https://job-px4t.onrender.com/api";
@@ -56,6 +63,10 @@ export default function Register() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const firstName = data.get("firstName");
+    const lastName = data.get("lastName");
+    const fullName = lastName + firstName;
+    data.append("fullName", fullName);
     setOpenLoader(true);
     await axios
       .post(url + "/user", data)
@@ -94,6 +105,53 @@ export default function Register() {
         setOpenLoader(false);
       });
   };
+  const [disabled, setDisabled] = useState(true);
+  const [validPassword, setValidPassword] = useState(false);
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
+  const [check3, setCheck3] = useState(false);
+  const [check4, setCheck4] = useState(false);
+
+  const validatePassword = (password) => {
+    // Minimum length of 10 characters
+    const lengthValid = password.length >= 10;
+
+    // At least one lowercase letter
+    const lowercaseValid = /[a-z]/.test(password);
+
+    // At least one uppercase letter
+    const uppercaseValid = /[A-Z]/.test(password);
+
+    // At least one digit
+    const digitValid = /\d/.test(password);
+
+    // At least one special character
+    const specialCharValid = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
+
+    setCheck1(lengthValid);
+    setCheck3(lowercaseValid && uppercaseValid);
+    setCheck2(digitValid);
+    setCheck4(specialCharValid);
+    // Update the validity state
+    setValidPassword(
+      lengthValid &&
+        lowercaseValid &&
+        uppercaseValid &&
+        digitValid &&
+        specialCharValid
+    );
+  };
+
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+    validatePassword(newPassword);
+  };
+  useEffect(() => {
+    if (email && validPassword) {
+      setDisabled(false);
+    } else setDisabled(false);
+  }, [password, email]);
   return (
     <>
       {/* Backdrop - Loader */}
@@ -133,31 +191,36 @@ export default function Register() {
         </div>
         <div className="bg-[#2144a5] w-full md:w-3/4">
           {/* Main Register Card */}
-          <main className="relative w-full">
-            <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white">
-              <CssBaseline />
+          <main className="relative w-full h-screen flex items-center justify-center">
+            <div className="flex rounded-md flex-col z-40  items-center px-[30px] pb-[15px] pt-[40px] w-1/2  bg-white">
+              {/* <CssBaseline /> */}
               <Box
                 sx={{
-                  marginTop: 8,
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "start",
-                  pb: "74px",
+                  alignItems: "center",
                 }}
               >
                 <Typography
                   component="h1"
                   variant="h5"
-                  className="font-semibold text-black text-[24px]"
+                  className="mx-auto  w-full text-center text-black"
+                  sx={{
+                    fontSize: "24px",
+                    marginBottom: "10px",
+                    fontWeight: 600,
+                  }}
                 >
-                  Sign Up
+                  Sign up as a developer
                 </Typography>
                 <Typography
                   component="h6"
                   variant="h6"
-                  className="text-[#999] text-[16px] font-normal"
+                  marginBottom={""}
+                  sx={{ fontSize: "14px" }}
+                  className="text-[#000] font-normal"
                 >
-                  Wow! You meade a great choice
+                  Sign up with your Google account or use the form
                 </Typography>
                 <Box
                   component="form"
@@ -165,16 +228,33 @@ export default function Register() {
                   onSubmit={handleSubmit}
                   sx={{ mt: 3 }}
                 >
+                  <Button
+                    onClick={handleGoogleClick}
+                    className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg  shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
+                  >
+                    <img
+                      src={GoogleIcon}
+                      alt="GoogleIcon"
+                      width={25}
+                      height={25}
+                    />
+                    <span>Continue with Google</span>
+                  </Button>
+                  <div className="w-full flex items-center justify-between my-[10px]">
+                    <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
+                    <span className="text-blue-300 text-[16px]">or</span>
+                    <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
+                  </div>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <TextField
-                        autoComplete="given-name"
+                        autoComplete="first-name"
                         size="small"
-                        name="fullName"
+                        name="firstName"
                         required
                         fullWidth
-                        id="fullName"
-                        label="Full Name"
+                        id="firstName"
+                        label="First Name"
                         autoFocus
                       />
                     </Grid>
@@ -182,11 +262,11 @@ export default function Register() {
                       <TextField
                         required
                         fullWidth
-                        id="userName"
-                        label="Username"
+                        id="lastName"
+                        label="Last Name"
                         size="small"
-                        name="userName"
-                        autoComplete="username"
+                        name="lastName"
+                        autoComplete="last-name"
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -200,76 +280,138 @@ export default function Register() {
                         autoComplete="email"
                       />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item sx={{ position: "relative" }} xs={12}>
                       <TextField
                         required
                         fullWidth
                         name="password"
                         size="small"
                         label="Password"
-                        type="password"
+                        type={typeInput}
                         id="password"
+                        value={password}
                         autoComplete="new-password"
+                        onChange={handlePasswordChange}
+                        error={!validPassword}
+                        // helperText={
+                        //   validPassword
+                        //     ? "Password is valid."
+                        //     : "Password must have at least 10 characters, including lowercase, uppercase, a digit, and a special character."
+                        // }
+                      />
+                      <img
+                        width={17}
+                        className={`absolute cursor-pointer right-[10px] top-[30px] `}
+                        onClick={() => {
+                          if (typeInput === "password") {
+                            setTypeInput("text");
+                          } else setTypeInput("password");
+                        }}
+                        height={17}
+                        src={eyeIcon}
+                        alt="toggle input type"
+                      />
+                      <ul className="flex flex-col items-start justify-start text-[14px] mt-[10px]">
+                        <li className="flex space-x-2  items-center justify-center">
+                          <img
+                            src={check1 ? checkIcon : crossIcon}
+                            width={15}
+                            height={15}
+                            alt="check-cross-icon"
+                          />
+                          <span>a minimum of 10 characters</span>
+                        </li>
+                        <li className="flex space-x-2  items-center justify-center">
+                          <img
+                            src={check2 ? checkIcon : crossIcon}
+                            width={15}
+                            height={15}
+                            alt="check-cross-icon"
+                          />
+                          <span>a number</span>
+                        </li>
+                        <li className="flex space-x-2  items-center justify-center">
+                          <img
+                            src={check3 ? checkIcon : crossIcon}
+                            width={15}
+                            height={15}
+                            alt="check-cross-icon"
+                          />
+                          <span>uppercase and lowercase letters</span>
+                        </li>
+                        <li className="flex items-center space-x-2 justify-center">
+                          <img
+                            src={check4 ? checkIcon : crossIcon}
+                            width={15}
+                            height={15}
+                            alt="check-cross-icon"
+                          />
+                          <span>a special character</span>
+                        </li>
+                      </ul>
+                    </Grid>
+                    <Grid
+                      className={`${showConfirmationCode ? "flex" : "hidden"}`}
+                      item
+                      xs={12}
+                    >
+                      <TextField
+                        required
+                        size="small"
+                        fullWidth
+                        name="confirmationCode"
+                        label="Confirmation Code"
+                        type="number"
+                        id="confirmationCode"
                       />
                     </Grid>
-                    {showConfirmationCode ? (
-                      <Grid item xs={12}>
-                        <TextField
-                          required
-                        size="small"
-                          fullWidth
-                          name="confirmationCode"
-                          label="Confirmation Code"
-                          type="number"
-                          id="confirmationCode"
-                        />
-                      </Grid>
-                    ) : (
-                      ""
-                    )}
-                    <Grid item xs={12}>
-                      <label
-                        htmlFor="checkbox"
-                        className="flex space-x-4 text-[20px] items-center mt-[49px]"
-                      >
-                        <input
-                          type="checkbox"
-                          ref={privacy_check}
-                          className="h-[20px] w-[20px]"
-                        />
-                        <p
-                          onClick={() => {
-                            privacy_check.current.checked =
-                              !privacy_check.current.checked;
-                          }}
-                        >
-                          I accept the terms of service and privacy policy
-                        </p>
-                      </label>
-                    </Grid>
                   </Grid>
-                  <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
-                    <button
+                  {/* <div className="flex flex-col mt-[52px] items-center justify-between w-full space-y-4"> */}
+                    <Button
+                      disabled={disabled}
                       type="submit"
-                      className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                      variant="contained"
+                      className=" w-full 0  transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                      sx={{marginTop:"52px"}}
                     >
-                      Sign up
-                    </button>
-                    <span className="text-[#999999] text-[16px]">OR</span>
-                    <button
-                      type="button"
-                      className=" w-full py-[23px] transition-all bg-[#F65050] font-normal active:bg-red-600 hover:bg-red-400 text-[16px] text-white rounded-md "
-                      onClick={handleGoogleClick}
-                    >
-                      Sign Up Using Google
-                    </button>
-                  </div>
-                  <Grid container justifyContent="center" pt={"20px"}>
+                      Create Your Supercoder Account
+                    </Button>
+                  {/* </div> */}
+                  <Grid
+                    container
+                    alignItems={"center"}
+                    flexDirection={"column"}
+                    justifyContent="center"
+                    pt={"20px"}
+                  >
                     <Grid item>
+                      <span className="text-[#989898] tracking-tighter font-semibold">
+                        By confirming your email, you agree to our
+                      </span>
+                      <a
+                        href="#"
+                        className="text-[blue] tracking-tighter font-semibold"
+                      >
+                        {"  "}
+                        Terms of Service
+                      </a>
+                    </Grid>
+                    <Grid item>
+                      <span className="text-[#989898] tracking-tighter font-semibold">
+                        and that you have read and understood our
+                      </span>
+                      <a
+                        href="#"
+                        className="text-[blue] tracking-tighter font-semibold"
+                      >
+                        {"  "}
+                        Privacy Policy
+                      </a>
+                    </Grid>
+                    <Grid item sx={{ mt: "15px" }} className="tracking-tighter">
+                      Already have an account?
                       <Link variant="body2">
-                        <LinkDom to={"/user/login"}>
-                          Already have an account? Sign in
-                        </LinkDom>
+                        <LinkDom to={"/user/login"}> Sign in</LinkDom>
                       </Link>
                     </Grid>
                   </Grid>
