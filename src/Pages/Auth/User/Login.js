@@ -33,7 +33,7 @@ import Verify from "../../../Components/Authentification/Verify";
 import { signInWithGoole } from "../../../Components/Firebase";
 
 export default function Login() {
-  const url = "https://job-px4t.onrender.com/api";
+  const url = process.env.URL || "https://job-px4t.onrender.com/api";
   const [openLoader, setOpenLoader] = useState(false);
   const verify = JSON.parse(localStorage.getItem("verify")) || false;
   const [forgotPassword, setForgotPassword] = useState(false);
