@@ -6,11 +6,7 @@ const ProfileService = {
   //* PROFILE | GET REQUEST
   profileGet: async () => {
     try {
-      const data = await axios.get("/recruiter", {
-        headers: {
-          Authorization: token,
-        },
-      });
+      const data = await axios.get(`/recruiter/${token}`);
       return data;
     } catch (error) {
       console.log(error);

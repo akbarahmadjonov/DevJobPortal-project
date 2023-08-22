@@ -33,7 +33,7 @@ export const Profile = () => {
         <div className="container">
           <ComHeader />
           <button
-            onClick={navigate(-1)}
+            // onClick={navigate(-1)}
             style={{ padding: "5px" }}
             className="jobsTalentButtons"
           >

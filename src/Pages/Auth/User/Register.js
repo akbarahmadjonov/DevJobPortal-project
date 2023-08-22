@@ -48,15 +48,50 @@ export default function Register() {
       .then((result) => {
         setEmail();
         setUserImg(result?.user?.photoURL);
-        axios.post(url + "/user", {
-          fullName: result?.user?.displayName,
-          userEmail: result?.user?.email,
-          password: "googlestatic123password",
-        });
+        const data = new FormData();
+        data.append("fullName", result?.user?.displayName);
+        data.append("userEmail", result?.user?.email);
+        axios
+          .post(url + "/user", data)
+          .then((res) => {
+            console.log(res);
+            const token = res?.data?.token;
+            const msg = res?.data?.message;
+            if (msg === "Confirmation code sent to the email") {
+              setSuccessMsg(msg);
+              setOpenSuccess(true);
+              setShowConfirmationCode(true);
+            }
+            if (token) {
+              setSuccessMsg("Successfully Signed Up!");
+              setOpenSuccess(true);
+              setShowConfirmationCode(false);
+              localStorage.setItem("token", token);
+              localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+              localStorage.setItem("verify", JSON.stringify(true));
+              setTimeout(() => {
+                navigate("/user/login");
+              }, 1000);
+            }
+            setOpenLoader(false);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         console.log(result.user.auth);
       })
       .catch((er) => {
         console.log(er);
+        const unexpectedError = er?.message;
+        const serverError = er?.response?.data?.message;
+        if (unexpectedError) {
+          setErrorMsg(unexpectedError);
+        }
+        if (serverError) {
+          setErrorMsg(serverError);
+        }
+        setOpenError(true);
+        setOpenLoader(false);
       });
   };
 
@@ -367,15 +402,15 @@ export default function Register() {
                     </Grid>
                   </Grid>
                   {/* <div className="flex flex-col mt-[52px] items-center justify-between w-full space-y-4"> */}
-                    <Button
-                      disabled={disabled}
-                      type="submit"
-                      variant="contained"
-                      className=" w-full 0  transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
-                      sx={{marginTop:"52px"}}
-                    >
-                      Create Your Supercoder Account
-                    </Button>
+                  <Button
+                    disabled={disabled}
+                    type="submit"
+                    variant="contained"
+                    className=" w-full 0  transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                    sx={{ marginTop: "52px" }}
+                  >
+                    Create Your Supercoder Account
+                  </Button>
                   {/* </div> */}
                   <Grid
                     container
