@@ -145,11 +145,10 @@ export default function CompanyRegister() {
         localStorage.setItem("token", res?.data?.token);
         localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
         setStep(3);
+        navigate("/comprofile");
         setSuccessMsg("Successfull Sing Up!");
         setOpenSuccess(true);
-        setTimeout(() => {
-          navigate("/comprofile");
-        }, 1000);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
