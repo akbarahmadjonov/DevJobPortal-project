@@ -1,0 +1,71 @@
+body {
+  background-color: #f3f3f3;
+}
+
+.com-profile {
+  padding: 5px;
+}
+
+//* Sidebar
+.sidebar {
+  //* Margin, paddings
+  padding-top: 10px;
+}
+
+.sidebar__inner {
+  display: flex;
+  position: relative;
+}
+
+.sidebar__list {
+  margin-top: 50px;
+  margin-right: 20px;
+  border-top: 2px solid #c3c3c3;
+
+  width: 11%;
+}
+
+.sidebar__item {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+
+  //* Margin, paddings
+  padding: 8px;
+  margin-top: 20px;
+
+  border-radius: 8px;
+  background-color: #fff;
+  font-weight: 800;
+  border: 1px solid transparent;
+
+  &:hover {
+    background-color: #f9f9f9;
+  }
+}
+.sidebar__item.active {
+  background-color: #eaf0ff;
+  color: #0050c8 !important;
+  border: 1px solid #0050c8;
+}
+
+.sidebar__item:nth-child(5) {
+  position: absolute;
+  bottom: 0;
+}
+
+.sidebar__out {
+  width: 100%;
+  // padding-left: 20px;
+
+  border-radius: 8px;
+  background-color: #fff;
+
+  height: 100vh;
+}
+
+$iconMarginRight: 5px;
+
+.icon {
+  margin-right: $iconMarginRight;
+}

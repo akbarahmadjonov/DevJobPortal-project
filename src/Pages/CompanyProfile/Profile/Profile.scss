@@ -1,0 +1,39 @@
+.profile {
+  //* Margin, paddings
+  padding: 5px;
+}
+
+.profile__form-inner {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.profile-form__title {
+  //* Margin, paddings
+  margin-bottom: 20px;
+
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.profile__form {
+  width: 30%;
+}
+
+.profile__details-titles:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.profile__details-titles {
+  font-weight: bold;
+}
+
+.profile__details-span {
+  //* Margin, paddings
+  margin-left: 5px;
+  padding: 3px;
+
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  font-weight: normal;
+}

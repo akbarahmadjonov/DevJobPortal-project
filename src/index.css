@@ -1,13 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+element.style {
+}
+:where(.css-dev-only-do-not-override-1w4v3hc).ant-back-top .ant-back-top-icon {
+  font-size: 24px;
+  line-height: 40px;
+  background-color: #0050c8;
+}
+
+:where(.css-dev-only-do-not-override-1w4v3hc).ant-back-top {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+
+  line-height: 1.5714285714285714;
+  list-style: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  position: fixed;
+  inset-inline-end: 100px;
+  inset-block-end: 50px;
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  right: 30px;
+}
+
+.active {
+  color: black !important;
+}
+.ooo {
+  font-size: 20px !important;
+}
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }

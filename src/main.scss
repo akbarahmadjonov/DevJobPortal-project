@@ -13,8 +13,10 @@ body {
   //* Your container site here👇🏻
 
   //   width: 100% !important;
-  //   max-width: 1210px !important;
-  padding: 0 20px !important;
+  padding: 0 20px; //important removed
+
+  width: 100%;
+
   margin: 0 auto !important;
 }
 
@@ -31,6 +33,24 @@ a {
   text-decoration: none;
 }
 
+.jobsTalentButtons {
+  //* Margin, paddings
+  width: 100%;
+  max-width: 140px;
+
+  //* Custom styles
+  font-size: 15px;
+  font-weight: 700;
+  background-color: #0050c8;
+  border-radius: 8px;
+  color: #fff;
+
+  &:hover {
+    color: #fff !important;
+    background-color: #2f80fa;
+  }
+}
+
 //***   MOBILE   ***//
 
 @media only screen and (max-width: 576px) {
@@ -38,3 +58,94 @@ a {
     padding: 0 16px !important;
   }
 }
+
+//Common styles
+
+.sub-title-text {
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin-bottom: 22px;
+}
+
+.text {
+  color: #c4c4c4;
+  font-size: 16px;
+  font-style: normal;
+  line-height: normal;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  border: none !important;
+}
+
+.error {
+  margin-top: 150px;
+  text-align: center;
+  color: rgb(161, 69, 69);
+  font-size: 60px;
+  line-height: initial;
+}
+
+//Spinner
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #0050c8;
+
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+
+//

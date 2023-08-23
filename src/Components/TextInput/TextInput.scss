@@ -1,0 +1,61 @@
+//do not change if not neccessary
+// it will affect to all input in the page
+
+.text-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.text-label {
+  position: absolute;
+  bottom: 50%;
+  left: 20px;
+  z-index: 10;
+  padding: 2px;
+  color: #656565;
+  font-size: 14px;
+  font-weight: 400;
+  transform: translateY(50%);
+  background-color: #fff;
+  transition: ease-out 0.15s;
+  transition-property: bottom, color, transform;
+}
+
+.text-input {
+  padding: 12px 20px;
+  width: 100%;
+  // min-width: 300px;
+  border: 0.5px solid #bfd4ff;
+  border-radius: 4px;
+  color: #000000;
+  font-size: 18px;
+  line-height: 1.428em;
+  &:focus {
+    border: 1px solid #2b6def;
+    outline: none;
+    & + .text-label {
+      color: #000000de;
+    }
+  }
+  & + .text-label {
+    bottom: 100%;
+    transform: translateY(150%);
+  }
+
+  &.filled + label,
+  &:focus + label,
+  &:valid + label {
+    transform: translateY(50%);
+    font-size: 12px;
+  }
+}
+
+.text-area {
+  padding: 12px;
+  color: #000000de;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+.number-input {
+}
