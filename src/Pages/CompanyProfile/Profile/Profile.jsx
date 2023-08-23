@@ -1,7 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
 import "./Profile.scss";
-import { Form, Input, Button } from "antd";
+import { Form, input, Button } from "antd";
 import { ComHeader } from "../../../Widgets/CompanyProfileHeader/ComHeader";
 import ProfileService from "../../../API/CompanyProfile.service";
 import { useState } from "react";
@@ -21,11 +21,12 @@ export const Profile = () => {
 
   const navigate = useNavigate();
 
-  const companyName = useRef();
-  const email = useRef();
-  const name = useRef();
-  const phoneNumber = useRef();
-  const website = useRef();
+  const companyNameRef = useRef();
+  const emailRef = useRef();
+  const nameRef = useRef();
+  const phoneNumberRef = useRef();
+  const websiteRef = useRef();
+
   //* GET REQUEST | FETCH
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -42,21 +43,33 @@ export const Profile = () => {
   }, []);
 
   //* PUT REQUEST | PUT
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = (event) => {
+    event.preventDefault();
     const changedCompanyInfo = {
-      companyName: companyName.current?.value,
-      email: email.current?.value,
-      name: name.current?.value,
-      phoneNumber: phoneNumber.current?.value,
-      website: website.current?.value,
+      companyName: companyNameRef.current?.value,
+      email: emailRef.current?.value,
+      name: nameRef.current?.value,
+      phoneNumber: phoneNumberRef.current?.value,
+      website: websiteRef.current?.value,
     };
 
-    try {
-      const response = await ProfileService.profileChange(changedCompanyInfo);
-      console.log(response);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-    }
+    const changeProfile = async () => {
+      try {
+        const response = await ProfileService.profileChange(changedCompanyInfo);
+        console.log(response);
+
+        setCompanyProfile(response.data);
+
+        companyNameRef.current.value = "";
+        emailRef.current.value = "";
+        nameRef.current.value = "";
+        phoneNumberRef.current.value = "";
+        websiteRef.current.value = "";
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
+    };
+    changeProfile();
   };
 
   return (
@@ -66,7 +79,6 @@ export const Profile = () => {
           <ComHeader />
           <button
             onClick={() => navigate(-1)}
-//             onClick={navigate(-1)}
             style={{ padding: "5px" }}
             className="jobsTalentButtons"
           >
@@ -75,57 +87,53 @@ export const Profile = () => {
           <div className="profile__form-inner">
             <div className="profile__form">
               <h2 className="profile-form__title">Edit Profile</h2>
-              <Form
+              <form
                 name="profileForm"
                 layout="vertical"
-                onFinish={handleUpdateProfile}
-                initialValues={companyProfile}
+                onSubmit={handleUpdateProfile}
               >
-                <Form.Item
-                  ref={companyName}
-                  label="Company Name"
-                  name="companyName"
-                >
-                  <Input
+                <label label="Company Name" name="companyName">
+                  <input
+                    ref={companyNameRef}
                     placeholder={companyProfile?.companyName}
                     style={{ width: "100%" }}
                   />
-                </Form.Item>
-                <Form.Item ref={email} label="Email" name="email">
-                  <Input
+                </label>
+                <label label="Email" name="email">
+                  <input
+                    ref={emailRef}
                     placeholder={companyProfile?.email}
                     style={{ width: "100%" }}
                   />
-                </Form.Item>
-                <Form.Item ref={name} label="Name" name="name">
-                  <Input
+                </label>
+                <label label="Name" name="name">
+                  <input
+                    ref={nameRef}
                     placeholder={companyProfile?.name}
                     style={{ width: "100%" }}
                   />
-                </Form.Item>
-                <Form.Item
-                  ref={phoneNumber}
-                  label="Phone Number"
-                  name="phoneNumber"
-                >
-                  <Input
+                </label>
+                <label label="Phone Number" name="phoneNumber">
+                  <input
+                    ref={phoneNumberRef}
                     placeholder={companyProfile?.phoneNumber}
                     style={{ width: "100%" }}
                   />
-                </Form.Item>
-                <Form.Item ref={website} label="Website" name="website">
-                  <Input
+                </label>
+                <label label="Website" name="website">
+                  <input
+                    ref={websiteRef}
                     id="websiteInput"
                     style={{ width: "100%" }}
                     defaultValue={companyProfile?.website}
                   />
-                </Form.Item>
-                <Form.Item>
+                </label>
+                <label>
                   <Button type="primary" htmlType="submit">
                     Update Profile
                   </Button>
-                </Form.Item>
-              </Form>
+                </label>
+              </form>
             </div>
             <div className="profile__details">
               <h2 className="profile-form__title">Current profile</h2>
