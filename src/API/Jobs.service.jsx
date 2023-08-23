@@ -6,9 +6,7 @@ const JobService = {
   //* JOB GET | REQUEST
   jobGet: async () => {
     try {
-      const data = await axios.get("/job", {
-        authorization: token,
-      });
+      const data = await axios.get(`/job/${token}`);
       return data;
     } catch (error) {
       console.log(error);
