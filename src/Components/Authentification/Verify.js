@@ -83,7 +83,7 @@ export default function Verify(params) {
               onClick={logOut}
               variant="contained"
               size="large"
-              color="warning"
+              color="info"
             >
               Log Out
             </Button>
