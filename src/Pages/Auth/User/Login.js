@@ -23,6 +23,9 @@ import { signInWithGoogle } from "../../../Components/Firebase";
 import Verify from "../../../Components/Authentification/Verify";
 import Header from "../../../Widgets/Header/Header";
 import { Footer } from "../../../Widgets";
+import { RightContent } from "./RightSide/RightContent";
+import { LeftContent } from "./LeftSide/LeftContent";
+import { useEffect } from "react";
 
 const apiUrl = process.env.URL || "https://job-px4t.onrender.com/api";
 
@@ -58,13 +61,11 @@ const Login = () => {
         localStorage.setItem("token", token);
         localStorage.setItem("userData", JSON.stringify(res?.data?.data));
         localStorage.setItem("verify", JSON.stringify(true));
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
       }
       setOpenLoader(false);
     } catch (err) {
       console.log(err);
+      setErrorMsg(err?.message);
       setErrorMsg(err?.response?.data?.message);
       setOpenError(true);
       setOpenLoader(false);
@@ -87,14 +88,12 @@ const Login = () => {
         localStorage.setItem("token", token);
         localStorage.setItem("userData", JSON.stringify(res?.data?.data));
         localStorage.setItem("verify", JSON.stringify(true));
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
       }
       setOpenLoader(false);
     } catch (err) {
       if (err.message !== "Firebase: Error (auth/cancelled-popup-request).") {
         setErrorMsg(err.message);
+        setErrorMsg(err?.response?.data?.message);
         setOpenError(true);
         console.log(err);
       } else {
@@ -102,6 +101,11 @@ const Login = () => {
       }
     }
   };
+  useEffect(() => {
+    if (verify) {
+      navigate("/devs-profile");
+    }
+  }, [verify, navigate]);
 
   return (
     <>
@@ -112,31 +116,56 @@ const Login = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-
-      {/* Header */}
-      {/* <Header /> */}
-
       {/* Conditionally Render Verification or Login */}
-      {verify ? (
-        <div className="container max-w-[1728px] mx-auto">
-          <Verify />
-        </div>
-      ) : (
+      {(
         <div className="w-full h-screen flex">
           {/* Left Side Content */}
-          <div className="w-1/4 md:flex bg-[#19378b] p-[50px] relative h-screen hidden flex-col justify-between">
-            {/* LeftContent component will be inserted here */}
-          </div>
-
+          <LeftContent />
           {/* Right Side Content */}
-          <div className="bg-[#2144a5] w-full md:w-3/4">
-            {/* RightContent component will be inserted here */}
-          </div>
+          <RightContent
+            forgotPassword={forgotPassword}
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            typeInput={typeInput}
+            setTypeInput={setTypeInput}
+            handleGoogleClick={handleGoogleClick}
+            handleSubmit={handleSubmit}
+            navigate={navigate}
+            setForgotPassword={setForgotPassword}
+          />
         </div>
       )}
-
       {/* Success and Error Alerts */}
-      {/* Snackbar components will be inserted here */}
+      {/* Success Alert */}
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity="error"
+          sx={{ width: "100%" }}
+        >
+          {errorMsg}
+        </Alert>
+      </Snackbar>
+      {/* Error Alert */}
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          {successMsg}
+        </Alert>
+      </Snackbar>{" "}
     </>
   );
 };
