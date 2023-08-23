@@ -7,7 +7,7 @@ export default function Verify(params) {
   );
   const logOut = () => {
     localStorage.clear();
-    navigate('/auth/login');
+    navigate('/user/login');
   };
 
   return (

@@ -100,7 +100,7 @@ export default function Register() {
     const data = new FormData(event.currentTarget);
     const firstName = data.get("firstName");
     const lastName = data.get("lastName");
-    const fullName = lastName + firstName;
+    const fullName = lastName + " " + firstName;
     data.append("fullName", fullName);
     setOpenLoader(true);
     await axios
@@ -142,6 +142,8 @@ export default function Register() {
   };
   const [disabled, setDisabled] = useState(true);
   const [validPassword, setValidPassword] = useState(false);
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [check1, setCheck1] = useState(false);
   const [check2, setCheck2] = useState(false);
   const [check3, setCheck3] = useState(false);
@@ -186,7 +188,7 @@ export default function Register() {
     if (email && validPassword) {
       setDisabled(false);
     } else setDisabled(false);
-  }, [password, email]);
+  }, [password, email, firstName, lastName]);
   return (
     <>
       {/* Backdrop - Loader */}
@@ -257,7 +259,7 @@ export default function Register() {
                 >
                   Sign up with your Google account or use the form
                 </Typography>
-                <Box
+                <form
                   component="form"
                   noValidate
                   onSubmit={handleSubmit}
@@ -289,6 +291,8 @@ export default function Register() {
                         required
                         fullWidth
                         id="firstName"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         label="First Name"
                         autoFocus
                       />
@@ -300,6 +304,8 @@ export default function Register() {
                         id="lastName"
                         label="Last Name"
                         size="small"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         name="lastName"
                         autoComplete="last-name"
                       />
@@ -450,7 +456,7 @@ export default function Register() {
                       </Link>
                     </Grid>
                   </Grid>
-                </Box>
+                </form>
               </Box>
             </div>
           </main>

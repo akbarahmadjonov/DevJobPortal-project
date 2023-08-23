@@ -93,7 +93,7 @@ export default function Header({ headerClassName, style, inputStyle }) {
                   <NavLink
                     style={verify && { color: "#b2b7bd" }}
                     className={`active:text-blue-500 text-black font-bold`}
-                    to={"/auth/login"}
+                    to={"/user/login"}
                   >
                     {fullName ? fullName : "Unknown User"}
                   </NavLink>
