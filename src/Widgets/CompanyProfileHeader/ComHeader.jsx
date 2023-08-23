@@ -88,7 +88,8 @@ export const ComHeader = () => {
         <span className="com-profile__company">
           <Dropdown overlay={dropdownMenu} trigger={["click"]}>
             <a className="profile__com" onClick={(e) => e.preventDefault()}>
-              {mixedCharacter}
+              {mixedCharacter} 
+              {/* Accepts string */}
             </a>
           </Dropdown>
         </span>
