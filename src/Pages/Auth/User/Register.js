@@ -36,7 +36,8 @@ export default function Register() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("This is a success message!");
   const [errorMsg, setErrorMsg] = useState("This is a error message!");
-  const [userName, setUserName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userImg, setUserImg] = useState("");
@@ -48,15 +49,52 @@ export default function Register() {
       .then((result) => {
         setEmail();
         setUserImg(result?.user?.photoURL);
-        axios.post(url + "/user", {
-          fullName: result?.user?.displayName,
-          userEmail: result?.user?.email,
-          password: "googlestatic123password",
-        });
+        const data = new FormData();
+        data.append("fullName", result?.user?.displayName);
+        data.append("userEmail", result?.user?.email);
+        axios
+          .post(url + "/user", data)
+          .then((res) => {
+            console.log(res);
+            const token = res?.data?.token;
+            const msg = res?.data?.message;
+            if (msg === "Confirmation code sent to the email") {
+              setSuccessMsg(msg);
+              setOpenSuccess(true);
+              setShowConfirmationCode(true);
+            }
+            if (token) {
+              setSuccessMsg("Successfully Signed Up!");
+              setOpenSuccess(true);
+              setShowConfirmationCode(false);
+              localStorage.setItem("token", token);
+              localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+              localStorage.setItem("verify", JSON.stringify(true));
+              setTimeout(() => {
+                navigate("/user/login");
+              }, 1000);
+            }
+            setOpenLoader(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setErrorMsg(err?.response?.data?.message || err?.message);
+            setOpenError(true);
+          });
         console.log(result.user.auth);
       })
       .catch((er) => {
         console.log(er);
+        const unexpectedError = er?.message;
+        const serverError = er?.response?.data?.message;
+        if (unexpectedError) {
+          setErrorMsg(unexpectedError);
+        }
+        if (serverError) {
+          setErrorMsg(serverError);
+        }
+        setOpenError(true);
+        setOpenLoader(false);
       });
   };
 
@@ -65,7 +103,7 @@ export default function Register() {
     const data = new FormData(event.currentTarget);
     const firstName = data.get("firstName");
     const lastName = data.get("lastName");
-    const fullName = lastName + firstName;
+    const fullName = lastName + " " + firstName;
     data.append("fullName", fullName);
     setOpenLoader(true);
     await axios
@@ -222,12 +260,7 @@ export default function Register() {
                 >
                   Sign up with your Google account or use the form
                 </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{ mt: 3 }}
-                >
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                   <Button
                     onClick={handleGoogleClick}
                     className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg  shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
@@ -254,18 +287,21 @@ export default function Register() {
                         required
                         fullWidth
                         id="firstName"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         label="First Name"
                         autoFocus
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        required
                         fullWidth
                         id="lastName"
                         label="Last Name"
                         size="small"
                         name="lastName"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         autoComplete="last-name"
                       />
                     </Grid>
@@ -367,15 +403,15 @@ export default function Register() {
                     </Grid>
                   </Grid>
                   {/* <div className="flex flex-col mt-[52px] items-center justify-between w-full space-y-4"> */}
-                    <Button
-                      disabled={disabled}
-                      type="submit"
-                      variant="contained"
-                      className=" w-full 0  transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
-                      sx={{marginTop:"52px"}}
-                    >
-                      Create Your Supercoder Account
-                    </Button>
+                  <Button
+                    disabled={disabled}
+                    type="submit"
+                    variant="contained"
+                    className=" w-full 0  transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                    sx={{ marginTop: "52px" }}
+                  >
+                    Create Your Supercoder Account
+                  </Button>
                   {/* </div> */}
                   <Grid
                     container

@@ -69,11 +69,19 @@ export default function CompanyLogin() {
       });
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (emailValidation.test(email)) {
-      setSuccessMsg("Reset Successful");
-      setOpenSuccess(true);
-      setReset(true);
+      await axios
+        .post(url + "/recruiter", {})
+        .then((res) => {
+          console.log(res);
+          setSuccessMsg("Reset Successful");
+          setOpenSuccess(true);
+          setReset(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setErrorMsg("Please enter a valid email address!");
       setOpenError(true);

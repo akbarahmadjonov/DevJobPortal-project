@@ -31,6 +31,7 @@ const ProfileService = {
   profileDelete: async () => {
     try {
       const data = await axios.delete(`recruiter/${companyId}`);
+      const data = await axios.get(`/recruiter/${token}`);
       return data;
     } catch (error) {
       console.log(error);
