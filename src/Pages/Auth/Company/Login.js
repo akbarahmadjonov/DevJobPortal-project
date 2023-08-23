@@ -55,11 +55,10 @@ export default function CompanyLogin() {
       .then((res) => {
         localStorage.setItem("token", res?.data?.token);
         localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
-        setTimeout(() => {
-          navigate("/comprofile");
-        }, 1000);
+        navigate("/comprofile");
         setSuccessMsg("Successfull Log In");
         setOpenSuccess(true);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);

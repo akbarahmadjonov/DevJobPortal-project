@@ -23,3 +23,17 @@
 .profile__details-titles:not(:last-child) {
   margin-bottom: 20px;
 }
+
+.profile__details-titles {
+  font-weight: bold;
+}
+
+.profile__details-span {
+  //* Margin, paddings
+  margin-left: 5px;
+  padding: 3px;
+
+  background-color: #f8f8f8;
+  border-radius: 5px;
+  font-weight: normal;
+}

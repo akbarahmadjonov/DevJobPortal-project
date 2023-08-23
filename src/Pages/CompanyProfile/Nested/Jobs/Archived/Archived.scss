@@ -1,0 +1,16 @@
+.archived {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  margin-top: 200px;
+}
+
+.archived__title {
+  //* Margin, paddings
+  margin-top: 16px;
+
+  font-weight: 800;
+}
