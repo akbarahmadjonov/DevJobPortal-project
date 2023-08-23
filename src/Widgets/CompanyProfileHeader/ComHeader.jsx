@@ -17,7 +17,6 @@ export const ComHeader = () => {
   const companyName = companyProfile?.companyName;
   const firstCharacter = companyName?.charAt(0);
   const lastCharacter = companyName?.charAt(companyName.length - 1);
-  const mixedCharacter = firstCharacter + lastCharacter;
 
   const showLogoutModal = () => {
     setLogoutModalVisible(true);
@@ -57,6 +56,9 @@ export const ComHeader = () => {
 
   const dropdownMenu = (
     <Menu>
+      <h3 style={{ fontWeight: "700", marginBottom: "8px", padding: "3px" }}>
+        {companyProfile?.companyName}
+      </h3>
       <Menu.Item key="2">
         <Link to="/profile">Change profile</Link>
       </Menu.Item>
@@ -88,7 +90,7 @@ export const ComHeader = () => {
         <span className="com-profile__company">
           <Dropdown overlay={dropdownMenu} trigger={["click"]}>
             <a className="profile__com" onClick={(e) => e.preventDefault()}>
-              {mixedCharacter} 
+              {`${firstCharacter}${lastCharacter}`}
               {/* Accepts string, not working */}
             </a>
           </Dropdown>
