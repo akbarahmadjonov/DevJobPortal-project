@@ -36,7 +36,8 @@ export default function Register() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("This is a success message!");
   const [errorMsg, setErrorMsg] = useState("This is a error message!");
-  const [userName, setUserName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [userImg, setUserImg] = useState("");
@@ -77,6 +78,8 @@ export default function Register() {
           })
           .catch((err) => {
             console.log(err);
+            setErrorMsg(err?.response?.data?.message || err?.message);
+            setOpenError(true);
           });
         console.log(result.user.auth);
       })
@@ -142,8 +145,6 @@ export default function Register() {
   };
   const [disabled, setDisabled] = useState(true);
   const [validPassword, setValidPassword] = useState(false);
-  const [lastName, setLastName] = useState("");
-  const [firstName, setFirstName] = useState("");
   const [check1, setCheck1] = useState(false);
   const [check2, setCheck2] = useState(false);
   const [check3, setCheck3] = useState(false);
@@ -188,7 +189,7 @@ export default function Register() {
     if (email && validPassword) {
       setDisabled(false);
     } else setDisabled(false);
-  }, [password, email, firstName, lastName]);
+  }, [password, email]);
   return (
     <>
       {/* Backdrop - Loader */}
@@ -259,12 +260,7 @@ export default function Register() {
                 >
                   Sign up with your Google account or use the form
                 </Typography>
-                <form
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{ mt: 3 }}
-                >
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                   <Button
                     onClick={handleGoogleClick}
                     className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg  shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
@@ -299,14 +295,13 @@ export default function Register() {
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
-                        required
                         fullWidth
                         id="lastName"
                         label="Last Name"
                         size="small"
+                        name="lastName"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        name="lastName"
                         autoComplete="last-name"
                       />
                     </Grid>
@@ -456,7 +451,7 @@ export default function Register() {
                       </Link>
                     </Grid>
                   </Grid>
-                </form>
+                </Box>
               </Box>
             </div>
           </main>

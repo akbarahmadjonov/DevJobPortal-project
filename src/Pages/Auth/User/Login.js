@@ -106,13 +106,6 @@ export default function Login() {
     });
   };
 
-  const handleSubmitSub = (event) => {
-    event.preventDefault();
-    // const data = new FormData(event.currentTarget);
-    setOpenSuccess(true);
-    setSubValue("");
-  };
-
   const handleGoogleClick = async () => {
     signInWithGoole()
       .then(async (result) => {
@@ -145,9 +138,11 @@ export default function Login() {
           });
       })
       .catch((er) => {
-        setErrorMsg(er.message);
-        setOpenError(true);
-        console.log(er);
+        if (er.message !== "Firebase: Error (auth/cancelled-popup-request).") {
+          setErrorMsg(er.message);
+          setOpenError(true);
+          console.log(er);
+        } else console.log(er);
       });
   };
   return (
@@ -169,16 +164,9 @@ export default function Login() {
           <div className="container max-w-[1728px] mx-auto">
             <Verify />
           </div>
-          {/* #2144a5 */}
         </>
       ) : (
         <div className="w-full h-screen flex">
-          {/* Main background-image */}
-          {/* <img
-            src={hBg}
-            alt="header background"
-            className="w-full   max-h-[1200px] absolute -z-20 object-cover"
-          /> */}
           <div className="w-1/4 md:flex bg-[#19378b] p-[50px] relative h-screen hidden flex-col justify-between">
             <div className="w-full  text-white">
               <img
@@ -240,13 +228,12 @@ export default function Login() {
                     <Box
                       component="form"
                       onSubmit={handleSubmit}
-                      noValidate
                       sx={{ mt: 1, width: "100%", position: "relative" }}
                     >
                       <TextField
+                        required
                         margin="normal"
                         type="email"
-                        required
                         fullWidth
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
@@ -323,7 +310,6 @@ export default function Login() {
                     <Box
                       component="form"
                       onSubmit={handleSubmit}
-                      noValidate
                       sx={{ mt: 1, width: "100%", position: "relative" }}
                     >
                       <Button
