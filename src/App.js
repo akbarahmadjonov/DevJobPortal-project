@@ -3,10 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
-import Login from "./Pages/Auth/User/Login1";
-import Register from "./Pages/Auth/User/Register";
-import CompanyLogin from "./Pages/Auth/Company/Login";
-import CompanyRegister from "./Pages/Auth/Company/Register";
 import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
 import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
@@ -14,6 +10,11 @@ import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
 import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
 import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
 import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
+// Auth
+import Login from "./Pages/Auth/User/Login";
+import Register from "./Pages/Auth/User/Register";
+import CompanyLogin from "./Pages/Auth/Company/Login";
+import CompanyRegister from "./Pages/Auth/Company/Register";
 // Jobs
 import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
 import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";

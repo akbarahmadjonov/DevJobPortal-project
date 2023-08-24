@@ -83,9 +83,9 @@ export default function Login() {
             localStorage.setItem("token", token);
             localStorage.setItem("userData", JSON.stringify(res?.data?.data));
             localStorage.setItem("verify", JSON.stringify(true));
-            setTimeout(() => {
-              navigate("/");
-            }, 1000);
+            // setTimeout(() => {
+            //   navigate("/");
+            // }, 1000);
           }
           setOpenLoader(false);
         })
@@ -119,9 +119,9 @@ export default function Login() {
               localStorage.setItem("token", token);
               localStorage.setItem("userData", JSON.stringify(res?.data?.data));
               localStorage.setItem("verify", JSON.stringify(true));
-              setTimeout(() => {
-                navigate("/");
-              }, 1000);
+              // setTimeout(() => {
+              //   navigate("/");
+              // }, 1000);
             }
             setOpenLoader(false);
           })

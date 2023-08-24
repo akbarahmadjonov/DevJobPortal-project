@@ -25,7 +25,7 @@ import {
 import Header from "../../../Widgets/Header/Header";
 import { Footer } from "../../../Widgets";
 import axios from "axios";
-import { auth, signInWithGoole } from "../../../Components/Firebase";
+import { auth, signInWithGoogle } from "../../../Components/Firebase";
 
 export default function Register() {
   const privacy_check = useRef(false);
@@ -45,7 +45,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleGoogleClick = async () => {
-    signInWithGoole()
+    signInWithGoogle()
       .then((result) => {
         setEmail();
         setUserImg(result?.user?.photoURL);
@@ -386,23 +386,22 @@ export default function Register() {
                         </li>
                       </ul>
                     </Grid>
-                    <Grid
-                      className={`${showConfirmationCode ? "flex" : "hidden"}`}
-                      item
-                      xs={12}
-                    >
-                      <TextField
-                        required
-                        size="small"
-                        fullWidth
-                        name="confirmationCode"
-                        label="Confirmation Code"
-                        type="number"
-                        id="confirmationCode"
-                      />
-                    </Grid>
+                    {showConfirmationCode ? (
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                          size="small"
+                          fullWidth
+                          name="confirmationCode"
+                          label="Confirmation Code"
+                          type="number"
+                          id="confirmationCode"
+                        />
+                      </Grid>
+                    ) : (
+                      ""
+                    )}
                   </Grid>
-                  {/* <div className="flex flex-col mt-[52px] items-center justify-between w-full space-y-4"> */}
                   <Button
                     disabled={disabled}
                     type="submit"
@@ -412,7 +411,6 @@ export default function Register() {
                   >
                     Create Your Supercoder Account
                   </Button>
-                  {/* </div> */}
                   <Grid
                     container
                     alignItems={"center"}

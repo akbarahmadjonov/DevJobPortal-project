@@ -29,11 +29,13 @@ export default function Verify(params) {
     window.location.reload();
   };
 
+  const navigate = useNavigate()
+
   const handleDeleteUser = async (e) => {
     switch (e.target.textContent) {
       case "YES":
         setOpenLoader(true);
-        setOpenModal(false)
+        setOpenModal(false);
         if (token) {
           await axios
             .delete(url + "/user", {
@@ -47,7 +49,7 @@ export default function Verify(params) {
             })
             .catch((err) => {
               console.log(err);
-              setOpenLoader(false)
+              setOpenLoader(false);
             });
         } else window.location.reload();
         break;
@@ -70,7 +72,7 @@ export default function Verify(params) {
       </Backdrop>
       {token && email && fullName ? (
         <div
-          className={`bg-white relative drop-shadow-2xl transition-shadow shadow-blue-700 mt-[50px] flex flex-col items-center justify-center h-[800px] text-[#707ff4] backdrop-blur-md w-full p-[40px] `}
+          className={`bg-white relative drop-shadow-2xl transition-shadow shadow-blue-700 mt-[50px] flex flex-col items-center justify-center h-[90vh] text-[#707ff4] backdrop-blur-md w-[90vw] mx-auto p-[40px] `}
         >
           <h1 className="text-7xl font-bold transition-all animate-bounce duration-300">
             Welcome <span className="underline">{fullName}</span>.
@@ -79,6 +81,22 @@ export default function Verify(params) {
             <p>Email: {email}</p>
           </div>
           <div className="flex w-full items-center justify-between mt-[50px]">
+            <Button
+              onClick={()=>navigate('/')}
+              variant="contained"
+              size="large"
+              color="info"
+            >
+              Home
+            </Button>
+            <Button
+              onClick={() => navigate('/devs-profile')}
+              variant="contained"
+              size="large"
+              color="info"
+            >
+              Profile
+            </Button>
             <Button
               onClick={logOut}
               variant="contained"
@@ -96,6 +114,12 @@ export default function Verify(params) {
               Delete Account
             </Button>
           </div>
+          <p className="mt-[200px] w-1/3 text-center text-[16px] lg:text-[20px]">
+            Due to the absence of a design for this page, I took the initiative
+            to create the design myself, ensuring a visually appealing and
+            cohesive user experience. Your feedback on the new design would be
+            greatly appreciated.
+          </p>
         </div>
       ) : (
         <div
