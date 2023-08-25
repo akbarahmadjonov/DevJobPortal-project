@@ -606,12 +606,12 @@ onClick={()=>{
   <img width={14} height={14} src={emailIcon} alt="email-icon" /><p>{userEmail}</p>
   </div>
  <div className="dev-profile__gen-info-middle-inner-wrapper">
-  <img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p>
+  {phoneNumber && <div><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p></div>}
   </div>
 </div>
       <button onClick={()=>setGenModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
       </div>
-      <div className="dev-profile__gen-info-bottom-wrapper">{aboutyourself}</div>
+    {aboutyourself &&  <div className="dev-profile__gen-info-bottom-wrapper">{aboutyourself}</div>}
     </div>
     {/* Overall experience - can be component */}
     <div className="dev-profile__info-wrapper-3">
@@ -722,12 +722,13 @@ ducting background checks).</p>
       <div className="dev-profile__general-modal-input-wrapper">
         <div className="select-flags-wrapper">
         <span className="select-flags-label">Nationality&nbsp;<span style={{color: "blue"}}>*</span></span>
-      <ReactFlagsSelect selected={nationalityInfo}
+      <ReactFlagsSelect  selected={nationality}
       onSelect={(code) => setNationality(code)
       }
       placeholder=""
       searchable
       className="menu-flags"
+      showOptionLabel
       />
         </div>
 <div className="select-flags-wrapper">
@@ -747,9 +748,9 @@ ducting background checks).</p>
   className="phone-input"
   international
   // defaultCountry="KR"
-  value={phoneNumber.split(" ")[0]}
+  value={phoneNumber?.split(" ")[0]}
   onChange={setPhoneCode}/>
-  <TextInput defaultValue={phoneNumber.split(" ")[1]} required forId={"phoneInput"} type="tel">Phone number</TextInput>
+  <TextInput defaultValue={phoneNumber?.split(" ")[1]} required forId={"phoneInput"} type="tel">Phone number</TextInput>
       </div>
       {/*same title-1*/}
       <div className="dev-profile__general-modal-wrapper-2">
@@ -1097,7 +1098,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
   dateFormat="MM/yyyy"
   showMonthYearPicker
   id="eduStartDate"
-  selected={selectedEdu?.startDate || startDateWorkExp} onChange={(date) => setStartDateWorkExp(date)} 
+  selected={startDateWorkExp} onChange={(date) => setStartDateWorkExp(date)} 
   
 />
         </div>
@@ -1111,7 +1112,7 @@ className="dev-profile__work-exp-modal-date-picker-input"
   showMonthYearPicker
   // showMonthYearDropdown
   id="eduEndDate"
-  selected={selectedEdu?.endDate || endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
+  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
 />
         </div>
 

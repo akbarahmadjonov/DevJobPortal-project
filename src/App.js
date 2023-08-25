@@ -26,15 +26,13 @@ import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
 import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
-<<<<<<< HEAD
 import { useDispatch } from "react-redux";
 import { homeActions } from "./Redux/HomeSlice";
 import axios from "axios";
-=======
+
 // Profile
 import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 import { CompanyProfileProvider } from "./context/CompanyProfileContext";
->>>>>>> 4f5a8a2ec4b1d9c14aae3e272255375d6963fe52
 
 const App = () => {
   const dispatch = useDispatch();
@@ -68,22 +66,6 @@ const App = () => {
   return (
     <main>
       <div>
-<<<<<<< HEAD
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/user/login" element={<Login />} />
-          <Route path="/user/register" element={<Register />} />
-          <Route path="/company/login" element={<CompanyLogin />} />
-          <Route path="/company/register" element={<CompanyRegister />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/dev-profile" element={<DevProfile />} />
-          <Route path="/comprofile" element={<CompanyProfile />}>
-            <Route index element={<JobsNested />} />
-            {/* Jobs */}
-            <Route path="jobs" element={<JobsNested />}>
-              <Route index path="openpaused" element={<OpenPaused />} />
-              <Route path="archived" element={<Archived />} />
-=======
         <CompanyProfileProvider>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -92,10 +74,9 @@ const App = () => {
             <Route path="/company/login" element={<CompanyLogin />} />
             <Route path="/company/register" element={<CompanyRegister />} />
             <Route path="/jobs" element={<Jobs />} />
-            <Route path="/devs-profile" element={<DevProfile />} />
+            <Route path="/dev-profile" element={<DevProfile />} />
             <Route path="/comprofile" element={<CompanyProfile />}>
               <Route index element={<JobsNested />} />
->>>>>>> 4f5a8a2ec4b1d9c14aae3e272255375d6963fe52
               {/* Jobs */}
               <Route path="jobs" element={<JobsNested />}>
                 <Route index path="openpaused" element={<OpenPaused />} />
