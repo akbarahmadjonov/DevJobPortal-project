@@ -56,7 +56,6 @@ export const JobsNested = () => {
         })
       );
 
-
       const postJob = async () => {
         console.log(data);
         try {
@@ -76,8 +75,8 @@ export const JobsNested = () => {
     const getCategory = async () => {
       try {
         const response = await JobService.jobCategoryGet();
-        console.log("Fetched categories:", response.data);
         setJobCategories(response.data);
+        console.log(response);
       } catch (error) {
         console.error("Error getting category", error);
       }
