@@ -17,7 +17,26 @@ const JobService = {
   //* JOB POST | REQUEST
   jobPost: async (body) => {
     try {
-      const data = await axios.post("/job", body);
+      const data = await axios.post("job", body, {
+        headers: {
+          token,
+        },
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+
+  //* JOB CATEGORY | REQUEST
+  jobCategoryGet: async () => {
+    try {
+      const data = await axios.get("category", {
+        headers: {
+          token,
+        },
+      });
       return data;
     } catch (error) {
       console.log(error);
