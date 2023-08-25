@@ -8,6 +8,7 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import backImg from "../../../../Assets/Icons/back.svg";
 import FormHelperText from "@mui/material/FormHelperText";
+import closeEye from "../../../../Assets/Icons/close eye.png";
 import eyeIcon from "../../../../Assets/Icons/eye.png";
 import GoogleIcon from "../../../../Assets/Icons/GoogleIcon.svg";
 import { Link as LinkDom } from "react-router-dom";
@@ -217,14 +218,14 @@ export const RightContent = ({
                   />
                   <img
                     width={17}
-                    className={`absolute cursor-pointer right-[10px] bottom-[170px] `}
+                    className={`absolute cursor-pointer right-[10px] bottom-[165px] `}
                     onClick={() => {
                       if (typeInput === "password") {
                         setTypeInput("text");
                       } else setTypeInput("password");
                     }}
                     height={17}
-                    src={eyeIcon}
+                    src={typeInput === "password" ? eyeIcon : closeEye}
                     alt="toggle input type"
                   />
                   <FormHelperText

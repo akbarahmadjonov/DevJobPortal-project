@@ -1,7 +1,9 @@
 import Logo from "./../../../../Assets/Images/SuperCoderLogoForDeveloper.svg";
 import mainImg from "../../../../Assets/Images/authenticate-img.svg";
+import { useNavigate } from "react-router-dom";
 
 export const LeftContent = () => {
+  const navigate = useNavigate();
   return (
     <div className="w-1/4 md:flex bg-[#19378b] p-[50px] relative h-screen hidden flex-col justify-between">
       <div className="w-full  text-white">
@@ -9,8 +11,9 @@ export const LeftContent = () => {
           src={Logo}
           width={70}
           height={41}
-          className="mb-[60px]"
+          className="mb-[60px] cursor-pointer"
           alt="site-logo"
+          onClick={() => navigate("/")}
         />
         <h2 className="mb-[25px] leading-tight text-[22px] font-bold ">
           Upgrade your life with a global tech HR platform
