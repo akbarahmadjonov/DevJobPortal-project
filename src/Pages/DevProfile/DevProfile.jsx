@@ -622,7 +622,7 @@ onClick={()=>{
     {/* Overall experience - can be component */}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    <p>{experience} year(s) {remoteExperience ? `/${remoteExperience}year(s)` : ""}</p>
+    <p>{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s)` : ""}</p>
   <button onClick={()=>setExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Avaibility*/}
