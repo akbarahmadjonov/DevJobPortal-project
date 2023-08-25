@@ -23,6 +23,7 @@ import phoneIcon from "../../Assets/Icons/phone-icon-2.svg"
 import emailIcon from "../../Assets/Icons/email-icon.svg"
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../Redux/UserSlice";
+import { homeActions } from "../../Redux/HomeSlice";
 
 
 
@@ -82,8 +83,6 @@ console.log(skillsInfo);
  
 
 console.log(inputs);
-
-
 
 
 
@@ -196,6 +195,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   //
 
+  console.log(nationalityInfo);
+
   const [nationality, setNationality] = useState(nationalityInfo);
   const [residance, setResidance] = useState(residanceInfo);
 
@@ -241,7 +242,7 @@ dispatch(userActions.setUserData(data))
   }).finally(()=>{
     // setLoading(false)
   })
-}, [])
+}, [userData])
 
 const handleResumeUpload = (evt)=> {
   //can be removed then
@@ -739,7 +740,7 @@ ducting background checks).</p>
         </div>
 <div className="select-flags-wrapper">
 <span className="select-flags-label">Residance&nbsp;<span style={{color: "blue"}}>*</span></span>
-<ReactFlagsSelect  selected={residanceInfo}
+<ReactFlagsSelect  selected={residance}
       onSelect={(code) => setResidance(code)
         }
       placeholder=""
