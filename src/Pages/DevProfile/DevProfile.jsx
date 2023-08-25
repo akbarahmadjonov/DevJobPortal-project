@@ -177,8 +177,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const userName = userData?.data?.fullName
   const userEmail = userData?.data?.email
   const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
-  const nationalityInfo = userData?.data?.nationality || "kr"
-  const residanceInfo = userData?.data?.residence || "kr"
+  const nationalityInfo = userData?.data?.nationality 
+  const residanceInfo = userData?.data?.residence
   const phoneNumber = userData?.data?.phoneNumber
   const aboutyourself = userData?.data?.aboutyourself
   const linkedIn = userData?.data?.linkedIn
@@ -584,8 +584,8 @@ return  <div className="dev-profile">
       <p className="dev-profile__text">Your Supercoder profile saves your info so you can to jobs quickly, receive personalized jobs recomendations.</p>
     </div>
     <div className="dev-profile__info-wrapper-2">
-    <p className="dev-profile__title">Resume</p>
-  {fileName ? <a className="dev-profile__text-2" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
+    <p className="dev-profile__title dev-profile-control-left-width">Resume</p>
+  {fileName ? <a className="dev-profile__text-2 dev-profile-control-middle-width" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
    <input onChange={!fileName ? handleResumeUpload : handleResumeEdit} accept=".pdf, .docx" type="file" id="selectedFile" style={{display: "none"}} />
    <div className="dev-profile__resume-btn-wrapper">
    {fileName && <button onClick={handleResumeDelete} className="dev-profile__delete-btn">Delete resume</button>}
@@ -599,7 +599,7 @@ onClick={()=>{
     {/* General information - can be component*/}
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-general">
       <div className="dev-profile__gen-info-top-wrapper">
-      {!profilePicture & !userName & !nationalityInfo ? <p className="dev-profile__title">General information<span className="dev-profile__required">*</span></p> : <div className="dev-profile__account-wrapper dev-profile__general-account-wrapper">
+      {!profilePicture & !userName & !nationalityInfo ? <p className="dev-profile__title">General information<span className="dev-profile__required">*</span></p> : <div className="dev-profile__account-wrapper dev-profile__general-account-wrapper dev-profile-control-left-width">
       <img className="dev-profile_general-picture" style={profilePicture && {borderRadius: "50%"}}  width={50} height={50} src={profilePicture ? profilePicture : pictureIcon} alt="preview image" /> 
      
 {/* <div className="dev-profile__account-image">B</div> */}
@@ -608,7 +608,7 @@ onClick={()=>{
 <p className="dev-profile__account-nation">{nationalityInfo}</p>
 </div>
 </div>}
-<div className="dev-profile__gen-info-middle-wrapper">
+<div className="dev-profile__gen-info-middle-wrapper dev-profile-control-middle-width">
  <div className="dev-profile__gen-info-middle-inner-wrapper">
   <img width={14} height={14} src={emailIcon} alt="email-icon" /><p>{userEmail}</p>
   </div>
@@ -616,46 +616,46 @@ onClick={()=>{
   {phoneNumber && <><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p></>}
   </div>
 </div>
-      <button className={phoneNumber && "edit-button"} onClick={()=>setGenModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+      <button className={phoneNumber && "dev-profile__edit-btn"} onClick={()=>setGenModal(true)} type="button">{!phoneNumber && <img width={18} height={18} src={editPen} alt="edit pen" />}{phoneNumber && "Edit"}</button>
       </div>
     {aboutyourself &&  <div className="dev-profile__gen-info-bottom-wrapper">{aboutyourself}</div>}
     </div>
     {/* Overall experience - can be component */}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    <p>{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s)` : ""}</p>
-  <button onClick={()=>setExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+    <p className="dev-profile__title dev-profile-control-left-width">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile-control-middle-width">{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s)` : ""}</p>
+  <button className={experience && "dev-profile__edit-btn"} onClick={()=>setExpModal(true)} type="button">{!experience && <img width={18} height={18} src={editPen} alt="edit pen" />}{experience && "Edit"}</button>
     </div>
     {/*Avaibility*/}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Avaibility<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    <p>{available ? "Available" : "Not Available"}</p>
-  <button onClick={()=>setAviaModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+    <p className="dev-profile__title dev-profile-control-left-width">Avaibility<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile-control-middle-width">{available ? "Available" : "Not Available"}</p>
+  <button className={available && "dev-profile__edit-btn"} onClick={()=>setAviaModal(true)} type="button">{!available && <img width={18} height={18} src={editPen} alt="edit pen" />}{available && "Edit"}</button>
     </div>
     {/*Role and salary*/}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Role and Salary<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    {preferredRole && <div>
+    <p className="dev-profile__title dev-profile-control-left-width">Role and Salary<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    {preferredRole && <div className="dev-profile-control-middle-width">
     <strong>{preferredRole}</strong>
     <p>Current salary: ${monthlySalary}</p>
    {expectedSalary && <p>Expected salary: ${expectedSalary}</p>}
     </div>}
-  <button onClick={()=>setRoleModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+  <button className={preferredRole && "dev-profile__edit-btn"} onClick={()=>setRoleModal(true)} type="button">{!preferredRole && <img width={18} height={18} src={editPen} alt="edit pen" />}{preferredRole && "Edit"}</button>
     </div>
     {/*Skills and Languages */}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
   <button onClick={()=>setSkillsModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Work experience */}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile__title dev-profile-control-left-width">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
   <button onClick={()=>setWorkExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>  
        {/*Education */}
        <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
         <div className="dev-profile__education-top-wrapper">
-        <p className="dev-profile__title">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+        <p className="dev-profile__title dev-profile-control-left-width">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
    
    {!educationsList ? <button onClick={()=>{setEduModal(true)
     setBtnType("add") 
@@ -729,7 +729,8 @@ ducting background checks).</p>
       <div className="dev-profile__general-modal-input-wrapper">
         <div className="select-flags-wrapper">
         <span className="select-flags-label">Nationality&nbsp;<span style={{color: "blue"}}>*</span></span>
-      <ReactFlagsSelect  selected={nationality}
+      <ReactFlagsSelect  
+      selected={nationality}
       onSelect={(code) => setNationality(code)
       }
       placeholder=""
