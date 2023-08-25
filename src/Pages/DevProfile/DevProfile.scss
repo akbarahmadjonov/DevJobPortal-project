@@ -2,6 +2,39 @@
   color: #000000de;
 }
 
+//General styles
+
+.dev-profile__edit-btn {
+  background: #eaf0ff;
+  color: #3a6fff;
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  font-weight: 600;
+  min-width: 4rem;
+  border-radius: 4px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+    box-shadow 0.2s, background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
+  cursor: pointer;
+}
+
+.dev-profile__edit-btn-2 {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px;
+}
+
+.dev-profile__delete-btn {
+  background: #e75d18;
+  color: #fff;
+  font-size: 0.875rem;
+  padding: 8px 12px;
+  font-weight: 600;
+  min-width: 4rem;
+  border-radius: 4px;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s,
+    box-shadow 0.2s, background-size 0.2s cubic-bezier(0.64, 0.09, 0.08, 1);
+  cursor: pointer;
+}
+
 //header
 
 .dev-profile__header-container {
@@ -92,14 +125,16 @@
 
 .dev-profile__account-name {
   color: #212121;
-  font-size: 14px;
+  font-size: 19px;
+  font-weight: bolder;
   font-style: normal;
   line-height: normal;
+  margin-bottom: 5px;
 }
 
-.dev-profile__account-email {
-  color: #9e9e9e;
-  font-size: 11px;
+.dev-profile__account-nation {
+  color: #212121;
+  font-size: 16px;
   font-style: normal;
   line-height: normal;
 }
@@ -176,6 +211,12 @@
   }
 }
 
+.dev-profile__resume-btn-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .dev-profile__info-wrapper-3 {
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -187,12 +228,52 @@
   margin-bottom: 10px;
 }
 
+.dev-profile__education-top-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.dev-profile__info-wrapper-general {
+  display: block;
+}
+
+.dev-profile__gen-info-top-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.dev-profile__gen-info-bottom-wrapper {
+  padding: 12px 20px;
+  border-radius: 4px;
+  border-color: rgba(0, 0, 0, 0.12);
+  border-width: 1px !important;
+  border-style: solid;
+  width: 100% !important;
+}
+
 .dev-profile__required {
   color: blue;
 }
 
 .dev-profile__info-wrapper-3a {
   margin-bottom: 20px;
+  display: block;
+}
+
+.dev-profile__education-middle-wrapper {
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border-width: 1px !important;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
 }
 
 .dev-profile__input-wrapper {
@@ -231,6 +312,8 @@
   border-radius: 4px;
   box-shadow: 0 11px 15px -7px #0003, 0 24px 38px 3px #00000024,
     0 9px 46px 8px #0000001f;
+  // pointer-events: auto;
+
   overflow-y: auto;
 
   // padding: 72px 40px 80px 40px;
@@ -241,7 +324,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  // margin-bottom: 20px;
 }
 
 .dev-profile__modal-title {
@@ -264,8 +347,9 @@
   }
 }
 
-.dev-profile-modal-body {
+.dev-profile__modal-body {
   padding: 24px;
+  overflow-y: auto;
 }
 
 .dev-profile__general-modal-s {
@@ -286,9 +370,14 @@
   margin-bottom: 15px;
 }
 
-.dev-profile_general-modal-picture {
+.dev-profile_general-picture {
   width: 50px;
   height: 50px;
+}
+
+.dev-profile__general-account-wrapper {
+  padding: 0;
+  margin: 0;
 }
 
 .dev-profile__general-modal-delete-button {
@@ -451,6 +540,12 @@
   }
 }
 
+.dev-profile__gen-info-middle-inner-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 .dev-profile__general-modal-linkedin-text {
   color: #000000de;
   margin-bottom: 40px;
@@ -540,6 +635,7 @@
 
 .dev-profile-role-modal-body {
   padding-top: 0;
+  overflow: unset;
 }
 
 .dev-profile-role-modal-inputs-wrapper {
@@ -596,4 +692,101 @@
   background-color: #fff;
   transition: ease-out 0.15s;
   transition-property: bottom, color, transform;
+}
+
+//Skills and languages modal
+
+.dev-profile__modal-inputs-wrapper {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+  align-items: flex-end;
+}
+
+.dev-profile__skills-modal-wrapper-1 {
+  align-items: center;
+}
+
+.dev-profile-skills-modal-delete {
+  margin-top: 17px;
+  cursor: pointer;
+}
+
+.dev-profile__skills-modal-menu-wrapper {
+  width: 75%;
+}
+
+.dev-profile__skills-modal-label {
+  font-size: larger;
+}
+
+.dev-profile__skills-modal-skills-wrapper {
+  width: 100%;
+}
+
+.dev-profile__skills-modal-lang-wrapper {
+  width: 100%;
+}
+
+//React date picker
+
+.dev-profile__work-exp-modal-date-picker-input {
+  width: 100%;
+  padding: 12px 20px;
+  width: 100%;
+  border: 0.5px solid #bfd4ff;
+  border-radius: 4px;
+  color: #000000;
+  font-size: 18px;
+  line-height: 1.428em;
+  outline: none;
+}
+
+.dev-profile__modal-date-picker-wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 100;
+}
+
+.dev-profile__modal-date-wrapper {
+  width: 100%;
+}
+
+.dev-profile__work-exp-modal-checkbox-text {
+  color: #77a4fe;
+  font-weight: 600;
+  font-size: larger;
+}
+
+.dev-profile__work-exp-modal-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.dev-profile__work-exp-modal-flags-wrapper {
+  margin-bottom: 16px;
+}
+
+.dev-profile__auto-gen-btn-wrapper {
+  text-align: right;
+  margin-bottom: 2px;
+}
+
+.dev-profile__work-exp-modal-textarea-wrapper {
+  margin-bottom: 16px;
+}
+
+.dev-profile__work-exp-modal-react-select {
+  margin-bottom: 16px;
+}
+
+.dev-profile__edu-modal-select-wrapper {
+  margin-top: 16px;
+}
+
+.mySelect-dev-profile-edu__value-container {
+  height: 49px;
+  cursor: pointer;
+  padding: 6px;
 }

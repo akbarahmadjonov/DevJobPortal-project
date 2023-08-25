@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
@@ -26,11 +26,24 @@ import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
 import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
+import { useDispatch, useSelector } from "react-redux";
+import { homeActions } from "./Redux/HomeSlice";
+import axios from "axios";
+
 // Profile
 import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 import { CompanyProfileProvider } from "./context/CompanyProfileContext";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const url = "https://jobas.onrender.com/api";
+
+  //
+
+  const { token, userData, loading, error } = useSelector(
+    (state) => state.user
+  );
+
   //Test
   let hours = 5;
   let now = new Date().getTime();
@@ -43,6 +56,18 @@ const App = () => {
       localStorage.setItem("setupTime", now);
     }
   }
+  //Jobs categories as used in two or more pages
+
+  useEffect(() => {
+    axios
+      .get(`${url}/category`)
+      .then((data) => {
+        dispatch(homeActions.setJobs(data.data));
+      })
+      .catch(() => {
+        dispatch(homeActions.setHomeError(true));
+      });
+  }, [userData]);
 
   return (
     <main>
@@ -55,7 +80,7 @@ const App = () => {
             <Route path="/company/login" element={<CompanyLogin />} />
             <Route path="/company/register" element={<CompanyRegister />} />
             <Route path="/jobs" element={<Jobs />} />
-            <Route path="/devs-profile" element={<DevProfile />} />
+            <Route path="/dev-profile" element={<DevProfile />} />
             <Route path="/comprofile" element={<CompanyProfile />}>
               <Route index element={<JobsNested />} />
               {/* Jobs */}

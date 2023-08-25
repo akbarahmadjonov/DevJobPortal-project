@@ -52,6 +52,8 @@
 .dropdown-menu__list {
   width: 100%;
   position: absolute;
+  border-radius: 3px;
+  border: 1px solid #bdbbbb;
   z-index: 20;
   background: #ffffff;
   color: #000000de;
@@ -75,4 +77,20 @@
   white-space: nowrap;
   font-size: 16;
   color: #000000de;
+}
+
+.dropdown-menu__text-label-1 {
+  font-size: larger;
+}
+
+.dropdown-menu__input-search {
+  width: calc(100% - 20px);
+  margin: 0 10px;
+  padding: 8px;
+  outline: none;
+}
+
+.dropdown-menu__text-label-fixed {
+  all: unset;
+  font-size: larger;
 }

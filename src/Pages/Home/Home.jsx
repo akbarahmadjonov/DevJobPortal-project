@@ -1,5 +1,6 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import Swiper from 'swiper/bundle'
 import 'swiper/css/bundle'
@@ -12,6 +13,7 @@ import img4 from "../../Assets/Images/img4.jpg"
 import rectangle from "../../Assets/Images/Rectangle1.png"
 import womanImage from "../../Assets/Images/woman.png"
 import { BlueButton, FeedbackItem } from "../../Components"
+import { homeActions } from "../../Redux/HomeSlice"
 import { Footer } from "../../Widgets"
 import Header from "../../Widgets/Header/Header"
 import "./Home.scss"
@@ -19,23 +21,25 @@ import "./Home.scss"
 
 
 export const Home =  ()=>{
-  const [jobs, setJobs] = useState(null)
-  const [error, setError] = useState(false)
-  const [loading, setLoading] = useState(true)
+
+  const {jobs, homeLoading, homeError} = useSelector((state)=>state.home)
   register()
 
-  const url = "https://jobas.onrender.com/api";
 
-  
-useEffect(()=>{
-  axios.get(`${url}/category`).then((data)=>{
-    setJobs(data.data)
-  }).catch(()=>{
-    setError(true)
-  }).finally(()=>{
-    setLoading(false)
-  })
-}, [])
+
+  //can be removed
+  // const dispatch = useDispatch()
+//can be removed
+  // const url = "https://jobas.onrender.com/api";
+
+  //can be removed
+// useEffect(()=>{
+//   axios.get(`${url}/category`).then((data)=>{
+//     dispatch(homeActions.setJobs(data.data))
+//   }).catch(()=>{
+//     dispatch(homeActions.setHomeError(true))
+//   })
+// }, [])
 
 useEffect(()=>{
   new Swiper('.swiper', {
@@ -47,7 +51,7 @@ useEffect(()=>{
   });
 })
 
-if (error) return <p className="error">Something went wrong. Try again...</p>
+if (homeError) return <p className="error">Something went wrong. Try again...</p>
 
 return (
   <div className="home">
@@ -160,7 +164,7 @@ return (
           </h3>
           <h3 className="text home__jobs-text">Choose the job type you want</h3>
           <ul className="home__jobs-cards-list">
-            {loading ? (
+            {homeLoading ? (
               <div className="lds-ellipsis">
                 <div></div>
                 <div></div>
