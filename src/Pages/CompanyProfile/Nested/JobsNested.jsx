@@ -2,63 +2,87 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Modal, Input, Form } from "antd";
+import { Button, Modal, Select } from "antd";
 import JobService from "../../../API/Jobs.service";
 import "./Jobs.scss";
+import axios from "axios";
 
 export const JobsNested = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const jobDataRef = useRef({
-    comImg: null,
-    comName: "Hoca",
-    comLocation: "South Korea",
-    jobTitle: "Full Stack",
-    jobInfo:
-      "bizga kerak Full Stack Developer. chunki Full Stack sekin sekin ishga kirib bizning companyadan qochib o'tirdi. biz o'zimzni ishga sodiqmiz.",
-    jobType: "of-online",
-    jobPrice: 1000,
-  });
+  const [jobCategories, setJobCategories] = useState([]);
+  const [images, setImages] = useState({}); 
+
+  //* REF VALUES
+  const nameRef = useRef();
+  const locationRef = useRef();
+  const titleRef = useRef();
+  const infoRef = useRef();
+  const typeRef = useRef();
+  const priceRef = useRef();
+
+  const handleChange = (value: string) => {
+    console.log(`selected ${value}`);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("comName", nameRef.current?.value);
+    formData.append("comLocation", locationRef.current?.value);
+    formData.append("jobTitle", titleRef.current?.value);
+    formData.append("jobInfo", infoRef.current?.value);
+    formData.append("jobType", typeRef.current?.value);
+    formData.append("jobPrice", priceRef.current?.value);
+
+    try {
+      const imageUrls = await Promise.all(
+        Object.values(images).map(async (image) => {
+          const data = new FormData();
+          data.append("file", image);
+          data.append("upload_preset", "upload");
+
+          const uploadRes = await axios.post(
+            "https://api.cloudinary.com/v1_1/dvpc9o81x/image/upload",
+            data
+          );
+
+          const { secure_url } = uploadRes.data;
+          return secure_url;
+        })
+      );
+
+      formData.append("comImg", imageUrls.join(","));
+
+      const postJob = async () => {
+        try {
+          const post = await JobService.jobPost(formData);
+          console.log(post);
+        } catch (error) {
+          console.error("Error posting", error);
+        }
+      };
+      postJob();
+    } catch (error) {
+      console.error("Error uploading images", error);
+    }
+  };
+
+  useEffect(() => {
+    const getCategory = async () => {
+      try {
+        const response = await JobService.jobCategoryGet();
+        console.log("Fetched categories:", response.data);
+        setJobCategories(response.data);
+      } catch (error) {
+        console.error("Error getting category", error);
+      }
+    };
+    getCategory();
+  }, []);
 
   const showModal = () => {
     setIsModalVisible(true);
-  };
-
-  const handleSubmit = async (values) => {
-    const formData = new FormData();
-    formData.append("comImg", jobDataRef.current.comImg);
-    formData.append("comName", values.comName);
-    formData.append("comLocation", values.comLocation);
-    formData.append("jobTitle", values.jobTitle);
-    formData.append("jobInfo", values.jobInfo);
-    formData.append("jobType", values.jobType);
-    formData.append("jobPrice", values.jobPrice);
-
-    try {
-      const response = await JobService.jobPost(formData);
-      console.log("Job created successfully:", response);
-
-      jobDataRef.current = {
-        comImg: null,
-        comName: "",
-        comLocation: "",
-        jobTitle: "",
-        jobInfo: "",
-        jobType: "",
-        jobPrice: 0,
-      };
-      setIsModalVisible(false);
-    } catch (error) {
-      console.error("Error creating job:", error);
-    }
-  };
-
-  const comImgRef = useRef(null);
-
-  const handleInputChange = (event) => {
-    const { name, value, files } = event.target;
-    if (name === "comImg") {
-      jobDataRef.current.comImg = files[0];
-    }
   };
 
   const navigate = useNavigate();
@@ -89,47 +113,58 @@ export const JobsNested = () => {
           footer={null}
           onCancel={() => setIsModalVisible(false)}
         >
-          <Form onFinish={handleSubmit}>
-            <div className='job-nested__form'>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <div className="job-nested__form">
               <label htmlFor="comImg">Company Image</label>
-              <Input
+              <input
                 type="file"
-                id="comImg"
-                name="comImg"
-                onChange={handleInputChange}
-                ref={comImgRef}
+                id="images"
+                name="images"
+                onChange={(e) => {
+                  const { name, files } = e.target;
+                  setImages((prevImages) => ({
+                    ...prevImages,
+                    [name]: files[0],
+                  }));
+                }}
+                multiple
+                accept="image/*"
               />
             </div>
-            <div className='job-nested__form'>
+            <div className="job-nested__form">
               <label htmlFor="comName">Company Name</label>
-              <Input name="comName" onChange={handleInputChange} />
+              <input ref={nameRef} name="comName" />
             </div>
-            <div className='job-nested__form'>
+            <div className="job-nested__form">
               <label htmlFor="comLocation">Company Location</label>
-              <Input name="comLocation" onChange={handleInputChange} />
+              <input ref={locationRef} name="comLocation" />
             </div>
-            <div className='job-nested__form'>
+            <div className="job-nested__form">
               <label htmlFor="jobTitle">Job Title</label>
-              <Input name="jobTitle" onChange={handleInputChange} />
+              <input ref={titleRef} name="jobTitle" />
             </div>
-            <div className='job-nested__form'>
+            <div className="job-nested__form">
               <label htmlFor="jobInfo">Job Info</label>
-              <Input.TextArea
-                name="jobInfo"
-                rows={4}
-                onChange={handleInputChange}
-              />
+              <textarea ref={infoRef} name="jobInfo" rows={4} />
             </div>
-            <div className='job-nested__form'>
+            <div className="job-nested__form">
               <label htmlFor="jobType">Job Type</label>
-              <Input name="jobType" onChange={handleInputChange} />
+              <input ref={typeRef} name="jobType" />
             </div>
-            <div className='job-nested__form'>
+            <div className="job-nested__form">
               <label htmlFor="jobPrice">Job Price</label>
-              <Input
-                type="number"
-                name="jobPrice"
-                onChange={handleInputChange}
+              <input ref={priceRef} type="number" name="jobPrice" />
+            </div>
+            <div className="job-nested__form">
+              <label htmlFor="jobPrice">Job Category</label>
+              <Select
+                className="job-nested__select"
+                defaultValue="Pick one"
+                onChange={handleChange}
+                options={jobCategories?.map((category) => ({
+                  value: category?._id,
+                  label: category?.jobName,
+                }))}
               />
             </div>
             <div>
@@ -138,7 +173,7 @@ export const JobsNested = () => {
               </Button>{" "}
               <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
             </div>
-          </Form>
+          </form>
         </Modal>
       </div>
       <div className="tab__router">
@@ -147,7 +182,7 @@ export const JobsNested = () => {
           to={"openpaused"}
           activeClassName="active"
         >
-          <h3 className="tab__innerTitle">Open and Paused 1</h3>
+          <h3 className="tab__innerTitle">Open and Paused 0</h3>
         </NavLink>
         <NavLink
           className="tab__links"

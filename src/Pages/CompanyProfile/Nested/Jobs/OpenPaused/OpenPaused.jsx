@@ -67,7 +67,7 @@ export const OpenPaused = () => {
                     style={{ color: "#0050C8", fontSize: "23px" }}
                   />
                   <span>Proposed</span>
-                  <span>4</span>
+                  <span>0</span>
                 </div>
               </div>
               <div className="open-paused__block">
