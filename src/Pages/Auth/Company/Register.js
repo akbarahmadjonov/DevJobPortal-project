@@ -147,6 +147,10 @@ export default function CompanyRegister() {
         setStep(3);
         setSuccessMsg("Successfull Sing Up!");
         setOpenSuccess(true);
+        setTimeout(() => {
+          navigate("/comprofile");
+          window.location.reload();
+        }, 1000);
       })
       .catch((err) => {
         console.log(err);
@@ -160,15 +164,6 @@ export default function CompanyRegister() {
         setProgress(100);
         setShowProgress(false);
       });
-    console.log({
-      companyName: form.get("companyName"),
-      name: form.get("name"),
-      teamSize: form.get("teamSize"),
-      phoneNumber: form.get("phoneNumber"),
-      fundingRounds: form.get("fundingRounds"),
-      website: form.get("website"),
-      email,
-    });
   };
   const LoadProgress = () => {
     setShowProgress(true);

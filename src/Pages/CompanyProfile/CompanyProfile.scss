@@ -4,56 +4,6 @@ body {
 
 .com-profile {
   padding: 5px;
-  .com-profile__inner {
-    display: flex;
-    justify-content: space-between;
-    .com-profile__bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      .bell-wrapper {
-        display: flex;
-
-        //* Margin, paddings
-        margin-right: 10px;
-      }
-
-      .com-profile__bell {
-        cursor: pointer;
-      }
-
-      .borderHeight {
-        height: 100%;
-        border: 1px solid #c3c3c3;
-      }
-
-      .com-profile__company {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        //* Margin, paddings
-        margin-left: 10px;
-
-        width: 40px;
-        height: 40px;
-
-        border-radius: 50%;
-        background-color: #0050c8;
-        color: #fff;
-        cursor: pointer;
-
-        &:hover {
-          background-color: #2f80fa;
-        }
-
-        .profile__com {
-          padding: 5px;
-        }
-      }
-    }
-  }
 }
 
 //* Sidebar

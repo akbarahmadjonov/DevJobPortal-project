@@ -40,13 +40,6 @@ export default function CompanyLogin() {
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
   const [reset, setReset] = useState(false);
 
-  const handleResetPassword = (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    console.log({
-      email: data.get("email"),
-    });
-  };
   const handleLoginFormSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
@@ -55,11 +48,10 @@ export default function CompanyLogin() {
       .then((res) => {
         localStorage.setItem("token", res?.data?.token);
         localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
-        setTimeout(() => {
-          navigate("/comprofile");
-        }, 1000);
+        navigate("/comprofile");
         setSuccessMsg("Successfull Log In");
         setOpenSuccess(true);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -70,11 +62,22 @@ export default function CompanyLogin() {
       });
   };
 
-  const handleReset = () => {
+  const handleReset = async (e) => {
+    e.preventDefault();
     if (emailValidation.test(email)) {
-      setSuccessMsg("Reset Successful");
-      setOpenSuccess(true);
-      setReset(true);
+      await axios
+        .post(url + "/recruiter/login", {
+          email
+        })
+        .then((res) => {
+          console.log(res);
+          setSuccessMsg("Reset Successful");
+          setOpenSuccess(true);
+          setReset(true);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       setErrorMsg("Please enter a valid email address!");
       setOpenError(true);
@@ -172,7 +175,7 @@ export default function CompanyLogin() {
                 className="w-full pb-[40px] bg-white rounded-lg px-[30px] pt-[50px] flex-col"
               >
                 <form
-                  onSubmit={handleResetPassword}
+                  onSubmit={handleReset}
                   className="mt-[20px] flex flex-col "
                 >
                   <div className="flex flex-col mb-[100px]">

@@ -3,10 +3,6 @@ import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
-import Login from "./Pages/Auth/User/Login";
-import Register from "./Pages/Auth/User/Register";
-import CompanyLogin from "./Pages/Auth/Company/Login";
-import CompanyRegister from "./Pages/Auth/Company/Register";
 import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
 import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
@@ -14,6 +10,11 @@ import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
 import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
 import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
 import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
+// Auth
+import Login from "./Pages/Auth/User/Login";
+import Register from "./Pages/Auth/User/Register1";
+import CompanyLogin from "./Pages/Auth/Company/Login";
+import CompanyRegister from "./Pages/Auth/Company/Register";
 // Jobs
 import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
 import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";
@@ -25,9 +26,15 @@ import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
 import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
+<<<<<<< HEAD
 import { useDispatch } from "react-redux";
 import { homeActions } from "./Redux/HomeSlice";
 import axios from "axios";
+=======
+// Profile
+import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
+import { CompanyProfileProvider } from "./context/CompanyProfileContext";
+>>>>>>> 4f5a8a2ec4b1d9c14aae3e272255375d6963fe52
 
 const App = () => {
   const dispatch = useDispatch();
@@ -61,6 +68,7 @@ const App = () => {
   return (
     <main>
       <div>
+<<<<<<< HEAD
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/user/login" element={<Login />} />
@@ -75,25 +83,45 @@ const App = () => {
             <Route path="jobs" element={<JobsNested />}>
               <Route index path="openpaused" element={<OpenPaused />} />
               <Route path="archived" element={<Archived />} />
+=======
+        <CompanyProfileProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/user/login" element={<Login />} />
+            <Route path="/user/register" element={<Register />} />
+            <Route path="/company/login" element={<CompanyLogin />} />
+            <Route path="/company/register" element={<CompanyRegister />} />
+            <Route path="/jobs" element={<Jobs />} />
+            <Route path="/devs-profile" element={<DevProfile />} />
+            <Route path="/comprofile" element={<CompanyProfile />}>
+              <Route index element={<JobsNested />} />
+>>>>>>> 4f5a8a2ec4b1d9c14aae3e272255375d6963fe52
               {/* Jobs */}
+              <Route path="jobs" element={<JobsNested />}>
+                <Route index path="openpaused" element={<OpenPaused />} />
+                <Route path="archived" element={<Archived />} />
+                {/* Jobs */}
+              </Route>
+              <Route path="timeoff" element={<TimeOffNested />} />
+              {/* Evaluation */}
+              <Route path="evaluation" element={<Evaluation />}>
+                <Route index path="pending" element={<Pending />} />
+                <Route path="completed" element={<Completed />} />
+              </Route>
+              {/* Evaluation */}
+              {/* Talentpool */}
+              <Route path="talentpool" element={<TalentPool />}>
+                <Route index path="all" element={<All />} />
+                <Route path="saved" element={<Saved />} />
+                <Route path="opened" element={<Opened />} />
+                <Route path="proposed" element={<Proposed />} />
+              </Route>
+              {/* Talentpool */}
+              {/* Profile */}
             </Route>
-            <Route path="timeoff" element={<TimeOffNested />} />
-            {/* Evaluation */}
-            <Route path="evaluation" element={<Evaluation />}>
-              <Route index path="pending" element={<Pending />} />
-              <Route path="completed" element={<Completed />} />
-            </Route>
-            {/* Evaluation */}
-            {/* Talentpool */}
-            <Route path="talentpool" element={<TalentPool />}>
-              <Route index path="all" element={<All />} />
-              <Route path="saved" element={<Saved />} />
-              <Route path="opened" element={<Opened />} />
-              <Route path="proposed" element={<Proposed />} />
-            </Route>
-            {/* Talentpool */}
-          </Route>
-        </Routes>
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </CompanyProfileProvider>
       </div>
     </main>
   );

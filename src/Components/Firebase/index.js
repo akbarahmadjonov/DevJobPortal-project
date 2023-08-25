@@ -19,4 +19,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-export const signInWithGoole = async () => await signInWithPopup(auth, provider);
+export const signInWithGoogle = async () => await signInWithPopup(auth, provider);
