@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Checkbox } from "@mui/material";
+import { Backdrop, Checkbox, CircularProgress } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -231,16 +231,17 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 //First form upload resume
 
 useEffect(()=>{
+  dispatch(userActions.setLoading(true))
   axios.get(`${url}/user/token`, {
     headers: {
     token
     }
   }).then((data)=>{
+   
 dispatch(userActions.setUserData(data))
   }).catch(()=>{
-    // setError(true)
   }).finally(()=>{
-    // setLoading(false)
+    dispatch(userActions.setLoading(false))
   })
 }, [userData])
 
@@ -547,6 +548,15 @@ return null
   // }, [applyImg]);
 
 return  <div className="dev-profile">
+  
+<Backdrop
+    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    open={loading}
+    
+  >
+    <CircularProgress color="inherit" />
+  </Backdrop>
+  
   <header className="dev-profile__header dev-profile__header-container">
     <div className="dev-profile__header-left-wrapper">
     <Link to={"/"} className="dev-profile__header-logo">
