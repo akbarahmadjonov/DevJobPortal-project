@@ -55,8 +55,7 @@ export const DevProfile = ()=>{
   const [eduModal, setEduModal] = useState(false)
   //
 
-  const [nationality, setNationality] = useState("");
-  const [residance, setResidance] = useState("");
+  
   const [phoneCode, setPhoneCode] = useState("+82")
   const [currentSalary, setCurrentSalary] = useState(0);
 
@@ -193,6 +192,13 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const educationsList = userData?.data?.education
 
   console.log(educationsList);
+
+
+  //
+
+  const [nationality, setNationality] = useState(nationalityInfo);
+  const [residance, setResidance] = useState(residanceInfo);
+
 
   //
  
@@ -606,7 +612,7 @@ onClick={()=>{
   <img width={14} height={14} src={emailIcon} alt="email-icon" /><p>{userEmail}</p>
   </div>
  <div className="dev-profile__gen-info-middle-inner-wrapper">
-  {phoneNumber && <div><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p></div>}
+  {phoneNumber && <><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p></>}
   </div>
 </div>
       <button onClick={()=>setGenModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
