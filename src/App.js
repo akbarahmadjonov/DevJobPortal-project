@@ -26,7 +26,7 @@ import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
 import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { homeActions } from "./Redux/HomeSlice";
 import axios from "axios";
 
@@ -37,6 +37,12 @@ import { CompanyProfileProvider } from "./context/CompanyProfileContext";
 const App = () => {
   const dispatch = useDispatch();
   const url = "https://jobas.onrender.com/api";
+
+  //
+
+  const { token, userData, loading, error } = useSelector(
+    (state) => state.user
+  );
 
   //Test
   let hours = 5;
@@ -61,7 +67,7 @@ const App = () => {
       .catch(() => {
         dispatch(homeActions.setHomeError(true));
       });
-  }, []);
+  }, [userData]);
 
   return (
     <main>
