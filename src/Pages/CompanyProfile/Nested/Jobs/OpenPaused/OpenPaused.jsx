@@ -13,7 +13,7 @@ import JobService from "../../../../../API/Jobs.service";
 import { useState } from "react";
 
 export const OpenPaused = () => {
-  const [companyJob, setCompanyJob] = useState();
+  const [companyJob, setCompanyJob] = useState([]);
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
@@ -33,7 +33,7 @@ export const OpenPaused = () => {
       try {
         const response = await JobService.jobGet();
         console.log(response);
-        setCompanyJob(response.data);
+        setCompanyJob(response.data?.data.posts);
       } catch (error) {
         console.error("Error occurred while fetching user profile", error);
       }
@@ -48,7 +48,7 @@ export const OpenPaused = () => {
         {companyJob ? (
           <div className="open-paused__inner">
             <div className="open-paused__block">
-              <h2 className="job__title">Senior Flutter+PostgreSQL Devel...</h2>
+              <h2 className="job__title">{companyJob?.jobTitle}</h2>
               <span className="job__createdTime">Created: June 1</span>
             </div>
             <div className="open-paused__box">
@@ -67,7 +67,7 @@ export const OpenPaused = () => {
                     style={{ color: "#0050C8", fontSize: "23px" }}
                   />
                   <span>Proposed</span>
-                  <span>0</span>
+                  <span>4</span>
                 </div>
               </div>
               <div className="open-paused__block">
