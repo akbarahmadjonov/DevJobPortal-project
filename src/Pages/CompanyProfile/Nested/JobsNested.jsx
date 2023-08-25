@@ -12,6 +12,7 @@ export const JobsNested = () => {
   const [jobCategories, setJobCategories] = useState([]);
   const [images, setImages] = useState("");
   const [data, setData] = useState({});
+  const [catIds, setCatId] = useState("");
 
   //* REF VALUES
   const nameRef = useRef();
@@ -23,6 +24,7 @@ export const JobsNested = () => {
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
+    setCatId(value);
   };
 
   const handleSubmit = async (event) => {
@@ -37,8 +39,6 @@ export const JobsNested = () => {
       jobPrice: priceRef.current?.value,
     };
 
-    setData({ ...jobValues });
-
     try {
       const imageUrls = await Promise.all(
         Object.values(images).map(async (image) => {
@@ -50,20 +50,17 @@ export const JobsNested = () => {
             "https://api.cloudinary.com/v1_1/dvpc9o81x/image/upload",
             data
           );
+          console.log(uploadRes);
           const { url } = uploadRes.data;
-          console.log(url);
-          return url;
+          setData({ ...jobValues, comImg: url, catId: catIds });
         })
       );
 
-      // jobValues.comImg = imageUrls;
-      // data.comImg = imageUrls;
-      // console.log(data);
-      // setData({ ...data });
 
       const postJob = async () => {
+        console.log(data);
         try {
-          const post = await JobService.jobPost(jobValues);
+          const post = await JobService.jobPost(data);
           console.log(post);
         } catch (error) {
           console.error("Error posting", error);

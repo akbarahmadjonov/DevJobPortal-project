@@ -16,10 +16,12 @@ const JobService = {
 
   //* JOB POST | REQUEST
   jobPost: async (body) => {
+    console.log(body);
     try {
       const data = await axios.post("job", body, {
         headers: {
           token,
+          "Content-Type": "application/json",
         },
       });
       return data;
