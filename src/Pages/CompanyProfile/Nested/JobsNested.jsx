@@ -10,7 +10,8 @@ import axios from "axios";
 export const JobsNested = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [jobCategories, setJobCategories] = useState([]);
-  const [images, setImages] = useState({}); 
+  const [images, setImages] = useState("");
+  const [data, setData] = useState({});
 
   //* REF VALUES
   const nameRef = useRef();
@@ -27,13 +28,16 @@ export const JobsNested = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formData = new FormData();
-    formData.append("comName", nameRef.current?.value);
-    formData.append("comLocation", locationRef.current?.value);
-    formData.append("jobTitle", titleRef.current?.value);
-    formData.append("jobInfo", infoRef.current?.value);
-    formData.append("jobType", typeRef.current?.value);
-    formData.append("jobPrice", priceRef.current?.value);
+    const jobValues = {
+      comName: nameRef.current?.value,
+      comLocation: locationRef.current?.value,
+      jobTitle: titleRef.current?.value,
+      jobInfo: infoRef.current?.value,
+      jobType: typeRef.current?.value,
+      jobPrice: priceRef.current?.value,
+    };
+
+    setData({ ...jobValues });
 
     try {
       const imageUrls = await Promise.all(
@@ -46,17 +50,20 @@ export const JobsNested = () => {
             "https://api.cloudinary.com/v1_1/dvpc9o81x/image/upload",
             data
           );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
+          const { url } = uploadRes.data;
+          console.log(url);
+          return url;
         })
       );
 
-      formData.append("comImg", imageUrls.join(","));
+      // jobValues.comImg = imageUrls;
+      // data.comImg = imageUrls;
+      // console.log(data);
+      // setData({ ...data });
 
       const postJob = async () => {
         try {
-          const post = await JobService.jobPost(formData);
+          const post = await JobService.jobPost(jobValues);
           console.log(post);
         } catch (error) {
           console.error("Error posting", error);
