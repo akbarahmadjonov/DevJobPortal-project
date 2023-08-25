@@ -50,25 +50,26 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    setOpenLoader(true);
-
-    try {
-      const res = await axios.post(apiUrl + "/user/login", data);
-      const token = res?.data?.token;
-      if (token) {
-        setSuccessMsg("Successfully Logged In!");
-        setOpenSuccess(true);
-        localStorage.setItem("token", token);
-        localStorage.setItem("userData", JSON.stringify(res?.data?.data));
-        localStorage.setItem("verify", JSON.stringify(true));
+    if (data.get("password")) {
+      setOpenLoader(true);
+      try {
+        const res = await axios.post(apiUrl + "/user/login", data);
+        const token = res?.data?.token;
+        if (token) {
+          setSuccessMsg("Successfully Logged In!");
+          setOpenSuccess(true);
+          localStorage.setItem("token", token);
+          localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+          localStorage.setItem("verify", JSON.stringify(true));
+        }
+        setOpenLoader(false);
+      } catch (err) {
+        console.log(err);
+        setErrorMsg(err?.message);
+        setErrorMsg(err?.response?.data?.message);
+        setOpenError(true);
+        setOpenLoader(false);
       }
-      setOpenLoader(false);
-    } catch (err) {
-      console.log(err);
-      setErrorMsg(err?.message);
-      setErrorMsg(err?.response?.data?.message);
-      setOpenError(true);
-      setOpenLoader(false);
     }
   };
 
@@ -117,7 +118,7 @@ const Login = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       {/* Conditionally Render Verification or Login */}
-      {(
+      {
         <div className="w-full h-screen flex">
           {/* Left Side Content */}
           <LeftContent />
@@ -136,7 +137,7 @@ const Login = () => {
             setForgotPassword={setForgotPassword}
           />
         </div>
-      )}
+      }
       {/* Success and Error Alerts */}
       {/* Success Alert */}
       <Snackbar
