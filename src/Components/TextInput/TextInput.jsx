@@ -1,10 +1,22 @@
+import { useState } from "react";
 import "./TextInput.scss";
 
 
-export const TextInput = ({children, style, forId, textarea, typeNumber, rows, maxLength, wrapperStyle, required = true, type="text"}) => {
+export const TextInput = ({children, style, forId, textarea,  rows, maxLength, wrapperStyle, required, type="text", min,max, defaultValue }) => {
+  const [message, setMessage] = useState(defaultValue);
+
+  const handleChange = evt => {
+    setMessage(evt.target.value);
+  };
+
   return (
     <div style={wrapperStyle} className="text-input-wrapper">
-   {textarea ? <textarea maxLength={maxLength} rows={rows} id={forId} required="required" className="text-area text-input"></textarea> : <input style={style} className="text-input" id={forId} required="required" type={type}/>}
+   {textarea ? <textarea defaultValue={defaultValue} required={required}  onChange={handleChange} maxLength={maxLength} rows={rows} id={forId} className={`text-area text-input ${message  && "text-input--move"}`}></textarea> : <input defaultValue={defaultValue}
+   required={required}
+    onChange={handleChange}
+    style={style} className={`text-input ${message  && "text-input--move"}`} id={forId}  type={type}
+    min={min} max={max} 
+    />}
       <label className="text-label" for={forId}>
         {children}&nbsp;<span style={{color: "blue"}}>{required && "*"}</span>
       </label>

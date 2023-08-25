@@ -148,4 +148,41 @@ a {
   }
 }
 
-//
+//React select library styles:
+
+.select {
+  width: 100%;
+  position: relative;
+}
+
+.select .css-13cymwt-control {
+  border: 0.5px solid #bfd4ff;
+
+  &:hover {
+    border: 0.5px solid #bfd4ff;
+  }
+}
+
+.css-13cymwt-control {
+  // padding: 6px;
+  width: 100%;
+  // min-width: 300px;
+  border-color: #bfd4ff;
+  border: 0.5px solid #bfd4ff;
+  border-radius: 4px;
+  color: #000000;
+  font-size: 18px;
+  line-height: 1.428em;
+}
+
+.mySelect__value-container {
+  height: 45px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+//Phone input
+
+.phone-input input {
+  outline: none;
+}

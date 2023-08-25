@@ -1,26 +1,49 @@
+import axios from "axios"
+import { Checkbox } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom"
-import editPen from "../../Assets/Icons/edit-pen.svg"
-import closeIcon from "../../Assets/Icons/close-button.svg"
-import { BlueButton } from "../../Components/BlueButton/BlueButton";
-import pictureIcon from "../../Assets/Icons/picture.svg"
-import { TextInput } from "../../Components/TextInput";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import ReactFlagsSelect from 'react-flags-select';
-import PhoneInput from 'react-phone-number-input'
-import linkedin from "../../Assets/Icons/linkedin.svg"
-import 'react-phone-number-input/style.css'
-import "./DevProfile.scss"
+import 'react-languages-select/scss/react-languages-select.scss';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
+import { Link } from "react-router-dom";
+import Select from 'react-select';
+import closeIcon from "../../Assets/Icons/close-button.svg";
+import editPen from "../../Assets/Icons/edit-pen.svg";
+import linkedin from "../../Assets/Icons/linkedin.svg";
+import pictureIcon from "../../Assets/Icons/picture.svg";
+import cSharpIcon from "../../Assets/Images/c#.png";
 import { DropDownMenu } from "../../Components";
+import { BlueButton } from "../../Components/BlueButton/BlueButton";
+import { TextInput } from "../../Components/TextInput";
+import langList from "./Components/langList/langList";
+import "./DevProfile.scss";
+import phoneIcon from "../../Assets/Icons/phone-icon-2.svg"
+import emailIcon from "../../Assets/Icons/email-icon.svg"
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../Redux/UserSlice";
+
 
 
 
 export const DevProfile = ()=>{
 
+
+  const dispatch =useDispatch()
+  const { token, userData, loading, error } = useSelector((state) => state.user);
+  const {jobs, homeLoading, homeError} = useSelector((state)=>state.home)
   
-  const [applyFile, setApplyFile] = useState(null) //upload resume
-  const [applyImg, setApplyImg] = useState(null) //upload image
-  const [imageUrl, setImageUrl] = useState(null); //preview image
-  const [fileName, setFileName] = useState("")
+  const [applyFile, setApplyFile] = useState(null) //upload resume // can be removed  
+  const [applyImg, setApplyImg] = useState(null) //upload image //can be removed
+  const [imageUrl, setImageUrl] = useState(null); //preview image // can be removed
+  // const [fileName, setFileName] = useState("")
+  const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Expirience
+  const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
+
+  //Exception, couldn't access if declare after 
+  const available = userData?.data?.available
+  const [avia, setAvia] = useState(available)
 
   //Modals
   const [genModal, setGenModal] = useState(false)
@@ -28,65 +51,493 @@ export const DevProfile = ()=>{
   const [aviaModal, setAviaModal] = useState(false)
   const [roleModal, setRoleModal] = useState(false)
   const [skillsModal, setSkillsModal] = useState(false)
+  const [workExpModal, setWorkExpModal] = useState(false)
+  const [eduModal, setEduModal] = useState(false)
   //
 
-  const [selectedNation, setSelectedNation] = useState("");
-  const [selectedResidance, setSelectedResidance] = useState("");
-  const [phone, setPhone] = useState()
+  const [nationality, setNationality] = useState("");
+  const [residance, setResidance] = useState("");
+  const [phoneCode, setPhoneCode] = useState("+82")
   const [currentSalary, setCurrentSalary] = useState(0);
 
+  //Detect button data-types and id
+
+  const [btnType, setBtnType] = useState()
+  const [eduId, setEduId] = useState()
+
+
+  //Managing inputs adding
+
+
+  
+const skillsInfo = userData?.data?.skills
+
+console.log(skillsInfo);
+
+  const [inputs, setInputs] = useState([{ skill: '', experience: '', level: '' }]);
+
+
+  // if(userData?.data){
+  //   inputs = userData?.data?.skills
+  // }
+ 
+
+console.log(inputs);
+
+
+
+
+
+ 
+  const handleInputChange = (index, inputName, selectedOption) => {
+    const newInputs = [...inputs];
+    newInputs[index][inputName] = selectedOption;
+    setInputs(newInputs);
+
+    // Add a new div with three inputs if the last div is filled
+    if (index === inputs.length - 1 && selectedOption !== '') {
+      setInputs([...inputs, { skill: '', experience: '', level: '' }]);
+    }
+  };
+
+
+
+
   // Input values
+
+  // const [skill, setSkill] = useState()
 
   //refs
 const roleRef = useRef(null); //for role and salary dropdown
   //
 
   //Mock datas
-  const jobsOptions = [
-    "cloud engineer", "flutter developer", "web-designer", "ios developer", "admin"
+  const langLevelOptions = [
+    {value: "Beginner", label: "Beginner"},
+    {value: "Experienced", label: "Experienced"},
+    {value: "Advanced", label: "Advanced"},
+    {value: "Expert", label: "Expert"},
+    {value: "Native", label: "Native"}
   ]
 
+
+  const competencyOptions = [
+    {value: "Beginner", label: "Beginner"},
+    {value: "Experienced", label: "Experienced"},
+    {value: "Advanced", label: "Advanced"},
+    {value: "Expert", label: "Expert"},
+  ]
+
+  const jobsOptions = [
+    "Beginner", "Experienced", "Advanced", "Expert",
+  ]
+ 
+
+  const years = [
+    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
+  ]
+
+ const yearsList =  years.map(opt => ({ label: opt, value: opt }));
+
+ const degrees = [
+  "Bachelors", "Master", "Doctorate", "MBA", "Secondary High school"
+]
+
+const degreeList =  degrees.map(opt => ({ label: opt, value: opt }));
+
+const skills = [
+  ".NET", "ABAP", "Android", "ReactJs", "ReactNative", "Flutter"
+]
+
+const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
+
+
+
+
+
+
   //
 
-  //Variables
+  //Select--------------
+
+
+
+  
+
+  //
+
+  //Variables------------
+
+  //resume file name
+  const fileName = userData?.data?.resume?.filePath
+  const filePath = `https://job-px4t.onrender.com/resumes/${fileName}`
+
+
+
+  //User data from server
+
+  const userName = userData?.data?.fullName
+  const userEmail = userData?.data?.email
+  const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
+  const nationalityInfo = userData?.data?.nationality || "kr"
+  const residanceInfo = userData?.data?.residence || "kr"
+  const phoneNumber = userData?.data?.phoneNumber
+  const aboutyourself = userData?.data?.aboutyourself
+  const linkedIn = userData?.data?.linkedIn
+  const experience = userData?.data?.experience?.experience
+  const remoteExperience = userData?.data?.experience?.remoteExperience
+  const preferredRole = userData?.data?.roleAndSalary?.preferredRole
+  const monthlySalary = userData?.data?.roleAndSalary?.monthlySalary
+  const expectedSalary = userData?.data?.roleAndSalary?.expectedSalary
+
+  const educationsList = userData?.data?.education
+
+  console.log(educationsList);
+
+  //
+ 
+ 
   
   //
+  //Logics--------------------------
 
-  
+  //This code for getting values for input from server in education modal, while editing
+
+  const selectedEdu = educationsList?.find(item => item._id === eduId
+)
+
+  console.log(selectedEdu);
+
+
+
+
+
+
+  console.log(userData);
+
+  const url = "https://job-px4t.onrender.com/api"
+
+  //Draft token
 
   //
-  //Handle
+  //Handles and integration
+//First form upload resume
 
-  const handleCurrentSalaryChange = (evt) => {
-    const value = evt.target.value.replace(/\D/g, ''); // Remove non-digit characters
-    setCurrentSalary(value);
-  };
-
-
-  const handleFileUpload =  (evt) => {
-    if (evt.target.files) {
-      setApplyFile(evt.target.files[0]);
-      setFileName(evt.target.files[0]?.name || "") 
+useEffect(()=>{
+  axios.get(`${url}/user/token`, {
+    headers: {
+    token
     }
-  };
+  }).then((data)=>{
+dispatch(userActions.setUserData(data))
+  }).catch(()=>{
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+}, [])
 
-  const handleImgUpload =  (evt) => {
-    if (evt.target.files) {
-      setApplyImg(evt.target.files[0]);
-    } 
+const handleResumeUpload = (evt)=> {
+  //can be removed then
+  // if (evt.target.files) {
+  //   // setApplyFile(evt.target.files[0]);
+  //   // setFileName(evt.target.files[0]?.name || "") 
+  // }
 
-  };
+  const formData = new FormData()
 
-  useEffect(() => {
-    if (applyImg) {
-      setImageUrl(URL.createObjectURL(applyImg));
-    } 
-    else {
-      setImageUrl(null)
+  formData.append("resume", evt.target.files[0])
+
+
+  axios.post(`${url}/resume`, formData, {
+    headers: {
+      token
+    }
+  }).then((res)=>{ 
+    console.log(res);
+  }).catch((err)=>{
+    console.log(err);
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+
+}
+
+const handleResumeEdit = (evt)=>{
+
+  const formData = new FormData()
+
+  formData.append("resume", evt.target.files[0])
+
+
+  axios.put(`${url}/resume/${userData?.data?.resume?._id}`, formData, {
+    headers: {
+      token
+    }
+  }).then((res)=>{ 
+    console.log(res);
+  }).catch((err)=>{
+    console.log(err);
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+}
+
+const handleResumeDelete = ()=>{
+  axios.delete(`${url}/resume/${userData?.data?.resume?._id}`, {
+    headers: {
+    token
+    }
+  }).then((res)=>{
+console.log(res);
+  }).catch((err)=>{
+    console.log(err);
+    // setError(true)
+  }).finally(()=>{
+    // setLoading(false)
+  })
+}
+
+
+
+
+
+//General info modal 2nd form control:
+  const handleGenModalSubmit = (evt)=>{
+    evt.preventDefault()
+
+    dispatch(userActions.setLoading(true))
+
+const profileImg = document.getElementById('selectedFileImg').files[0]
+
+const target = evt.target
+
+//Can be destructed:
+const fullName = `${target.firstNameInput.value} ${target.lastNameInput.value}`
+const phoneNumber = target.phoneInput.value
+const aboutyourself = target.textAreaGeneral.value
+const linkedIn = target.linkedInLink.value
+
+
+const formData = new FormData()
+
+formData.append("fullName", fullName)
+formData.append("profilePicture", profileImg)
+formData.append("aboutyourself", aboutyourself)
+formData.append("nationality", nationality)
+formData.append("residence", residance)
+formData.append("phoneNumber", `${phoneCode} ${phoneNumber}`)
+formData.append("linkedIn", linkedIn)
+
+
+axios.put(`${url}/user`, formData, {
+  headers: {
+    token
+  }
+} ).then((res)=>{
+  console.log(res);
+  setGenModal(false)
+}).catch((err)=>{
+  console.log(err.message);
+}).finally(()=>{
+  dispatch(userActions.setLoading(false))
+})
+
+console.log(profileImg,  fullName, nationality, residance, phoneCode, phoneNumber, aboutyourself, linkedIn);
+
+  }
+
+  //Overall experience 3rd modal form control
+
+  const handleExpModalSubmit = (evt)=>{
+    evt.preventDefault()
+    
+    dispatch(userActions.setLoading(true))
+
+    const target = evt.target
+
+    const experience = +target.yearOfExp.value
+    const remoteExperience = +target.yearRemoteOfExp.value
+
+    const body = {
+      experience, remoteExperience
     }
 
-  }, [applyImg]);
+    const type = {"Content-type": "application/json"}
 
+    axios.put(`${url}/experience`, body, {
+      headers: {
+        token, type
+      }
+    }).then((res)=>{
+      console.log(res);
+      setExpModal(false)
+    }).catch((err)=>{
+      console.log(err);
+    }).finally(()=>{
+      dispatch(userActions.setLoading(false))
+    })
+  }
+
+  ////Overall aviablity 4th modal form control
+
+  const handleAviaInputChange = (evt)=>{
+    setAvia(evt.target.value)
+  }
+
+  const handleAviaModalSubmit = (evt)=>{
+    evt.preventDefault()
+    dispatch(userActions.setLoading(true))
+
+const formData = new FormData()
+
+formData.append("available", avia )
+
+    axios.put(`${url}/user`, formData, {
+      headers: {
+        token
+      }
+    }).then((res)=>{
+      console.log(res);
+      setAviaModal(false)
+    }).catch((err)=>{
+      console.log(err);
+    }).finally(()=>{
+      dispatch(userActions.setLoading(false))
+    })
+  }
+
+  //Fifth modal role modal submit
+
+  const handleRoleModalSubmit = (evt)=>{
+    evt.preventDefault()
+
+    dispatch(userActions.setLoading(true))
+
+    const target = evt.target
+
+    const preferredRole = target.roleModalDropdown.value
+    const monthlySalary = target.salaryInputCurrent.value
+    const expectedSalary = target.salaryInputExp.value
+
+    console.log(preferredRole, monthlySalary,expectedSalary );
+
+    const body = {
+      preferredRole, monthlySalary, expectedSalary 
+    }
+   
+
+    axios.put(`${url}/roleAndSalary`, body, {
+      headers: {
+        token
+      }
+    }).then((res)=>{
+      console.log(res);
+      setRoleModal(false)
+    }).catch((err)=>{
+      console.log(err);
+    }).finally(()=>{
+      dispatch(userActions.setLoading(false))
+    })
+
+  }
+
+  //Skill and Languages 6th modal select handles
+
+  const handleSkillSelect = (opt)=> {
+    console.log(opt.value);
+    // setSkill(opt.value)
+  }
+
+  const handleSkillYearSelect = ()=>{
+return null
+  }
+
+  const handleSkillCompetencySelect = ()=> {
+return null
+  }
+
+  const handleSkillsModalSubmit = (evt)=>  {
+    evt.preventDefault()
+
+  }
+  
+
+  //7th modal Work experience form
+
+  const handleWorkExpModalSubmit = (evt)=> {
+    evt.preventDefault()
+    const target = evt.target
+
+  
+  }
+
+  //8th Last modal Education form
+
+  const [degree, setDegree] = useState(selectedEdu?.degree)
+
+  const handleEduModalSubmit = (evt)=>{
+    evt.preventDefault()
+
+    dispatch(userActions.setLoading(true))
+
+    const target = evt.target
+
+    const name = target.schoolInput.value
+    const fieldOfStudy = target.fieldOfStudy.value
+    const startDate = target.eduStartDate.value
+    const endDate = target.eduEndDate.value
+
+    const body ={
+      name, degree, fieldOfStudy,startDate, endDate
+    }
+
+
+    axios.post(`${url}/education`, body, {
+      headers: {
+        token
+      }
+    }).then((res)=>{
+      console.log(res);
+      setEduModal(false)
+    }).catch((err)=>{
+      console.log(err);
+    }).finally(()=>{
+      dispatch(userActions.setLoading(false))
+    })
+
+    console.log(name, degree, fieldOfStudy, startDate, endDate);
+  }
+
+
+//Can be removed then
+  // const handleFileUpload =  (evt) => {
+  //   if (evt.target.files) {
+  //     setApplyFile(evt.target.files[0]);
+  //     setFileName(evt.target.files[0]?.name || "") 
+  //   }
+  // };
+
+  //Can be removed then
+  // const handleImgUpload =  (evt) => {
+  //   if (evt.target.files) {
+  //     setApplyImg(evt.target.files[0]);
+  //   } 
+
+  // };
+
+  // can be removed then
+  // useEffect(() => {
+  //   if (applyImg) {
+  //     setImageUrl(URL.createObjectURL(applyImg));
+  //   } 
+  //   else {
+  //     setImageUrl(null)
+  //   }
+
+  // }, [applyImg]);
 
 return  <div className="dev-profile">
   <header className="dev-profile__header dev-profile__header-container">
@@ -112,45 +563,76 @@ return  <div className="dev-profile">
                 <div className="dev-profile__account-wrapper">
                     <div className="dev-profile__account-image">B</div>
                     <div className="dev-profile__account-inner-wrapper">
-                    <p className="dev-profile__account-name">Ben Ali</p>
-                    <p className="dev-profile__account-email">mayinpars@gmail.com</p>
+                    <p className="profile-name">{userName}</p>
+                    <p className="profile-email">{userEmail}</p>
                     </div>
                   </div>
                 </div>
   </header>
   <main className="dev-profile__main">
     <section className="dev-profile__info-section-container dev-profile__info-section">
-    <p className="dev-profile__dev-name">{`Wellcome, Ben`}</p>
+    <p className="dev-profile__dev-name">{`Wellcome, ${userName}`}</p>
     <div className="dev-profile__info-wrapper">
       <p className="dev-profile__title">Your Career Profile</p>
       <p className="dev-profile__text">Your Supercoder profile saves your info so you can to jobs quickly, receive personalized jobs recomendations.</p>
     </div>
     <div className="dev-profile__info-wrapper-2">
     <p className="dev-profile__title">Resume</p>
-    <p className="dev-profile__text-2">{fileName ? fileName : "To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"}</p>
-   <input onChange={handleFileUpload} accept=".pdf, .docx" type="file" id="selectedFile" style={{display: "none"}} />
-<input className="dev-profile__upload" type="button" value="Upload resume" onClick={()=>{
+  {fileName ? <a className="dev-profile__text-2" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
+   <input onChange={!fileName ? handleResumeUpload : handleResumeEdit} accept=".pdf, .docx" type="file" id="selectedFile" style={{display: "none"}} />
+   <div className="dev-profile__resume-btn-wrapper">
+   {fileName && <button onClick={handleResumeDelete} className="dev-profile__delete-btn">Delete resume</button>}
+<input className={!fileName ? "dev-profile__upload" :  "dev-profile__edit-btn"} type="button" value={!fileName ? "Upload resume" : "Edit"} 
+onClick={()=>{
   document.getElementById('selectedFile').click()
 }} />
+   </div>
+  
     </div>
     {/* General information - can be component*/}
-    <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">General information<span className="dev-profile__required">*</span></p>
-  <button onClick={()=>setGenModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+    <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-general">
+      <div className="dev-profile__gen-info-top-wrapper">
+      {!profilePicture & !userName & !nationalityInfo ? <p className="dev-profile__title">General information<span className="dev-profile__required">*</span></p> : <div className="dev-profile__account-wrapper dev-profile__general-account-wrapper">
+      <img className="dev-profile_general-picture" style={profilePicture && {borderRadius: "50%"}}  width={50} height={50} src={profilePicture ? profilePicture : pictureIcon} alt="preview image" /> 
+     
+{/* <div className="dev-profile__account-image">B</div> */}
+<div className="dev-profile__account-inner-wrapper">
+<p className="dev-profile__account-name">{userName}</p>
+<p className="dev-profile__account-nation">{nationalityInfo}</p>
+</div>
+</div>}
+<div className="dev-profile__gen-info-middle-wrapper">
+ <div className="dev-profile__gen-info-middle-inner-wrapper">
+  <img width={14} height={14} src={emailIcon} alt="email-icon" /><p>{userEmail}</p>
+  </div>
+ <div className="dev-profile__gen-info-middle-inner-wrapper">
+  <img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p>
+  </div>
+</div>
+      <button onClick={()=>setGenModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+      </div>
+      <div className="dev-profile__gen-info-bottom-wrapper">{aboutyourself}</div>
     </div>
     {/* Overall experience - can be component */}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p>{experience} year(s) {remoteExperience ? `/${remoteExperience}year(s)` : ""}</p>
   <button onClick={()=>setExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Avaibility*/}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title">Avaibility<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p>{available ? "Available" : "Not Available"}</p>
   <button onClick={()=>setAviaModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Role and salary*/}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title">Role and Salary<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    {preferredRole && <div>
+    <strong>{preferredRole}</strong>
+    <p>Current salary: ${monthlySalary}</p>
+   {expectedSalary && <p>Expected salary: ${expectedSalary}</p>}
+    </div>}
   <button onClick={()=>setRoleModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Skills and Languages */}
@@ -161,12 +643,39 @@ return  <div className="dev-profile">
     {/*Work experience */}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+  <button onClick={()=>setWorkExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>  
        {/*Education */}
        <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
-    <p className="dev-profile__title">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+        <div className="dev-profile__education-top-wrapper">
+        <p className="dev-profile__title">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+   
+   {!educationsList ? <button onClick={()=>{setEduModal(true)
+    setBtnType("add") 
+  }} data-type="edu-add"  type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button> : <button data-type="edu-add"
+   onClick={()=>{setEduModal(true)
+    setBtnType("add") 
+   }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Education</button>}
+        </div>
+        <ul className="dev-profile__education-list">
+    {educationsList?.map((item, index)=>(
+      <li key={index} className="dev-profile__education-middle-wrapper"> 
+      <div>
+      <strong>{item.name}</strong>
+      <p>{item.fieldOfStudy}&nbsp;/&nbsp;{item.degree}</p>
+      <p>{item.startDate.split("T")[0]}&nbsp;-&nbsp;{item.endDate.split("T")[0]}</p>
+      </div>
+    <button onClick={()=>{
+      setEduId(item._id)
+      setBtnType("edit") 
+      setEduModal(true)}} data-id={item._id} data-type="edu-edit" className="dev-profile__edit-btn">Edit Education</button>
+    </li>
+    ))}
+
+    </ul>
+
+    
+  
     </div>
     <div  className="dev-profile__bottom">
     <div className="dev-profile__input-wrapper">
@@ -179,7 +688,7 @@ ducting background checks).</p>
     </section>
   </main>
   {/* Modals */}
-  {/*General modal */}
+  {/*General information modal */}
   {genModal &&
   <div className="dev-profile__modal">
     <div className="dev-profile__modal-wrapper">
@@ -188,29 +697,33 @@ ducting background checks).</p>
     <p className="dev-profile__modal-title">General information</p>
     <button type="button" onClick={()=>setGenModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
-      <div className="dev-profile-modal-body">
+      <div className="dev-profile__modal-body">
          {/*same title-1*/}
-      <p className="dev-profile__general-modal-title">Profile picture<span className="dev-profile__general-modal-s">&nbsp;&nbsp;Optional</span></p>
-      <div className="dev-profile_general-modal-picture-wrapper"><img className="dev-profile_general-modal-picture" style={imageUrl && {borderRadius: "50%"}}  width={50} height={50} src={imageUrl ? imageUrl : pictureIcon} alt="preview image" /> 
-      <input onChange={handleImgUpload} accept="image/jpg, image/jpeg, image/png" type="file" id="selectedFileImg" style={{display: "none"}} />
+         <form onSubmit={handleGenModalSubmit}>
+         <p className="dev-profile__general-modal-title">Profile picture<span className="dev-profile__general-modal-s">&nbsp;&nbsp;Optional</span></p>
+      <div className="dev-profile_general-modal-picture-wrapper"><img className="dev-profile_general-picture" style={profilePicture && {borderRadius: "50%"}}  width={50} height={50} src={profilePicture ? profilePicture : pictureIcon} alt="preview image" /> 
+      <input 
+      // onChange={handleImgUpload} 
+      accept="image/jpg, image/jpeg, image/png" type="file" id="selectedFileImg" style={{display: "none"}} />
 <input style={{color: "#0050c8", border: "1px solid #0050c8", backgroundColor: "transparent", padding: "3px 10px"}} className="dev-profile__upload" type="button"  value="Upload profile photo" onClick={()=>{
   document.getElementById('selectedFileImg').click()
 }} />
 <button onClick={()=>{
-  setImageUrl(null)
-  setApplyImg(null)
+  // setImageUrl(null)
+  // setApplyImg(null)
+  //can be removed
 }
   } className="dev-profile__general-modal-delete-button">Delete profile photo</button>
       </div>
       <div className="dev-profile__general-modal-input-wrapper">
-      <TextInput forId={"firstNameInput"}>First name</TextInput>
-      <TextInput forId={"lastNameInput"}>Last name</TextInput>
+      <TextInput defaultValue={userName?.split(" ")[0] || ""} required forId={"firstNameInput"}>First name</TextInput>
+      <TextInput defaultValue={userName?.split(" ")[1] || ""} required forId={"lastNameInput"}>Last name</TextInput>
       </div>
       <div className="dev-profile__general-modal-input-wrapper">
         <div className="select-flags-wrapper">
         <span className="select-flags-label">Nationality&nbsp;<span style={{color: "blue"}}>*</span></span>
-      <ReactFlagsSelect  selected={selectedNation}
-      onSelect={(code) => setSelectedNation(code)
+      <ReactFlagsSelect selected={nationalityInfo}
+      onSelect={(code) => setNationality(code)
       }
       placeholder=""
       searchable
@@ -219,9 +732,9 @@ ducting background checks).</p>
         </div>
 <div className="select-flags-wrapper">
 <span className="select-flags-label">Residance&nbsp;<span style={{color: "blue"}}>*</span></span>
-<ReactFlagsSelect  selected={selectedResidance}
-      onSelect={(code) => setSelectedResidance(code)
-      }
+<ReactFlagsSelect  selected={residanceInfo}
+      onSelect={(code) => setResidance(code)
+        }
       placeholder=""
       searchable
       className="menu-flags"
@@ -231,19 +744,19 @@ ducting background checks).</p>
       </div>
       <div className="dev-profile__general-modal-input-wrapper dev-profile__general-modal-input-wrapper-2">
       <PhoneInput
-      
+  className="phone-input"
   international
-  defaultCountry="KR"
-  value={phone}
-  onChange={setPhone}/>
-  <TextInput forId={"phoneInput"} type="tel">Phone number</TextInput>
+  // defaultCountry="KR"
+  value={phoneNumber.split(" ")[0]}
+  onChange={setPhoneCode}/>
+  <TextInput defaultValue={phoneNumber.split(" ")[1]} required forId={"phoneInput"} type="tel">Phone number</TextInput>
       </div>
       {/*same title-1*/}
       <div className="dev-profile__general-modal-wrapper-2">
       <p className="dev-profile__general-modal-title">Introduce yourself briefly<span className="dev-profile__general-modal-s">&nbsp;&nbsp;Optional</span></p>
       <button className="dev-profile__general-modal-generator-btn">Auto generate</button>
       </div>
-      <TextInput wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
+      <TextInput defaultValue={aboutyourself} wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
         3000 
       } rows={
         3
@@ -254,16 +767,21 @@ ducting background checks).</p>
         <img width={14}
          height={14} src={linkedin} className="dev-profile__general-modal-in-icon"/>
         </span>
-        <input className="dev-profile__general-modal-linkedin-input" type="text" />
+        <input
+        defaultValue={linkedIn}
+        id="linkedInLink" 
+        className="dev-profile__general-modal-linkedin-input" type="text" />
         <button className="dev-profile__general-modal-linkedin-btn">import</button>
        </div>
        <div>
        <p className="dev-profile__general-modal-linkedin-text">We're importing your Linkedin data! you can keep going when we do it!</p>
        <div className="dev-profile__modal-save-btn-wrapper">
-       <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
        </div>
       
+         </form>
+
       </div>
     </div>
     </div>
@@ -277,15 +795,17 @@ ducting background checks).</p>
     <p className="dev-profile__modal-title">Overall experience</p>
     <button type="button" onClick={()=>setExpModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
-      <div className="dev-profile-modal-body">
+      <div className="dev-profile__modal-body">
+        <form onSubmit={handleExpModalSubmit}>
         <div className="dev-profile-exp-modal-input-wrapper">
-        <TextInput  type={"number"} forId={"yearOfExp"}>Years of experience</TextInput>
-        <TextInput  type={"number"} forId={"yearRemoteOfExp"}>Years of remote experience (Optional)</TextInput>
+        <TextInput defaultValue={experience} min={0} max={50} required type={"number"} forId={"yearOfExp"}>Years of experience</TextInput>
+        <TextInput defaultValue={remoteExperience} min={0} max={50}  type={"number"} forId={"yearRemoteOfExp"}>Years of remote experience (Optional)</TextInput>
         {/*Error, requier must be removed */}
         </div>
         <div className="dev-profile__modal-save-btn-wrapper">
-       <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       <BlueButton loading={loading}  style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
+       </form>
       </div>
   
     </div>
@@ -295,20 +815,21 @@ ducting background checks).</p>
     <div className="dev-profile__modal-wrapper">
     <div className="dev-profile__modal-content">
       <div className="dev-profile__modal-header">
-    <p className="dev-profile__modal-title">Overall experience</p>
+    <p className="dev-profile__modal-title">Aviability</p>
     <button type="button" onClick={()=>setAviaModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
-      <div className="dev-profile-modal-body">
-     <div className="dev-profile__avia-modal-main-wrapper">
+      <div className="dev-profile__modal-body">
+        <form onSubmit={handleAviaModalSubmit}>
+           <div className="dev-profile__avia-modal-main-wrapper">
      <label className="dev-profile__avia-modal-label" htmlFor="aviaInput">
-        <input checked className="dev-profile__avia-modal-input" id="aviaInput" name="aviaInput" type="radio" />
+        <input onChange={handleAviaInputChange}  value={true}  defaultChecked={available===true} className="dev-profile__avia-modal-input" id="aviaInput" name="aviaInput" type="radio" />
     <div className="dev-profile__avia-modal-text-wrapper">
     <span className="dev-profile__avia-modal-text">Available for Jobs</span>
     <span className="dev-profile__avia-modal-text-2">I am looking for a remote job.</span>
     </div>
    </label>
    <label className="dev-profile__avia-modal-label" htmlFor="aviaInput2">
-        <input className="dev-profile__avia-modal-input" id="aviaInput2" name="aviaInput" type="radio" />
+        <input defaultChecked={available===false} onChange={handleAviaInputChange} value={false} className="dev-profile__avia-modal-input" id="aviaInput2" name="aviaInput" type="radio" />
     <div className="dev-profile__avia-modal-text-wrapper">
    <span className="dev-profile__avia-modal-text">Unavailable for Jobs</span>
     <span className="dev-profile__avia-modal-text-2">I am not looking for a remote job.</span>
@@ -316,8 +837,11 @@ ducting background checks).</p>
    </label>
      </div>
      <div className="dev-profile__modal-save-btn-wrapper">
-       <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
+
+        </form>
+    
  
    
       </div>
@@ -331,25 +855,28 @@ ducting background checks).</p>
     <p className="dev-profile__modal-title">Role and salary</p>
     <button type="button" onClick={()=>setRoleModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
-      <div className="dev-profile-modal-body dev-profile-role-modal-body">
-<DropDownMenu roleRef={roleRef} options={jobsOptions}  labelText={"Preffered role"}></DropDownMenu>
+      <div className="dev-profile__modal-body dev-profile-role-modal-body">
+        <form onSubmit={handleRoleModalSubmit}>
+        <DropDownMenu defaultValue={preferredRole} forId={"roleModalDropdown"} menuRef={roleRef} options={jobs}  labelText={"Preffered role"}></DropDownMenu>
        <div className="dev-profile-role-modal-inputs-wrapper">
     <div className="dev-profile-role-modal-input-wrapper">
-   <input defaultValue={currentSalary.toLocaleString()} onChange={handleCurrentSalaryChange} type="number" id="salaryInputCurrent"    className="dev-profile-role-modal-salary-input" required="required"/>
+   <input defaultValue={monthlySalary} type="number" id="salaryInputCurrent"    className="dev-profile-role-modal-salary-input" required="required"/>
       <label htmlFor="salaryInputCurrent" className="dev-profile-role-modal-salary-label">Current monthly salary&nbsp;
         <span style={{color: "blue"}}>*</span>
       </label>
     </div>
     <div  className="dev-profile-role-modal-input-wrapper">
-   <input type="number" defaultValue={"$ 0"}  id="salaryInputExp"  className="dev-profile-role-modal-salary-input" required="required"/>
+   <input type="number" defaultValue={expectedSalary}  id="salaryInputExp"  className="dev-profile-role-modal-salary-input" required="required"/>
       <label htmlFor="salaryInputExp" className="dev-profile-role-modal-salary-label" >Expected salary&nbsp;
         <span style={{color: "blue"}}>*</span>
       </label>
     </div>
     </div>
      <div className="dev-profile__modal-save-btn-wrapper">
-       <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
+        </form>
+
       </div>
     </div>
     </div>
@@ -361,17 +888,243 @@ ducting background checks).</p>
     <p className="dev-profile__modal-title">Skills and Languages</p>
     <button type="button" onClick={()=>setSkillsModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
-      <div className="dev-profile-modal-body dev-profile-role-modal-body">
-        
+      <div className="dev-profile__modal-body">
+        <form onSubmit={handleSkillsModalSubmit}>{inputs?.map((input, index)=>(
+        <div key={index} className="dev-profile__modal-inputs-wrapper dev-profile__skills-modal-wrapper-1">
+        <div className="dev-profile__skills-modal-skills-wrapper">
+        <p className="dev-profile__skills-modal-label">Skill&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+        {/*React library*/}
+        <Select 
+        menuPortalTarget={document.body} 
+        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}}
+        classNamePrefix="mySelect" 
+        options={skillsList}
+        placeholder="Skill name"
+        className="select" 
+        menuPlacement="auto"
+        // onChange={handleSkillSelect}
+        value={input.skill}
+        onChange={(selectedOption) => handleInputChange(index, 'skill', selectedOption)}
+        //  onChange={opt => console.log(opt.label, opt.value)}
+        />
+        </div>
+        <div className="dev-profile__skills-modal-skills-wrapper">
+        <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+        {/*React library*/}
+        <Select 
+          menuPortalTarget={document.body} 
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999}) }}
+        classNamePrefix="mySelect" 
+        options={yearsList}
+        placeholder="Years of experience"
+        className="select" 
+        menuPlacement="auto"
+        value={input.experience}
+        onChange={(selectedOption) => handleInputChange(index, 'experience', selectedOption)}
+        // onChange={handleSkillYearSelect}
+        //  onChange={opt => console.log(opt.label, opt.value)}
+        />
+        </div>
+
+        <div className="dev-profile__skills-modal-skills-wrapper">
+        <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+        {/*React library*/}
+        <Select 
+          menuPortalTarget={document.body} 
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+        classNamePrefix="mySelect" 
+        options={competencyOptions}
+        placeholder="Enter competency"
+        className="select" 
+        menuPlacement="auto"
+        value={input.level}
+        onChange={(selectedOption) => handleInputChange(index, 'level', selectedOption)}
+        // onChange={handleSkillCompetencySelect}
+        //  onChange={opt => console.log(opt.label, opt.value)}
+        />
+        </div>
+        <span 
+        className="dev-profile-skills-modal-delete">&#10005;</span>
+        </div>
+        ))
+        }
+        <div className="dev-profile__modal-inputs-wrapper">
+     <div className="dev-profile__skills-modal-lang-wrapper">
+<p className="dev-profile__skills-modal-label">Language (Optional)</p>
+<Select 
+  menuPortalTarget={document.body} 
+  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+classNamePrefix="mySelect" 
+ menuPlacement="auto"  className="select"  placeholder="Enter language" options={langList}  isSearchable={true}  />
+     </div>
+<Select 
+  menuPortalTarget={document.body} 
+  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  className="select"  options={langLevelOptions}/>
+        </div>
       <div className="dev-profile__modal-save-btn-wrapper">
-       <BlueButton style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
+        </form>
+      
       </div>
     </div>
     </div>
   </div>
   }
-
+   {workExpModal && <div className="dev-profile__modal">
+    <div className="dev-profile__modal-wrapper">
+    <div className="dev-profile__modal-content">
+      <div className="dev-profile__modal-header">
+    <p className="dev-profile__modal-title">Work Experience</p>
+    <button type="button" onClick={()=>setWorkExpModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
+      </div>
+      <div className="dev-profile__modal-body">
+        <form onSubmit={handleWorkExpModalSubmit}>
+       <div className="dev-profile__modal-inputs-wrapper">
+       <TextInput forId={"CompanyName"}>Company name</TextInput>
+      <TextInput forId={"JobTitle"}>Job title</TextInput>
+       </div>
+       <div className="dev-profile__modal-inputs-wrapper">
+        <div className="dev-profile__modal-date-wrapper">
+       <p className="dev-profile__skills-modal-label">Start date&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+       <DatePicker
+       wrapperClassName="dev-profile__modal-date-picker-wrapper"
+       className="dev-profile__work-exp-modal-date-picker-input"
+  dateFormat="MM/yyyy"
+  showMonthYearPicker
+  selected={startDateWorkExp} onChange={(date) => setStartDateWorkExp(date)} 
   
+/>
+        </div>
+        <div className="dev-profile__modal-date-wrapper">
+        <p className="dev-profile__skills-modal-label">End date&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+<DatePicker
+
+wrapperClassName="dev-profile__modal-date-picker-wrapper"
+className="dev-profile__work-exp-modal-date-picker-input"
+  dateFormat="MM/yyyy"
+  showMonthYearPicker
+  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
+/>
+        </div>
+
+       </div>
+       <div className="dev-profile__work-exp-modal-checkbox-wrapper">
+       <Checkbox  /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
+       </div>
+       <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
+<p className="select-flags-label">Loaction (Optional)</p>
+<ReactFlagsSelect  selected={residance}
+      onSelect={(code) => setResidance(code)
+      }
+      placeholder=""
+      searchable
+      className="menu-flags"
+      menuPlacement="auto"
+      />
+</div>
+<div className="dev-profile__auto-gen-btn-wrapper">
+<button className="dev-profile__general-modal-generator-btn">Auto generate</button>
+</div>
+<div>
+
+</div>
+<div className="dev-profile__work-exp-modal-textarea-wrapper">
+<TextInput wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
+        3000 
+      } rows={
+        3
+      } forId={"textAreaWorkExp"}>Description</TextInput>
+</div>
+<Select
+isMulti
+ styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+ classNamePrefix="mySelect"  
+menuPlacement="auto" options={skillsList} className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (optional)"/>
+      <div className="dev-profile__modal-save-btn-wrapper">
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       </div>
+
+        </form>
+      </div>
+    </div>
+    </div>
+  </div>
+  }
+     {eduModal && <div className="dev-profile__modal">
+    <div className="dev-profile__modal-wrapper">
+    <div className="dev-profile__modal-content">
+      <div className="dev-profile__modal-header">
+    <p className="dev-profile__modal-title">{btnType==="add" ? "Add Education" : "Edit Education"}</p>
+    <button type="button" onClick={()=>setEduModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
+      </div>
+      <div className="dev-profile__modal-body">
+        <form onSubmit={handleEduModalSubmit}>
+      <TextInput defaultValue={btnType==="edit" ?  selectedEdu.name : ""} forId={"schoolInput"}>School</TextInput>
+      <div className="dev-profile__modal-inputs-wrapper dev-profile__edu-modal-select-wrapper">
+        <div className="dev-profile__skills-modal-lang-wrapper">
+        <p className="dev-profile__skills-modal-label">Degree&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+      <Select   menuPortalTarget={document.body} 
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999}) }}
+        classNamePrefix="mySelect-dev-profile-edu" 
+        defaultInputValue={btnType==="edit" ?  selectedEdu.degree : ""}
+        options={degreeList}
+        placeholder="Degree"
+        className="select" 
+        menuPlacement="auto"
+         onChange={opt => setDegree(opt.value)}/>
+        </div>
+     
+         <div className="dev-profile__skills-modal-lang-wrapper">
+        <TextInput defaultValue={btnType==="edit" ?  selectedEdu.fieldOfStudy : ""} forId={"fieldOfStudy"}>Field of study</TextInput>
+         </div>
+      </div>
+      <div className="dev-profile__modal-inputs-wrapper">
+        <div className="dev-profile__modal-date-wrapper">
+       <p className="dev-profile__skills-modal-label">Start date&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+       <DatePicker
+
+       wrapperClassName="dev-profile__modal-date-picker-wrapper"
+       className="dev-profile__work-exp-modal-date-picker-input"
+  dateFormat="MM/yyyy"
+  showMonthYearPicker
+  id="eduStartDate"
+  selected={selectedEdu?.startDate || startDateWorkExp} onChange={(date) => setStartDateWorkExp(date)} 
+  
+/>
+        </div>
+        <div className="dev-profile__modal-date-wrapper">
+        <p className="dev-profile__skills-modal-label">End date&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+<DatePicker
+wrapperClassName="dev-profile__modal-date-picker-wrapper"
+className="dev-profile__work-exp-modal-date-picker-input"
+  dateFormat="MM/yyyy"
+  showMonthYearPicker
+  // showMonthYearDropdown
+  id="eduEndDate"
+  selected={selectedEdu?.endDate || endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
+/>
+        </div>
+
+       </div>
+       <div className="dev-profile__modal-save-btn-wrapper">
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       </div>
+
+        </form>
+      </div>
+    </div>
+    </div>
+  </div>
+  }
 </div>
 }
