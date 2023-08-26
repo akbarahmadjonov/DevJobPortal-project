@@ -11,8 +11,8 @@ export const JobsNested = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [jobCategories, setJobCategories] = useState([]);
   const [images, setImages] = useState("");
-  const [data, setData] = useState({});
   const [catIds, setCatId] = useState("");
+  const [data, setData] = useState({});
 
   //* REF VALUES
   const nameRef = useRef();
@@ -21,6 +21,9 @@ export const JobsNested = () => {
   const infoRef = useRef();
   const typeRef = useRef();
   const priceRef = useRef();
+  const jobSkillsRef = useRef();
+  const typeMoneyRef = useRef();
+  const moreInfoRef = useRef();
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
@@ -37,6 +40,11 @@ export const JobsNested = () => {
       jobInfo: infoRef.current?.value,
       jobType: typeRef.current?.value,
       jobPrice: priceRef.current?.value,
+      jobSkills: jobSkillsRef.current?.value
+        .split(",")
+        .map((skill) => skill.trim()),
+      typeMoney: typeMoneyRef.current?.value,
+      moreInfo: moreInfoRef.current?.value,
     };
 
     try {
@@ -57,10 +65,10 @@ export const JobsNested = () => {
       );
 
       const postJob = async () => {
-        console.log(data);
         try {
-          const post = await JobService.jobPost(data);
-          console.log(post);
+          const datas = await JobService.jobPost(data);
+          console.log(datas);
+          // setIsModalVisible(false);
         } catch (error) {
           console.error("Error posting", error);
         }
@@ -76,7 +84,6 @@ export const JobsNested = () => {
       try {
         const response = await JobService.jobCategoryGet();
         setJobCategories(response.data);
-        console.log(response);
       } catch (error) {
         console.error("Error getting category", error);
       }
@@ -157,6 +164,18 @@ export const JobsNested = () => {
             <div className="job-nested__form">
               <label htmlFor="jobPrice">Job Price</label>
               <input ref={priceRef} type="number" name="jobPrice" />
+            </div>
+            <div className="job-nested__form">
+              <label htmlFor="jobSkills">Job Skills (comma-separated)</label>
+              <input ref={jobSkillsRef} name="jobSkills" />
+            </div>
+            <div className="job-nested__form">
+              <label htmlFor="typeMoney">Type of Money</label>
+              <input ref={typeMoneyRef} name="typeMoney" />
+            </div>
+            <div className="job-nested__form">
+              <label htmlFor="moreInfo">More Info</label>
+              <textarea ref={moreInfoRef} name="moreInfo" rows={4} />
             </div>
             <div className="job-nested__form">
               <label htmlFor="jobPrice">Job Category</label>
