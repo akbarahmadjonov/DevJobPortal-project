@@ -51,17 +51,17 @@ const App = () => {
   const user = localStorage.getItem("userData");
 
   //Test
-  let hours = 5;
-  let now = new Date().getTime();
-  let setupTime = localStorage.getItem("setupTime");
-  if (setupTime == null) {
-    localStorage.setItem("setupTime", now);
-  } else {
-    if (now - setupTime > hours * 60 * 60 * 1000) {
-      localStorage.clear();
-      localStorage.setItem("setupTime", now);
-    }
-  }
+  // let hours = 5;
+  // let now = new Date().getTime();
+  // let setupTime = localStorage.getItem("setupTime");
+  // if (setupTime == null) {
+  //   localStorage.setItem("setupTime", now);
+  // } else {
+  //   if (now - setupTime > hours * 60 * 60 * 1000) {
+  //     localStorage.clear();
+  //     localStorage.setItem("setupTime", now);
+  //   }
+  // }
   //Jobs categories as used in two or more pages
 
   useEffect(() => {
