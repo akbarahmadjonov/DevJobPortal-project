@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import forgotPasswordImg from "../../../../Assets/Images/forgot-password-img.svg";
@@ -9,6 +9,8 @@ import Link from "@mui/material/Link";
 import backImg from "../../../../Assets/Icons/back.svg";
 import FormHelperText from "@mui/material/FormHelperText";
 import closeEye from "../../../../Assets/Icons/close eye.png";
+import checkIcon from "../../../../Assets/Icons/check.png";
+import crossIcon from "../../../../Assets/Icons/cross.png";
 import eyeIcon from "../../../../Assets/Icons/eye.png";
 import GoogleIcon from "../../../../Assets/Icons/GoogleIcon.svg";
 import { Link as LinkDom } from "react-router-dom";
@@ -23,12 +25,58 @@ export const RightContent = ({
   setTypeInput,
   handleGoogleClick,
   handleSubmit,
+  handleReset,
   navigate,
   forgotPassword,
+  showConfirmationCode,
   setForgotPassword,
+  createNewPass,
+  setCreateNewPass,
 }) => {
   const [openAlertNotification, setOpenAlertNotification] = useState(false);
+  const [check1, setCheck1] = useState(false);
+  const [check2, setCheck2] = useState(false);
+  const [check3, setCheck3] = useState(false);
+  const [check4, setCheck4] = useState(false);
+  const [resetBtn, setResetBtn] = useState(true);
+  const [focusedPass, setFocusedPass] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
 
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+    validatePassword(newPassword);
+  };
+
+  const validatePassword = (password) => {
+    // Minimum length of 10 characters
+    const lengthValid = password.length >= 10;
+
+    // At least one lowercase letter
+    const lowercaseValid = /[a-z]/.test(password);
+
+    // At least one uppercase letter
+    const uppercaseValid = /[A-Z]/.test(password);
+
+    // At least one digit
+    const digitValid = /\d/.test(password);
+
+    // At least one special character
+    const specialCharValid = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
+
+    setCheck1(lengthValid);
+    setCheck3(lowercaseValid && uppercaseValid);
+    setCheck2(digitValid);
+    setCheck4(specialCharValid);
+    // Update the validity state
+    setValidPassword(
+      lengthValid &&
+        lowercaseValid &&
+        uppercaseValid &&
+        digitValid &&
+        specialCharValid
+    );
+  };
   const style = {
     position: "absolute",
     top: "50%",
@@ -40,6 +88,13 @@ export const RightContent = ({
     borderRadius: "15px",
     p: 4,
   };
+  useEffect(() => {
+    if (createNewPass) {
+      if (validPassword) {
+        setResetBtn(false);
+      } else setResetBtn(true);
+    } else setResetBtn(false);
+  }, [validPassword, createNewPass, resetBtn]);
 
   return (
     <>
@@ -79,7 +134,7 @@ export const RightContent = ({
                     />
                     <Box
                       component="form"
-                      onSubmit={handleSubmit}
+                      onSubmit={handleReset}
                       sx={{
                         mt: 1,
                         width: "100%",
@@ -87,6 +142,23 @@ export const RightContent = ({
                         position: "relative",
                       }}
                     >
+                      {createNewPass ? (
+                        <Typography
+                          component="h1"
+                          variant="h4"
+                          sx={{
+                            fontSize: "22px",
+                            marginTop: "15px",
+                            marginBottom: "15px",
+                            fontWeight: 400,
+                          }}
+                          className="mx-auto w-full text-start font-bold text-black "
+                        >
+                          Create a new password
+                        </Typography>
+                      ) : (
+                        ""
+                      )}
                       <TextField
                         required
                         margin="normal"
@@ -94,22 +166,133 @@ export const RightContent = ({
                         fullWidth
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        id="userEmail"
+                        id="email"
                         label="Email Address"
-                        name="userEmail"
+                        name="email"
                         size="small"
                         style={{ color: "#999" }}
                         autoComplete="email"
                         autoFocus
                       />
+
+                      {showConfirmationCode ? (
+                        <Grid item xs={12} marginTop={2}>
+                          <TextField
+                            required
+                            size="small"
+                            fullWidth
+                            name="confirmationCode"
+                            label="Confirmation Code"
+                            type="number"
+                            id="confirmationCode"
+                          />
+                        </Grid>
+                      ) : (
+                        ""
+                      )}
+                      {createNewPass ? (
+                        <>
+                          <Grid
+                            item
+                            marginTop={2}
+                            sx={{ position: "relative" }}
+                            xs={12}
+                          >
+                            <TextField
+                              required
+                              fullWidth
+                              name="password"
+                              size="small"
+                              onFocus={() => setFocusedPass(true)}
+                              label="Password"
+                              type={typeInput}
+                              id="password"
+                              onChange={handlePasswordChange}
+                              value={password}
+                              autoComplete="new-password"
+                              error={
+                                focusedPass
+                                  ? validPassword
+                                    ? false
+                                    : true
+                                  : false
+                              }
+                            />
+                            <img
+                              width={17}
+                              className={`absolute cursor-pointer right-[10px] top-[15px] `}
+                              onClick={() => {
+                                if (typeInput === "password") {
+                                  setTypeInput("text");
+                                } else {
+                                  setTypeInput("password");
+                                }
+                              }}
+                              height={17}
+                              src={
+                                typeInput === "password" ? eyeIcon : closeEye
+                              }
+                              alt="toggle input type"
+                            />
+
+                            <ul
+                              className={`transition-all ${
+                                focusedPass
+                                  ? "translate-y-1 flex flex-col"
+                                  : "h-0 w-0 opacity-0"
+                              } duration-500 items-start justify-start text-[14px] mt-[10px]`}
+                            >
+                              <li className="flex space-x-2 items-center justify-center">
+                                <img
+                                  src={check1 ? checkIcon : crossIcon}
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>a minimum of 10 characters</span>
+                              </li>
+                              <li className="flex space-x-2 items-center justify-center">
+                                <img
+                                  src={check2 ? checkIcon : crossIcon}
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>a number</span>
+                              </li>
+                              <li className="flex space-x-2 items-center justify-center">
+                                <img
+                                  src={check3 ? checkIcon : crossIcon}
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>uppercase and lowercase letters</span>
+                              </li>
+                              <li className="flex items-center space-x-2 justify-center">
+                                <img
+                                  src={check4 ? checkIcon : crossIcon}
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>a special character</span>
+                              </li>
+                            </ul>
+                          </Grid>
+                        </>
+                      ) : (
+                        ""
+                      )}
                       <div className="flex flex-col items-center pt-[40px] justify-between w-full space-y-4">
-                        <button
+                        <Button
                           type="submit"
-                          onClick={() => setOpenAlertNotification(true)}
+                          disabled={resetBtn}
+                          variant="contained"
                           className="w-full py-[10px] transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
                         >
                           Reset Password
-                        </button>
+                        </Button>
                       </div>
                       <Grid container justifyContent="center" pt={"15px"}>
                         <Grid item>

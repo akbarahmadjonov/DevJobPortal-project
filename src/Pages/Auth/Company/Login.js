@@ -1,13 +1,17 @@
 import {
   Alert,
+  Backdrop,
   Box,
   Button,
+  Fade,
   FormControl,
   FormHelperText,
   Input,
   LinearProgress,
+  Modal,
   Snackbar,
   TextField,
+  Typography,
 } from "@mui/material";
 import successImg from "../../../Assets/Images/check-your-inbox.png";
 import SuperCoderLogo from "./../../../Assets/Images/SuperCoderLogo.svg";
@@ -17,8 +21,21 @@ import { Link, useNavigate } from "react-router-dom";
 import backImg from "../../../Assets/Icons/back.svg";
 import axios from "axios";
 
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 242,
+  borderRadius: "15px",
+  p: 4,
+};
+
 export default function CompanyLogin() {
   const [typeInput, setTypeInput] = useState("password");
+  const [openAlertNotification, setOpenAlertNotification] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [color, setColor] = useState("error");
@@ -66,24 +83,25 @@ export default function CompanyLogin() {
 
   const handleReset = async (e) => {
     e.preventDefault();
-    if (emailValidation.test(email)) {
-      await axios
-        .post(url + "/recruiter/login", {
-          email,
-        })
-        .then((res) => {
-          console.log(res);
-          setSuccessMsg("Reset Successful");
-          setOpenSuccess(true);
-          setReset(true);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      setErrorMsg("Please enter a valid email address!");
-      setOpenError(true);
-    }
+    setOpenAlertNotification(true)
+    // if (emailValidation.test(email)) {
+    //   await axios
+    //     .post(url + "/recruiter/login", {
+    //       email,
+    //     })
+    //     .then((res) => {
+    //       console.log(res);
+    //       setSuccessMsg("Reset Successful");
+    //       setOpenSuccess(true);
+    //       setReset(true);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // } else {
+    //   setErrorMsg("Please enter a valid email address!");
+    //   setOpenError(true);
+    // }
   };
 
   useEffect(() => {
@@ -400,6 +418,32 @@ export default function CompanyLogin() {
           </Alert>
         </Snackbar>
       </div>
+      {/* Notification About development */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openAlertNotification}
+        onClose={(e) => setOpenAlertNotification(false)}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openAlertNotification}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h4" component="h1">
+              Quick Notification
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              As the API for this page is not yet available, we want to clarify
+              that the page is currently under development.
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
     </>
   );
 }

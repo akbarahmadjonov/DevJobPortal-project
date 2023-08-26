@@ -11,7 +11,9 @@ export default function Header({ headerClassName, style, inputStyle }) {
   const navigate = useNavigate();
   return (
     <>
-      {verify ? (
+      {verify &&
+      localStorage.getItem("userData") &&
+      localStorage.getItem("token") ? (
         <header style={style} className={headerClassName ? "home__header" : ""}>
           <div
             className="container max-w-[1728px] mx-auto p-[20px]"
