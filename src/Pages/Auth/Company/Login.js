@@ -46,6 +46,8 @@ export default function CompanyLogin() {
     axios
       .post(url + "/recruiter/login", data)
       .then((res) => {
+        localStorage.clear();
+        localStorage.setItem("verify", JSON.stringify(false));
         localStorage.setItem("token", res?.data?.token);
         localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
         navigate("/comprofile");
@@ -67,7 +69,7 @@ export default function CompanyLogin() {
     if (emailValidation.test(email)) {
       await axios
         .post(url + "/recruiter/login", {
-          email
+          email,
         })
         .then((res) => {
           console.log(res);

@@ -11,10 +11,13 @@ import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
 import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
 // Auth
+
+import Login from "./Pages/Auth/User/Login";
+import Register from "./Pages/Auth/User/Register";
+
 import CompanyLogin from "./Pages/Auth/Company/Login";
 import CompanyRegister from "./Pages/Auth/Company/Register";
-import Login from "./Pages/Auth/User/Login";
-import Register from "./Pages/Auth/User/Register1";
+
 // Jobs
 import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";
 import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
@@ -46,7 +49,6 @@ const App = () => {
   );
 
   const user = localStorage.getItem("userData");
-  console.log(user);
 
   //Test
   let hours = 5;
