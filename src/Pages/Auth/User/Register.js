@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -20,10 +19,8 @@ import {
   Link,
   Snackbar,
 } from "@mui/material";
-import Header from "../../../Widgets/Header/Header";
-import { Footer } from "../../../Widgets";
 import axios from "axios";
-import { auth, signInWithGoogle } from "../../../Components/Firebase";
+import { signInWithGoogle } from "../../../Components/Firebase";
 
 const url = "https://job-px4t.onrender.com/api";
 
@@ -48,11 +45,9 @@ const initialState = {
 };
 
 export default function Register() {
-  const privacyCheck = useRef(false);
   const [state, setState] = useState(initialState);
   const [validPassword, setValidPassword] = useState(false);
   const [password, setPassword] = useState("");
-  const [preConfData, setPreConfData] = useState(null);
   const [showConfirmationCode, setShowConfirmationCode] = useState(false);
   const [successMsg, setSuccessMsg] = useState("Success!");
   const [openError, setOpenError] = useState(false);
@@ -67,7 +62,7 @@ export default function Register() {
     const lowercaseValid = /[a-z]/.test(password);
     const uppercaseValid = /[A-Z]/.test(password);
     const digitValid = /\d/.test(password);
-    const specialCharValid = /[!@#$%^&*()_+[\]{};':"\\|,.<>?/~\-]/.test(
+    const specialCharValid = /[!@#$%^&*()_+[\]{};':"\\|,.<>?/~-]/.test(
       password
     );
 
@@ -155,20 +150,25 @@ export default function Register() {
 
       setOpenLoader(false);
     } catch (error) {
-      console.log(error);
-
       const unexpectedError = error?.message;
       const serverError = error?.response?.data?.message;
+      if (
+        error.message !== "Firebase: Error (auth/cancelled-popup-request)." &&
+        error.message !== "Firebase: Error (auth/popup-closed-by-user)."
+      ) {
+        console.log(error?.message);
+        if (unexpectedError) {
+          setErrorMsg(unexpectedError);
+        }
 
-      if (unexpectedError) {
-        setErrorMsg(unexpectedError);
+        if (serverError) {
+          setErrorMsg(serverError);
+        }
+        setOpenError(true);
+        setOpenLoader(false);
+      } else {
+        console.log(error?.message);
       }
-
-      if (serverError) {
-        setErrorMsg(serverError);
-      }
-      setOpenError(true);
-      setOpenLoader(false);
     }
   };
 
@@ -243,7 +243,7 @@ export default function Register() {
       {/* Backdrop - Loader */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={state.openLoader}
+        open={openLoader}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -505,7 +505,7 @@ export default function Register() {
                       By confirming your email, you agree to our
                     </span>
                     <a
-                      href="#"
+                      href="#!"
                       className="text-[blue] tracking-tighter font-semibold"
                     >
                       {"  "}
@@ -517,7 +517,7 @@ export default function Register() {
                       and that you have read and understood our
                     </span>
                     <a
-                      href="#"
+                      href="#!"
                       className="text-[blue] tracking-tighter font-semibold"
                     >
                       {"  "}

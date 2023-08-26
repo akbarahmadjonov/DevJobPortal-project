@@ -106,6 +106,11 @@ export default function CompanyRegister() {
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   );
   const passwordValidation = new RegExp(/((?=.*\d)(?=.*[a-z]).{6,20})/);
+  const validHttp1 =
+    /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+  const validHttp2 =
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+
   const [progress, setProgress] = useState(0);
   const url = "https://job-px4t.onrender.com/api";
 
@@ -174,23 +179,17 @@ export default function CompanyRegister() {
       });
     }, 200);
   };
+
   useEffect(() => {
     if (
       name.length > 1 &&
       companyName.length > 1 &&
-      phoneNumber.length > 1 &&
+      phoneNumber.length > 10 &&
       fundingRounds.length > 1 &&
       teamSize.length > 1
     ) {
       if (website) {
-        if (
-          website.match(
-            /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
-          ) ||
-          website.match(
-            /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
-          )
-        ) {
+        if (validHttp1.test(website) || validHttp2.test(website)) {
           setDisabled2(false);
         } else setDisabled2(true);
       } else setDisabled2(false);
@@ -215,7 +214,7 @@ export default function CompanyRegister() {
               Login
             </button>
           </div>
-          <main>
+          <main className="pb-[10px]">
             {step === 1 ? (
               <div className="flex flex-col relative w-[512px] mx-auto items-center justify-center">
                 <div className="flex flex-col items-center mb-[20px] justify-center">
@@ -804,7 +803,11 @@ export default function CompanyRegister() {
                               Phone Number:
                             </label>
                             <PhoneInput
-                              inputStyle={{ width: "100%" }}
+                              inputStyle={{
+                                width: "100%",
+                                borderColor:
+                                  phoneNumber.length <= 10 ? "red" : "",
+                              }}
                               isValid={true}
                               required={true}
                               country={"uz"} //KR - South Korea
@@ -824,12 +827,8 @@ export default function CompanyRegister() {
                               onChange={(e) => {
                                 setCompanyWebsite(e.target.value.trim());
                                 if (
-                                  website.match(
-                                    /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/
-                                  ) ||
-                                  website.match(
-                                    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/
-                                  )
+                                  validHttp1.test(e.target.value) ||
+                                  validHttp2.test(e.target.value)
                                 ) {
                                   setColor("primary");
                                   setDisabled2(false);
@@ -872,8 +871,8 @@ export default function CompanyRegister() {
                       By requesting a developer recruitment, you are deemed to
                       have agreed to our{" "}
                       <Link
-                        to="/company/login"
-                        className="transition-all text-[#3a6fff]"
+                        href="#!"
+                        className="transition-all cursor-pointer text-[#3a6fff]"
                       >
                         privacy policy.
                       </Link>{" "}

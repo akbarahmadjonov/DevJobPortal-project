@@ -212,6 +212,7 @@ export default function Register() {
     if (validEmail && validPassword && validFirstName) {
       setDisabled(false);
     } else setDisabled(true);
+    console.log(disabled)
   }, [password, validPassword, firstName, validEmail, validFirstName]);
   return (
     <>
