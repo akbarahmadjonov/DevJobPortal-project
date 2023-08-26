@@ -39,6 +39,11 @@
   padding-right: 10px;
 
   border: 2px solid #eeeded;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #fcfcfc;
+  }
 }
 
 .job__title {
@@ -57,6 +62,10 @@
   display: flex;
   align-items: center;
 
+  //* Margin, paddings
+  margin-left: 30px;
+  margin-right: 30px;
+
   border: 1px solid #eeeded;
   border-radius: 2px;
 
@@ -71,7 +80,9 @@
 
 .open-paused__block {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+
+  width: 150px;
 
   //* Margin, paddings
   //   margin-right: 20px;

@@ -12,7 +12,7 @@ const JobService = {
       const data = await axios.get(`job`, {
         headers: {
           token,
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
         },
       });
       return data;
@@ -30,6 +30,21 @@ const JobService = {
         headers: {
           token,
           "Content-Type": "application/json",
+        },
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+
+  //* JOB POST | REQUEST
+  jobDelete: async (id) => {
+    try {
+      const data = await axios.delete(`job/${id}`, {
+        headers: {
+          token,
         },
       });
       return data;
