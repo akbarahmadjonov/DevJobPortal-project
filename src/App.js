@@ -3,36 +3,40 @@ import { Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
+import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
+import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
+import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
+import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
+import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
 import { DevProfile } from "./Pages/DevProfile";
 import { Jobs } from "./Pages/Jobs/Jobs";
-import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
-import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
-import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
-import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
-import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
 // Auth
+
 import Login from "./Pages/Auth/User/Login";
 import Register from "./Pages/Auth/User/Register";
+
 import CompanyLogin from "./Pages/Auth/Company/Login";
 import CompanyRegister from "./Pages/Auth/Company/Register";
+
 // Jobs
-import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
 import { Archived } from "./Pages/CompanyProfile/Nested/Jobs/Archived/Archived";
+import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPaused";
 // Evaluation
-import { Pending } from "./Pages/CompanyProfile/Nested/Evaluation/Pending/Pending";
 import { Completed } from "./Pages/CompanyProfile/Nested/Evaluation/Completed/Completed";
+import { Pending } from "./Pages/CompanyProfile/Nested/Evaluation/Pending/Pending";
 // Talentpool
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
-import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
-import { useDispatch, useSelector } from "react-redux";
+import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
 import { homeActions } from "./Redux/HomeSlice";
-import axios from "axios";
 
 // Profile
-import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 import { CompanyProfileProvider } from "./context/CompanyProfileContext";
+import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
+import { userActions } from "./Redux/UserSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -43,6 +47,8 @@ const App = () => {
   const { token, userData, loading, error } = useSelector(
     (state) => state.user
   );
+
+  const user = localStorage.getItem("userData");
 
   //Test
   let hours = 5;
@@ -80,7 +86,10 @@ const App = () => {
             <Route path="/company/login" element={<CompanyLogin />} />
             <Route path="/company/register" element={<CompanyRegister />} />
             <Route path="/jobs" element={<Jobs />} />
-            <Route path="/dev-profile" element={<DevProfile />} />
+            <Route
+              path="/dev-profile"
+              element={user ? <DevProfile /> : <Login />}
+            />
             <Route path="/comprofile" element={<CompanyProfile />}>
               <Route index element={<JobsNested />} />
               {/* Jobs */}
