@@ -12,7 +12,7 @@ import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
 import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
 // Auth
 import Login from "./Pages/Auth/User/Login";
-import Register from "./Pages/Auth/User/Register1";
+import Register from "./Pages/Auth/User/Register";
 import CompanyLogin from "./Pages/Auth/Company/Login";
 import CompanyRegister from "./Pages/Auth/Company/Register";
 // Jobs

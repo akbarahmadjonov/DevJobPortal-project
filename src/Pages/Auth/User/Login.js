@@ -41,7 +41,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [typeInput, setTypeInput] = useState("password");
   const [forgotPassword, setForgotPassword] = useState(false);
-  const verify = JSON.parse(localStorage.getItem("verify")) || false;
+  const                   verify = JSON.parse(localStorage.getItem("verify")) || false;
 
   // Other Hooks
   const navigate = useNavigate();
@@ -92,13 +92,17 @@ const Login = () => {
       }
       setOpenLoader(false);
     } catch (err) {
-      if (err.message !== "Firebase: Error (auth/cancelled-popup-request).") {
+      if (
+        err.message !== "Firebase: Error (auth/cancelled-popup-request)." &&
+        err.message !==
+          "Firebase: Error (auth/popup-closed-by-user)."
+      ) {
         setErrorMsg(err.message);
         setErrorMsg(err?.response?.data?.message);
         setOpenError(true);
-        console.log(err);
+        console.log(err?.message);
       } else {
-        console.log(err);
+        console.log(err?.message);
       }
     }
   };
