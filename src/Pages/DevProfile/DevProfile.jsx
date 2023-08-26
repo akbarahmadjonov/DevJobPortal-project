@@ -43,7 +43,7 @@ export const DevProfile = ()=>{
   const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
 
   //Exception, couldn't access if declare after 
-  const available = userData?.data?.available
+  const available = userData?.available
   const [avia, setAvia] = useState(available)
 
   //Modals
@@ -70,7 +70,7 @@ export const DevProfile = ()=>{
 
 
   
-const skillsInfo = userData?.data?.skills
+const skillsInfo = userData?.skills
 
 console.log(skillsInfo);
 
@@ -167,38 +167,44 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   //Variables------------
 
   //resume file name
-  const fileName = userData?.data?.resume?.filePath
+  const fileName = userData?.resume?.filePath
   const filePath = `https://job-px4t.onrender.com/resumes/${fileName}`
 
 
 
   //User data from server
 
-  const userName = userData?.data?.fullName
-  const userEmail = userData?.data?.email
+  const userName = userData?.fullName
+  const userEmail = userData?.email
   const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
-  const nationalityInfo = userData?.data?.nationality 
-  const residanceInfo = userData?.data?.residence
-  const phoneNumber = userData?.data?.phoneNumber
-  const aboutyourself = userData?.data?.aboutyourself
-  const linkedIn = userData?.data?.linkedIn
-  const experience = userData?.data?.experience?.experience
-  const remoteExperience = userData?.data?.experience?.remoteExperience
-  const preferredRole = userData?.data?.roleAndSalary?.preferredRole
-  const monthlySalary = userData?.data?.roleAndSalary?.monthlySalary
-  const expectedSalary = userData?.data?.roleAndSalary?.expectedSalary
 
-  const educationsList = userData?.data?.education
+
+  
+  const nationalityInfo = userData?.nationality
+  const residanceInfo = userData?.residence
+
+
+  const phoneNumber = userData?.phoneNumber
+  const aboutyourself = userData?.aboutyourself
+  const linkedIn = userData?.linkedIn
+  const experience = userData?.experience?.experience
+  const remoteExperience = userData?.experience?.remoteExperience
+  const preferredRole = userData?.roleAndSalary?.preferredRole
+  const monthlySalary = userData?.roleAndSalary?.monthlySalary
+  const expectedSalary = userData?.roleAndSalary?.expectedSalary
+
+  const educationsList = userData?.education
 
   console.log(educationsList);
 
 
   //
 
-  console.log(nationalityInfo);
 
-  const [nationality, setNationality] = useState(nationalityInfo);
-  const [residance, setResidance] = useState(residanceInfo);
+  
+  const [nationality, setNationality] = useState("");
+
+  const [residance, setResidance] = useState("");
 
 
   //
@@ -238,12 +244,14 @@ useEffect(()=>{
     }
   }).then((data)=>{
    
-dispatch(userActions.setUserData(data))
+    dispatch(userActions.setUserData(data.data))
+    setNationality(data.data?.nationality)
+    setResidance(data.data?.residence)
   }).catch(()=>{
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
   })
-}, [userData])
+}, [])
 
 const handleResumeUpload = (evt)=> {
   //can be removed then
@@ -279,7 +287,7 @@ const handleResumeEdit = (evt)=>{
   formData.append("resume", evt.target.files[0])
 
 
-  axios.put(`${url}/resume/${userData?.data?.resume?._id}`, formData, {
+  axios.put(`${url}/resume/${userData?.resume?._id}`, formData, {
     headers: {
       token
     }
@@ -294,7 +302,7 @@ const handleResumeEdit = (evt)=>{
 }
 
 const handleResumeDelete = ()=>{
-  axios.delete(`${url}/resume/${userData?.data?.resume?._id}`, {
+  axios.delete(`${url}/resume/${userData?.resume?._id}`, {
     headers: {
     token
     }
@@ -307,6 +315,9 @@ console.log(res);
     // setLoading(false)
   })
 }
+
+
+
 
 
 
@@ -739,10 +750,9 @@ ducting background checks).</p>
       <div className="dev-profile__general-modal-input-wrapper">
         <div className="select-flags-wrapper">
         <span className="select-flags-label">Nationality&nbsp;<span style={{color: "blue"}}>*</span></span>
-      <ReactFlagsSelect  
+      <ReactFlagsSelect 
       selected={nationality}
-      onSelect={(code) => setNationality(code)
-      }
+      onSelect={(country)=>setNationality(country)}
       placeholder=""
       searchable
       className="menu-flags"
@@ -752,7 +762,7 @@ ducting background checks).</p>
 <div className="select-flags-wrapper">
 <span className="select-flags-label">Residance&nbsp;<span style={{color: "blue"}}>*</span></span>
 <ReactFlagsSelect  selected={residance}
-      onSelect={(code) => setResidance(code)
+      onSelect={(country) => setResidance(country)
         }
       placeholder=""
       searchable
