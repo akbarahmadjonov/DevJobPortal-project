@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Checkbox } from "@mui/material";
+import { Backdrop, Checkbox, CircularProgress } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -23,6 +23,7 @@ import phoneIcon from "../../Assets/Icons/phone-icon-2.svg"
 import emailIcon from "../../Assets/Icons/email-icon.svg"
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../Redux/UserSlice";
+import { homeActions } from "../../Redux/HomeSlice";
 
 
 
@@ -42,7 +43,7 @@ export const DevProfile = ()=>{
   const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
 
   //Exception, couldn't access if declare after 
-  const available = userData?.data?.available
+  const available = userData?.available
   const [avia, setAvia] = useState(available)
 
   //Modals
@@ -56,7 +57,7 @@ export const DevProfile = ()=>{
   //
 
   
-  const [phoneCode, setPhoneCode] = useState("+82")
+  const [phoneCode, setPhoneCode] = useState()
   const [currentSalary, setCurrentSalary] = useState(0);
 
   //Detect button data-types and id
@@ -69,7 +70,7 @@ export const DevProfile = ()=>{
 
 
   
-const skillsInfo = userData?.data?.skills
+const skillsInfo = userData?.skills
 
 console.log(skillsInfo);
 
@@ -82,8 +83,6 @@ console.log(skillsInfo);
  
 
 console.log(inputs);
-
-
 
 
 
@@ -168,36 +167,44 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   //Variables------------
 
   //resume file name
-  const fileName = userData?.data?.resume?.filePath
+  const fileName = userData?.resume?.filePath
   const filePath = `https://job-px4t.onrender.com/resumes/${fileName}`
 
 
 
   //User data from server
 
-  const userName = userData?.data?.fullName
-  const userEmail = userData?.data?.email
+  const userName = userData?.fullName
+  const userEmail = userData?.email
   const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
-  const nationalityInfo = userData?.data?.nationality || "kr"
-  const residanceInfo = userData?.data?.residence || "kr"
-  const phoneNumber = userData?.data?.phoneNumber
-  const aboutyourself = userData?.data?.aboutyourself
-  const linkedIn = userData?.data?.linkedIn
-  const experience = userData?.data?.experience?.experience
-  const remoteExperience = userData?.data?.experience?.remoteExperience
-  const preferredRole = userData?.data?.roleAndSalary?.preferredRole
-  const monthlySalary = userData?.data?.roleAndSalary?.monthlySalary
-  const expectedSalary = userData?.data?.roleAndSalary?.expectedSalary
 
-  const educationsList = userData?.data?.education
+
+  
+  const nationalityInfo = userData?.nationality
+  const residanceInfo = userData?.residence
+
+
+  const phoneNumber = userData?.phoneNumber
+  const aboutyourself = userData?.aboutyourself
+  const linkedIn = userData?.linkedIn
+  const experience = userData?.experience?.experience
+  const remoteExperience = userData?.experience?.remoteExperience
+  const preferredRole = userData?.roleAndSalary?.preferredRole
+  const monthlySalary = userData?.roleAndSalary?.monthlySalary
+  const expectedSalary = userData?.roleAndSalary?.expectedSalary
+
+  const educationsList = userData?.education
 
   console.log(educationsList);
 
 
   //
 
-  const [nationality, setNationality] = useState(nationalityInfo);
-  const [residance, setResidance] = useState(residanceInfo);
+
+  
+  const [nationality, setNationality] = useState("");
+
+  const [residance, setResidance] = useState("");
 
 
   //
@@ -230,16 +237,20 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 //First form upload resume
 
 useEffect(()=>{
+  dispatch(userActions.setLoading(true))
   axios.get(`${url}/user/token`, {
     headers: {
     token
     }
   }).then((data)=>{
-dispatch(userActions.setUserData(data))
+   
+    dispatch(userActions.setUserData(data.data))
+    setNationality(data.data?.nationality)
+    setResidance(data.data?.residence)
+    setPhoneCode(data.data?.phoneNumber.split(" ")[0])
   }).catch(()=>{
-    // setError(true)
   }).finally(()=>{
-    // setLoading(false)
+    dispatch(userActions.setLoading(false))
   })
 }, [])
 
@@ -277,7 +288,7 @@ const handleResumeEdit = (evt)=>{
   formData.append("resume", evt.target.files[0])
 
 
-  axios.put(`${url}/resume/${userData?.data?.resume?._id}`, formData, {
+  axios.put(`${url}/resume/${userData?.resume?._id}`, formData, {
     headers: {
       token
     }
@@ -292,7 +303,7 @@ const handleResumeEdit = (evt)=>{
 }
 
 const handleResumeDelete = ()=>{
-  axios.delete(`${url}/resume/${userData?.data?.resume?._id}`, {
+  axios.delete(`${url}/resume/${userData?.resume?._id}`, {
     headers: {
     token
     }
@@ -305,6 +316,9 @@ console.log(res);
     // setLoading(false)
   })
 }
+
+
+
 
 
 
@@ -336,6 +350,8 @@ formData.append("nationality", nationality)
 formData.append("residence", residance)
 formData.append("phoneNumber", `${phoneCode} ${phoneNumber}`)
 formData.append("linkedIn", linkedIn)
+
+
 
 
 axios.put(`${url}/user`, formData, {
@@ -546,6 +562,15 @@ return null
   // }, [applyImg]);
 
 return  <div className="dev-profile">
+  
+<Backdrop
+    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    open={loading}
+    
+  >
+    <CircularProgress color="inherit" />
+  </Backdrop>
+  
   <header className="dev-profile__header dev-profile__header-container">
     <div className="dev-profile__header-left-wrapper">
     <Link to={"/"} className="dev-profile__header-logo">
@@ -583,8 +608,8 @@ return  <div className="dev-profile">
       <p className="dev-profile__text">Your Supercoder profile saves your info so you can to jobs quickly, receive personalized jobs recomendations.</p>
     </div>
     <div className="dev-profile__info-wrapper-2">
-    <p className="dev-profile__title">Resume</p>
-  {fileName ? <a className="dev-profile__text-2" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
+    <p className="dev-profile__title dev-profile-control-left-width">Resume</p>
+  {fileName ? <a className="dev-profile__text-2 dev-profile-control-middle-width" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
    <input onChange={!fileName ? handleResumeUpload : handleResumeEdit} accept=".pdf, .docx" type="file" id="selectedFile" style={{display: "none"}} />
    <div className="dev-profile__resume-btn-wrapper">
    {fileName && <button onClick={handleResumeDelete} className="dev-profile__delete-btn">Delete resume</button>}
@@ -598,7 +623,7 @@ onClick={()=>{
     {/* General information - can be component*/}
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-general">
       <div className="dev-profile__gen-info-top-wrapper">
-      {!profilePicture & !userName & !nationalityInfo ? <p className="dev-profile__title">General information<span className="dev-profile__required">*</span></p> : <div className="dev-profile__account-wrapper dev-profile__general-account-wrapper">
+      {!profilePicture & !userName & !nationalityInfo ? <p className="dev-profile__title">General information<span className="dev-profile__required">*</span></p> : <div className="dev-profile__account-wrapper dev-profile__general-account-wrapper dev-profile-control-left-width">
       <img className="dev-profile_general-picture" style={profilePicture && {borderRadius: "50%"}}  width={50} height={50} src={profilePicture ? profilePicture : pictureIcon} alt="preview image" /> 
      
 {/* <div className="dev-profile__account-image">B</div> */}
@@ -607,7 +632,7 @@ onClick={()=>{
 <p className="dev-profile__account-nation">{nationalityInfo}</p>
 </div>
 </div>}
-<div className="dev-profile__gen-info-middle-wrapper">
+<div className="dev-profile__gen-info-middle-wrapper dev-profile-control-middle-width">
  <div className="dev-profile__gen-info-middle-inner-wrapper">
   <img width={14} height={14} src={emailIcon} alt="email-icon" /><p>{userEmail}</p>
   </div>
@@ -615,46 +640,46 @@ onClick={()=>{
   {phoneNumber && <><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p></>}
   </div>
 </div>
-      <button className={phoneNumber && "edit-button"} onClick={()=>setGenModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+      <button className={phoneNumber && "dev-profile__edit-btn"} onClick={()=>setGenModal(true)} type="button">{!phoneNumber && <img width={18} height={18} src={editPen} alt="edit pen" />}{phoneNumber && "Edit"}</button>
       </div>
     {aboutyourself &&  <div className="dev-profile__gen-info-bottom-wrapper">{aboutyourself}</div>}
     </div>
     {/* Overall experience - can be component */}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    <p>{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s)` : ""}</p>
-  <button onClick={()=>setExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+    <p className="dev-profile__title dev-profile-control-left-width">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile-control-middle-width">{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s)` : ""}</p>
+  <button className={experience && "dev-profile__edit-btn"} onClick={()=>setExpModal(true)} type="button">{!experience && <img width={18} height={18} src={editPen} alt="edit pen" />}{experience && "Edit"}</button>
     </div>
     {/*Avaibility*/}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Avaibility<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    <p>{available ? "Available" : "Not Available"}</p>
-  <button onClick={()=>setAviaModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+    <p className="dev-profile__title dev-profile-control-left-width">Avaibility<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile-control-middle-width">{available ? "Available" : "Not Available"}</p>
+  <button className={available && "dev-profile__edit-btn"} onClick={()=>setAviaModal(true)} type="button">{!available && <img width={18} height={18} src={editPen} alt="edit pen" />}{available && "Edit"}</button>
     </div>
     {/*Role and salary*/}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Role and Salary<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    {preferredRole && <div>
+    <p className="dev-profile__title dev-profile-control-left-width">Role and Salary<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    {preferredRole && <div className="dev-profile-control-middle-width">
     <strong>{preferredRole}</strong>
     <p>Current salary: ${monthlySalary}</p>
    {expectedSalary && <p>Expected salary: ${expectedSalary}</p>}
     </div>}
-  <button onClick={()=>setRoleModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+  <button className={preferredRole && "dev-profile__edit-btn"} onClick={()=>setRoleModal(true)} type="button">{!preferredRole && <img width={18} height={18} src={editPen} alt="edit pen" />}{preferredRole && "Edit"}</button>
     </div>
     {/*Skills and Languages */}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
   <button onClick={()=>setSkillsModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Work experience */}
     <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <p className="dev-profile__title dev-profile-control-left-width">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
   <button onClick={()=>setWorkExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>  
        {/*Education */}
        <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
         <div className="dev-profile__education-top-wrapper">
-        <p className="dev-profile__title">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+        <p className="dev-profile__title dev-profile-control-left-width">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
    
    {!educationsList ? <button onClick={()=>{setEduModal(true)
     setBtnType("add") 
@@ -728,9 +753,9 @@ ducting background checks).</p>
       <div className="dev-profile__general-modal-input-wrapper">
         <div className="select-flags-wrapper">
         <span className="select-flags-label">Nationality&nbsp;<span style={{color: "blue"}}>*</span></span>
-      <ReactFlagsSelect  selected={nationality}
-      onSelect={(code) => setNationality(code)
-      }
+      <ReactFlagsSelect 
+      selected={nationality}
+      onSelect={(country)=>setNationality(country)}
       placeholder=""
       searchable
       className="menu-flags"
@@ -739,8 +764,8 @@ ducting background checks).</p>
         </div>
 <div className="select-flags-wrapper">
 <span className="select-flags-label">Residance&nbsp;<span style={{color: "blue"}}>*</span></span>
-<ReactFlagsSelect  selected={residanceInfo}
-      onSelect={(code) => setResidance(code)
+<ReactFlagsSelect  selected={residance}
+      onSelect={(country) => setResidance(country)
         }
       placeholder=""
       searchable
@@ -753,6 +778,7 @@ ducting background checks).</p>
       <PhoneInput
   className="phone-input"
   international
+  
   // defaultCountry="KR"
   value={phoneNumber?.split(" ")[0]}
   onChange={setPhoneCode}/>

@@ -209,10 +209,10 @@ export default function Register() {
     validatePassword(newPassword);
   };
   useEffect(() => {
-    if (validEmail && validPassword && firstName.length >= 3) {
+    if (validEmail && validPassword && validFirstName) {
       setDisabled(false);
     } else setDisabled(true);
-  }, [password, validPassword, firstName, validEmail]);
+  }, [password, validPassword, firstName, validEmail, validFirstName]);
   return (
     <>
       {/* Backdrop - Loader */}
