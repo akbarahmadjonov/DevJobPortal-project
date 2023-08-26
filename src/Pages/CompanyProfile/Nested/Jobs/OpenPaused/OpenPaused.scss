@@ -153,3 +153,32 @@
 
   font-weight: 800;
 }
+
+.modal-inner {
+  margin-top: 20px;
+}
+
+.modal-values {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 80px;
+
+  margin-bottom: 15px;
+  padding: 20px;
+
+  & span {
+    margin-right: 50px;
+  }
+
+  border-bottom: 2px solid #eeeded;
+}
+
+.modal-upper__title {
+  font-weight: bold;
+  font-size: 22px;
+}
+
+.modal-title {
+  font-weight: bold;
+}

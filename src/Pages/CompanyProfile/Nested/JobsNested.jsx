@@ -21,7 +21,7 @@ export const JobsNested = () => {
   const infoRef = useRef();
   const typeRef = useRef();
   const priceRef = useRef();
-  const jobSkillsRef = useRef();
+  const jobskillsRef = useRef();
   const typeMoneyRef = useRef();
   const moreInfoRef = useRef();
 
@@ -40,7 +40,7 @@ export const JobsNested = () => {
       jobInfo: infoRef.current?.value,
       jobType: typeRef.current?.value,
       jobPrice: priceRef.current?.value,
-      jobSkills: jobSkillsRef.current?.value
+      jobskills: jobskillsRef.current?.value
         .split(",")
         .map((skill) => skill.trim()),
       typeMoney: typeMoneyRef.current?.value,
@@ -118,12 +118,13 @@ export const JobsNested = () => {
           Create a job
         </Button>
         <Modal
-          title="Create Job"
+          title="Create a new Job"
           visible={isModalVisible}
           footer={null}
+          width={800}
           onCancel={() => setIsModalVisible(false)}
         >
-          <form onSubmit={(e) => handleSubmit(e)}>
+          <form className="form" onSubmit={(e) => handleSubmit(e)}>
             <div className="job-nested__form">
               <label htmlFor="comImg">Company Image</label>
               <input
@@ -162,16 +163,16 @@ export const JobsNested = () => {
               <input ref={typeRef} name="jobType" />
             </div>
             <div className="job-nested__form">
+              <label htmlFor="typeMoney">Currency Type</label>
+              <input ref={typeMoneyRef} type="text" name="typeMoney" />
+            </div>
+            <div className="job-nested__form">
               <label htmlFor="jobPrice">Job Price</label>
               <input ref={priceRef} type="number" name="jobPrice" />
             </div>
             <div className="job-nested__form">
               <label htmlFor="jobSkills">Job Skills (comma-separated)</label>
-              <input ref={jobSkillsRef} name="jobSkills" />
-            </div>
-            <div className="job-nested__form">
-              <label htmlFor="typeMoney">Type of Money</label>
-              <input ref={typeMoneyRef} name="typeMoney" />
+              <input ref={jobskillsRef} name="jobSkills" />
             </div>
             <div className="job-nested__form">
               <label htmlFor="moreInfo">More Info</label>
@@ -189,7 +190,7 @@ export const JobsNested = () => {
                 }))}
               />
             </div>
-            <div>
+            <div className="job-nested__buttons">
               <Button type="primary" htmlType="submit">
                 Create
               </Button>{" "}

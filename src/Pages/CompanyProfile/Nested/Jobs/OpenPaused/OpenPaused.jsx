@@ -6,12 +6,25 @@ import { BsHeadphones } from "react-icons/bs";
 import { FaPeopleGroup, FaPodcast } from "react-icons/fa6";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
-import { Select } from "antd";
+import { Modal, Select, Skeleton } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
 
 export const OpenPaused = () => {
   const [companyJob, setCompanyJob] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedJob, setSelectedJob] = useState({});
+
+  const handleOpenModal = (job) => {
+    setSelectedJob(job);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedJob({});
+    setModalVisible(false);
+  };
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
@@ -25,11 +38,13 @@ export const OpenPaused = () => {
     try {
       const response = await JobService.jobGet();
       setCompanyJob(response.data.posts);
+      setLoading(false);
       console.log(response);
     } catch (error) {
       console.error("Error occurred while fetching user profile", error);
     }
   };
+
   const deleteJob = async (id) => {
     try {
       await JobService.jobDelete(id);
@@ -44,7 +59,14 @@ export const OpenPaused = () => {
 
   const dropdownMenu = (jobId) => (
     <Menu>
-      <Menu.Item key="1" danger onClick={() => deleteJob(jobId)}>
+      <Menu.Item
+        key="1"
+        danger
+        onClick={() => {
+          deleteJob(jobId);
+          setModalVisible(false);
+        }}
+      >
         Delete this job
       </Menu.Item>
     </Menu>
@@ -53,10 +75,16 @@ export const OpenPaused = () => {
   return (
     <div className="open-paused">
       <div className="container">
-        {companyJob.length > 0 ? (
+        {loading ? (
+          <Skeleton active />
+        ) : companyJob.length > 0 ? (
           <div>
             {companyJob.map((data) => (
-              <div className="open-paused__inner" key={data._id}>
+              <div
+                className="open-paused__inner"
+                key={data._id}
+                onClick={() => handleOpenModal(data)}
+              >
                 <div className="open-paused__block">
                   <h2 className="job__title">{data.jobTitle}</h2>
                   <span className="job__createdTime">Created: June 1</span>
@@ -68,7 +96,7 @@ export const OpenPaused = () => {
                         style={{ color: "#0050C8", fontSize: "23px" }}
                       />
                       <span>Active</span>
-                      <span>0</span>
+                      <span>{data?.posts}</span>
                     </div>
                   </div>
                   <div className="open-paused__block">
@@ -114,6 +142,7 @@ export const OpenPaused = () => {
                       borderBottom: "1px solid #d9d9d9",
                     }}
                     onChange={handleChange}
+                    onClick={(e) => e.stopPropagation()}
                     options={[{ value: "Paused" }]}
                   />
                 </div>
@@ -123,7 +152,10 @@ export const OpenPaused = () => {
                     trigger={["click"]}
                   >
                     <div
-                      onClick={(e) => e.preventDefault()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
                       className="open-paused__dotsIcon"
                     >
                       <BsThreeDots
@@ -143,6 +175,77 @@ export const OpenPaused = () => {
           </div>
         )}
       </div>
+      <Modal
+        visible={modalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={800}
+      >
+        <div className="modal-wrapper">
+          <h1 className="modal-upper__title">More info about your job post</h1>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Company Image</span>
+              <img src={selectedJob.comImg} width={100} alt="company image" />
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Company Name</span>
+              <p>{selectedJob.jobTitle}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Company Location</span>
+              <p>{selectedJob.comLocation}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Title</span>
+              <p>{selectedJob.jobTitle}</p>
+            </div>
+          </div>
+          <div className="modal-">
+            <div className="modal-values">
+              <span className="modal-title">Job Info</span>
+              <p>{selectedJob.jobInfo}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Type (Online & Offline)</span>
+              <p>{selectedJob.jobType}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Skills</span>
+              <p>{selectedJob.jobSkills}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">More Info</span>
+              <p>{selectedJob.moreInfo}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Currency Type</span>
+              <p>{selectedJob.typeMoney}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Price</span>
+              <p>{selectedJob.jobPrice}</p>
+            </div>
+          </div>
+        </div>
+        <div>{/* Render other job details here */}</div>
+      </Modal>
     </div>
   );
 };
