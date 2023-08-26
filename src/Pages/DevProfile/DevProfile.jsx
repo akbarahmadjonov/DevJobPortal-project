@@ -57,7 +57,7 @@ export const DevProfile = ()=>{
   //
 
   
-  const [phoneCode, setPhoneCode] = useState("+82")
+  const [phoneCode, setPhoneCode] = useState()
   const [currentSalary, setCurrentSalary] = useState(0);
 
   //Detect button data-types and id
@@ -247,6 +247,7 @@ useEffect(()=>{
     dispatch(userActions.setUserData(data.data))
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
+    setPhoneCode(data.data?.phoneNumber.split(" ")[0])
   }).catch(()=>{
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
@@ -349,6 +350,8 @@ formData.append("nationality", nationality)
 formData.append("residence", residance)
 formData.append("phoneNumber", `${phoneCode} ${phoneNumber}`)
 formData.append("linkedIn", linkedIn)
+
+
 
 
 axios.put(`${url}/user`, formData, {
@@ -775,6 +778,7 @@ ducting background checks).</p>
       <PhoneInput
   className="phone-input"
   international
+  
   // defaultCountry="KR"
   value={phoneNumber?.split(" ")[0]}
   onChange={setPhoneCode}/>

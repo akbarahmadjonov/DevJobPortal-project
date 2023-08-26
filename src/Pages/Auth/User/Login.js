@@ -104,7 +104,7 @@ const Login = () => {
   };
   useEffect(() => {
     if (verify) {
-      navigate("/devs-profile");
+      navigate("/dev-profile");
     }
   }, [verify, navigate]);
 
