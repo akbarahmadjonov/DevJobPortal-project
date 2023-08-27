@@ -41,7 +41,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [typeInput, setTypeInput] = useState("password");
   const [forgotPassword, setForgotPassword] = useState(false);
-  const verify = JSON.parse(localStorage.getItem("verify")) || false;
+  const                   verify = JSON.parse(localStorage.getItem("verify")) || false;
 
   // Other Hooks
   const navigate = useNavigate();

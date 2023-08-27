@@ -53,7 +53,7 @@ export default function Register() {
   const [validPassword, setValidPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [preConfData, setPreConfData] = useState(null);
-  const [showConfirmationCode, setShowConfimationCode] = useState(false);
+  const [showConfirmationCode, setShowConfirmationCode] = useState(false);
   const [successMsg, setSuccessMsg] = useState("Success!");
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
@@ -134,21 +134,15 @@ export default function Register() {
       const message = response?.data?.message;
 
       if (message === "Confirmation code sent to the email") {
-        setState({
-          ...state,
-          successMsg: message,
-          openSuccess: true,
-          showConfirmationCode: true,
-        });
+        setSuccessMsg(message);
+        setOpenSuccess(true);
+        setShowConfirmationCode(true);
       }
 
       if (token) {
-        setState({
-          ...state,
-          successMsg: "Successfully Signed Up!",
-          openSuccess: true,
-          showConfirmationCode: false,
-        });
+        setSuccessMsg("Successfully Signed Up!");
+        setOpenSuccess(true);
+        setShowConfirmationCode(false);
 
         localStorage.setItem("token", token);
         localStorage.setItem("userData", JSON.stringify(response?.data?.data));
@@ -159,10 +153,7 @@ export default function Register() {
         }, 1000);
       }
 
-      setState({
-        ...state,
-        openLoader: false,
-      });
+      setOpenLoader(false);
     } catch (error) {
       console.log(error);
 
@@ -170,24 +161,14 @@ export default function Register() {
       const serverError = error?.response?.data?.message;
 
       if (unexpectedError) {
-        setState({
-          ...state,
-          errorMsg: unexpectedError,
-        });
+        setErrorMsg(unexpectedError);
       }
 
       if (serverError) {
-        setState({
-          ...state,
-          errorMsg: serverError,
-        });
+        setErrorMsg(serverError);
       }
-
-      setState({
-        ...state,
-        openError: true,
-        openLoader: false,
-      });
+      setOpenError(true);
+      setOpenLoader(false);
     }
   };
 
@@ -209,13 +190,13 @@ export default function Register() {
       if (message === "Confirmation code sent to the email") {
         setSuccessMsg(message);
         setOpenSuccess(true);
-        setShowConfimationCode(true);
+        setShowConfirmationCode(true);
       }
 
       if (token) {
         setSuccessMsg("Successfully Signed Up!");
         setOpenSuccess(true);
-        setShowConfimationCode(false);
+        setShowConfirmationCode(false);
         localStorage.setItem("token", token);
         localStorage.setItem("userData", JSON.stringify(response?.data?.data));
         localStorage.setItem("verify", JSON.stringify(true));
@@ -388,7 +369,7 @@ export default function Register() {
                       label="Email Address"
                       error={
                         state.focusedEmail
-                          ? state.validEmail
+                          ? isValidEmail(state.email)
                             ? false
                             : true
                           : false
