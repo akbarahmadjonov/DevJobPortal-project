@@ -8,7 +8,7 @@ export const { actions: userActions, reducer: userReducer } = createSlice({
       JSON.parse(localStorage.getItem("userData")),
     token:
       localStorage.getItem("token") ||
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZTk5ZjFjNzJmNDQ3YjA4NGIxZjk2ZCIsImlhdCI6MTY5MzAzMjIyMH0.vJOxk-dfREkvUAoTkeixLeC50XIbPPQLzg3GVN3Kq2s",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWIwMGQwMWNmNmMzOTNhZTUyOGQ0MCIsImlhdCI6MTY5MzEyMjc2OH0.1A3aiq0yQqmX4DjLy9oGP3KZJJwCHeWIUn60zfOhUEk",
     userData: null,
     loading: false,
     error: null,

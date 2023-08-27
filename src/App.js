@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
@@ -49,6 +49,7 @@ const App = () => {
   );
 
   const user = localStorage.getItem("userData");
+  const navigate = useNavigate();
 
   //Test
   // let hours = 5;
@@ -87,7 +88,7 @@ const App = () => {
             <Route path="/company/register" element={<CompanyRegister />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route
-              path="/dev-profile"
+              path={user ? "/dev-profile" : "/user/login"}
               element={user ? <DevProfile /> : <Login />}
             />
             <Route path="/comprofile" element={<CompanyProfile />}>
