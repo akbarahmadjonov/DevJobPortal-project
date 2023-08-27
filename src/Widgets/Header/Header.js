@@ -8,6 +8,7 @@ export default function Header({ headerClassName, style, inputStyle }) {
   const verify = localStorage.getItem("verify") || false;
   const user = localStorage.getItem("userData");
   const fullName = JSON.parse(user && user)?.fullName;
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
   return (
     <>
@@ -171,7 +172,9 @@ export default function Header({ headerClassName, style, inputStyle }) {
                   <Button
                     variant="contained"
                     size="small"
-                    onClick={() => navigate("/company/register")}
+                    onClick={() =>
+                      navigate(`${token ? "/comprofile" : "/company/register"}`)
+                    }
                   >
                     Hire developers
                   </Button>

@@ -9,12 +9,15 @@ import { BsThreeDots } from "react-icons/bs";
 import { Modal, Select, Skeleton } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
+import { useNavigate } from "react-router-dom";
 
 export const OpenPaused = () => {
   const [companyJob, setCompanyJob] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState({});
+
+  const navigate = useNavigate();
 
   const handleOpenModal = (job) => {
     setSelectedJob(job);
@@ -58,13 +61,20 @@ export const OpenPaused = () => {
   };
 
   const dropdownMenu = (jobId) => (
-    <Menu>
+    <Menu onClick={(e) => e.domEvent.stopPropagation()}>
       <Menu.Item
         key="1"
+        onClick={() =>
+          navigate(`editcomponent/${jobId}`, { state: { job: selectedJob } })
+        }
+      >
+        Edit this post
+      </Menu.Item>
+      <Menu.Item
+        key="2"
         danger
         onClick={() => {
           deleteJob(jobId);
-          setModalVisible(false);
         }}
       >
         Delete this job
@@ -150,14 +160,12 @@ export const OpenPaused = () => {
                   <Dropdown
                     overlay={dropdownMenu(data._id)}
                     trigger={["click"]}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                   >
-                    <div
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      className="open-paused__dotsIcon"
-                    >
+                    <div className="open-paused__dotsIcon">
                       <BsThreeDots
                         style={{ color: "#0050C8", fontSize: "23px" }}
                       />
@@ -182,7 +190,7 @@ export const OpenPaused = () => {
         width={800}
       >
         <div className="modal-wrapper">
-          <h1 className="modal-upper__title">More info about your job post</h1>
+          <h1 className="modal-upper__title">{`More info about your "${selectedJob.jobTitle}" post`}</h1>
           <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">Company Image</span>
@@ -244,7 +252,7 @@ export const OpenPaused = () => {
             </div>
           </div>
         </div>
-        <div>{/* Render other job details here */}</div>
+        <div></div>
       </Modal>
     </div>
   );
