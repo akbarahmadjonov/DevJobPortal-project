@@ -803,7 +803,11 @@ export default function CompanyRegister() {
                               Phone Number:
                             </label>
                             <PhoneInput
-                              inputStyle={{ width: "100%", borderColor: "red" }}
+                              inputStyle={{
+                                width: "100%",
+                                borderColor:
+                                  phoneNumber.length <= 10 ? "red" : "",
+                              }}
                               isValid={true}
                               required={true}
                               country={"uz"} //KR - South Korea

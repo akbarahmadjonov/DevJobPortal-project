@@ -1,28 +1,11 @@
 import React, { useState } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
-import FormHelperText from "@mui/material/FormHelperText";
-import Logo from "../../../Assets/Images/SuperCoderLogoForDeveloper.svg";
-import mainImg from "../../../Assets/Images/authenticate-img.svg";
-import backImg from "../../../Assets/Icons/back.svg";
-import eyeIcon from "../../../Assets/Icons/eye.png";
-import GoogleIcon from "../../../Assets/Icons/GoogleIcon.svg";
 import axios from "axios";
-import { Link as LinkDom, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { signInWithGoogle } from "../../../Components/Firebase";
-
-import Verify from "../../../Components/Authentification/Verify";
-import Header from "../../../Widgets/Header/Header";
-import { Footer } from "../../../Widgets";
 import { RightContent } from "./RightSide/RightContent";
 import { LeftContent } from "./LeftSide/LeftContent";
 import { useEffect } from "react";
@@ -36,11 +19,12 @@ const Login = () => {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [successMsg, setSuccessMsg] = useState("Success!");
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
-  const [subValue, setSubValue] = useState("");
+  const [showConfirmationCode, setShowConfirmationCode] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [typeInput, setTypeInput] = useState("password");
   const [forgotPassword, setForgotPassword] = useState(false);
+  const [createNewPass, setCreateNewPass] = useState(false);
   const verify = JSON.parse(localStorage.getItem("verify")) || false;
 
   // Other Hooks
@@ -75,7 +59,7 @@ const Login = () => {
       }
     }
   };
-
+  // Google Auth
   const handleGoogleClick = async () => {
     try {
       const result = await signInWithGoogle();
@@ -108,6 +92,49 @@ const Login = () => {
       }
     }
   };
+  // Reset Function
+  const handleReset = (e) => {
+    e.preventDefault();
+    setOpenLoader(true);
+    const data = new FormData(e.currentTarget);
+    axios
+      .post(apiUrl + "/forgetPass", data)
+      .then((res) => {
+        const message = res?.data?.message;
+        if (message === "Confirmation code sent to the email") {
+          setSuccessMsg(message);
+          setOpenSuccess(true);
+          setShowConfirmationCode(true);
+        }
+        if (message === "ok") {
+          setSuccessMsg("Email verified!");
+          setOpenSuccess(true);
+          setCreateNewPass(true);
+        }
+        if (message === "Password updated") {
+          setSuccessMsg(message);
+          setOpenSuccess(true);
+          setShowConfirmationCode(false);
+          setCreateNewPass(false);
+          setForgotPassword(false);
+          setTimeout(() => {
+            navigate("/user/login");
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        console.log(err?.message);
+        setErrorMsg(err?.message);
+        setErrorMsg(err?.response?.data?.message);
+        setOpenError(true);
+        setOpenLoader(false);
+      })
+      .finally(() => {
+        setOpenLoader(false);
+      });
+  };
+
+  // Checking if the user is authenticated
   useEffect(() => {
     if (
       verify &&
@@ -137,12 +164,16 @@ const Login = () => {
             forgotPassword={forgotPassword}
             email={email}
             setEmail={setEmail}
+            setCreateNewPass={setCreateNewPass}
+            createNewPass={createNewPass}
             password={password}
             setPassword={setPassword}
             typeInput={typeInput}
             setTypeInput={setTypeInput}
             handleGoogleClick={handleGoogleClick}
+            showConfirmationCode={showConfirmationCode}
             handleSubmit={handleSubmit}
+            handleReset={handleReset}
             navigate={navigate}
             setForgotPassword={setForgotPassword}
           />
