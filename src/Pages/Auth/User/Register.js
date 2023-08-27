@@ -155,20 +155,25 @@ export default function Register() {
 
       setOpenLoader(false);
     } catch (error) {
-      console.log(error);
-
       const unexpectedError = error?.message;
       const serverError = error?.response?.data?.message;
-
-      if (unexpectedError) {
-        setErrorMsg(unexpectedError);
+      if (
+        error.message !== "Firebase: Error (auth/cancelled-popup-request)." &&
+        error.message !== "Firebase: Error (auth/popup-closed-by-user)."
+      ) {
+        console.log(error?.message);
+        if (unexpectedError) {
+          setErrorMsg(unexpectedError);
+        }
+  
+        if (serverError) {
+          setErrorMsg(serverError);
+        }
+        setOpenError(true);
+        setOpenLoader(false);
+      } else {
+        console.log(error?.message);
       }
-
-      if (serverError) {
-        setErrorMsg(serverError);
-      }
-      setOpenError(true);
-      setOpenLoader(false);
     }
   };
 

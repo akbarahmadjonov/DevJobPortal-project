@@ -41,7 +41,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [typeInput, setTypeInput] = useState("password");
   const [forgotPassword, setForgotPassword] = useState(false);
-  const                   verify = JSON.parse(localStorage.getItem("verify")) || false;
+  const verify = JSON.parse(localStorage.getItem("verify")) || false;
 
   // Other Hooks
   const navigate = useNavigate();
@@ -61,6 +61,9 @@ const Login = () => {
           localStorage.setItem("token", token);
           localStorage.setItem("userData", JSON.stringify(res?.data?.data));
           localStorage.setItem("verify", JSON.stringify(true));
+          setTimeout(() => {
+            navigate("/dev-profile");
+          }, 1000);
         }
         setOpenLoader(false);
       } catch (err) {
@@ -94,8 +97,7 @@ const Login = () => {
     } catch (err) {
       if (
         err.message !== "Firebase: Error (auth/cancelled-popup-request)." &&
-        err.message !==
-          "Firebase: Error (auth/popup-closed-by-user)."
+        err.message !== "Firebase: Error (auth/popup-closed-by-user)."
       ) {
         setErrorMsg(err.message);
         setErrorMsg(err?.response?.data?.message);
@@ -107,8 +109,12 @@ const Login = () => {
     }
   };
   useEffect(() => {
-    if (verify) {
-      navigate("/devs-profile");
+    if (
+      verify &&
+      localStorage.getItem("userData") &&
+      localStorage.getItem("token")
+    ) {
+      navigate("/dev-profile");
     }
   }, [verify, navigate]);
 
