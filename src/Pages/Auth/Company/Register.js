@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import eyeIcon from "../../../Assets/Icons/eye.png";
 import react from "./../../../Assets/Images/react.png";
 import backImg from "../../../Assets/Icons/back.svg";
+import closeEye from "../../../Assets/Icons/close eye.png";
 import {
   php,
   python,
@@ -17,6 +18,10 @@ import {
   apple,
   flutter,
 } from "../../../important_images";
+
+import checkIcon from "../../../Assets/Icons/check.png";
+import crossIcon from "../../../Assets/Icons/cross.png";
+
 import {
   Autocomplete,
   Box,
@@ -41,7 +46,6 @@ import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { Link as LinkDom, useNavigate } from "react-router-dom";
 import successImg from "../../../Assets/Icons/request-meeting-success-bg2.svg";
-// import { ChangeApp, unSelect } from "../../../Redux/AppSlice";
 import axios from "axios";
 
 function Copyright(props) {
@@ -68,7 +72,6 @@ function Copyright(props) {
 }
 
 export default function CompanyRegister() {
-  const apps = useSelector((state) => state.Apps);
   const [time, setTime] = useState(10);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
@@ -77,7 +80,9 @@ export default function CompanyRegister() {
   const [website, setCompanyWebsite] = useState("");
   const [teamSize, setTeamSize] = useState("");
   const [fundingRounds, setFundingRounds] = useState("");
-  const [color, setColor] = useState("primary");
+  const [colorEmail, setColorEmail] = useState("primary");
+  const [colorPass, setColorPass] = useState("primary");
+  const [colorHttp, setColorHttp] = useState("primary");
   const [step, setStep] = useState(1);
   const [disabled, setDisabled] = useState(true);
   const [disabled2, setDisabled2] = useState(true);
@@ -87,6 +92,7 @@ export default function CompanyRegister() {
   const [errorMsg, setErrorMsg] = useState("Unexpected error!");
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
+  const [showConfirmationCode, setShowConfirmationCode] = useState(false);
   const [successMsg, setSuccessMsg] = useState("Successfull Sing Up!");
   const [select1, setSelect1] = useState(false);
   const [select2, setSelect2] = useState(false);
@@ -100,16 +106,23 @@ export default function CompanyRegister() {
   const [select10, setSelect10] = useState(false);
   const [select11, setSelect11] = useState(false);
   const [select12, setSelect12] = useState(false);
+  const [focusedPhone, setFocusedPhone] = useState(false);
+  const [passwordIndividualCheck, setPasswordIndividualCheck] = useState({
+    check1: false,
+    check2: false,
+    check3: false,
+    check4: false,
+  });
 
   const navigate = useNavigate();
   const emailValidation = new RegExp(
-    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
   const passwordValidation = new RegExp(/((?=.*\d)(?=.*[a-z]).{6,20})/);
   const validHttp1 =
-    /^[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
+    /^[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$/;
   const validHttp2 =
-    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+    /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$/;
 
   const [progress, setProgress] = useState(0);
   const url = "https://job-px4t.onrender.com/api";
@@ -147,21 +160,35 @@ export default function CompanyRegister() {
     axios
       .post(url + "/recruiter", form)
       .then((res) => {
-        localStorage.setItem("token", res?.data?.token);
-        localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
-        setStep(3);
-        setSuccessMsg("Successfull Sing Up!");
-        setOpenSuccess(true);
-        setTimeout(() => {
-          navigate("/comprofile");
-          window.location.reload();
-        }, 1000);
+        const msg = res?.data?.message;
+        console.log(res);
+        if (msg?.includes("Code has sent your email. please confirm!")) {
+          const checkEmail = msg.split(" ")[7];
+          setShowConfirmationCode(true);
+          setSuccessMsg("Confirmation code sent to " + checkEmail);
+          setOpenSuccess(true);
+        }
+        if (res?.data?.data && res?.data?.token) {
+          localStorage.setItem("token", res?.data?.token);
+          localStorage.setItem("companyInfo", JSON.stringify(res?.data?.data));
+          setShowConfirmationCode(false);
+          setStep(3);
+          setSuccessMsg("Successfull Sing Up!");
+          setOpenSuccess(true);
+          setTimeout(() => {
+            navigate("/comprofile");
+            window.location.reload();
+          }, 1000);
+        }
       })
       .catch((err) => {
         console.log(err);
         setErrorMsg("Something went wrong! Try again");
         if (err?.response?.data?.message?.includes("duplicate")) {
           setErrorMsg("This email is already registered!");
+        }
+        if (err?.response?.data?.error?.includes("Noto'g'ri tasdiqlash")) {
+          setErrorMsg("Incorrect Confirmation Code!");
         }
         setOpenError(true);
       })
@@ -194,7 +221,46 @@ export default function CompanyRegister() {
         } else setDisabled2(true);
       } else setDisabled2(false);
     } else setDisabled2(true);
-  }, [name, companyName, phoneNumber, teamSize, website, fundingRounds]);
+  }, [
+    name,
+    companyName,
+    phoneNumber,
+    teamSize,
+    website,
+    fundingRounds,
+    validHttp1,
+    validHttp2,
+  ]);
+
+  useEffect(() => {
+    const validateEmail = (email) => emailValidation.test(email);
+    const validatePassword = (password) => {
+      // Perform validation checks
+      const lengthValid = password.length >= 6;
+      const lowercaseValid = /[a-z]/.test(password);
+      const digitValid = /\d/.test(password);
+
+      // Update state with validation results
+      setPasswordIndividualCheck({
+        ...passwordIndividualCheck,
+        check1: lengthValid,
+        check2: digitValid,
+        check3: lowercaseValid,
+      });
+      return lengthValid && lowercaseValid && digitValid;
+    };
+    const check1 = validatePassword(password);
+    const check2 = validateEmail(email);
+    if (check1 && check2) {
+      setColorPass(check1 ? "primary" : "error");
+      setColorEmail(check2 ? "primary" : "error");
+      setDisabled(false);
+    } else {
+      setColorPass(check1 ? "primary" : "error");
+      setColorEmail(check2 ? "primary" : "error");
+      setDisabled(true);
+    }
+  }, [password, email, emailValidation, passwordIndividualCheck]);
 
   return (
     <>
@@ -205,6 +271,7 @@ export default function CompanyRegister() {
       </Box>
       <div className="container max-w-[1519px] ">
         <div className="flex flex-col">
+          {/* Left Content */}
           <div className="w-full flex justify-between py-[20px] items-center">
             <img src={SuperCoderLogo} alt="SuperCoderLogo" width={160} />
             <button
@@ -214,6 +281,7 @@ export default function CompanyRegister() {
               Login
             </button>
           </div>
+          {/* Right Content */}
           <main className="pb-[10px]">
             {step === 1 ? (
               <div className="flex flex-col relative w-[512px] mx-auto items-center justify-center">
@@ -488,7 +556,7 @@ export default function CompanyRegister() {
                     </div>
                     {/* Select Bar */}
                     <div className="">
-                      <form onSubmit={handleSubmit}>
+                      <Box component={"form"} onSubmit={handleSubmit}>
                         <FormControl
                           sx={{ marginY: 1, mt: "20px", width: "100%" }}
                         >
@@ -556,25 +624,10 @@ export default function CompanyRegister() {
                             placeholder="Email"
                             type="email"
                             required
-                            color={color}
+                            color={colorEmail}
+                            error={colorEmail === "error" ? true : false}
                             onChange={(e) => {
                               setEmail(e.target.value);
-                              if (emailValidation.test(e?.target?.value)) {
-                                if (
-                                  time &&
-                                  e?.target?.value &&
-                                  passwordValidation.test(e?.target?.value)
-                                ) {
-                                  setDisabled(false);
-                                  setColor("primary");
-                                } else {
-                                  setColor("error");
-                                  setDisabled(true);
-                                }
-                              } else {
-                                setDisabled(true);
-                                setColor("error");
-                              }
                             }}
                             size="small"
                             name="email"
@@ -585,49 +638,85 @@ export default function CompanyRegister() {
                             <p className=" text-[16px] font-semibold leading-[16px] mb-[6px] mt-[18px]">
                               Password
                             </p>
-                            <TextField
-                              id="password"
-                              placeholder="Password"
-                              type={typeInput}
-                              name="password"
-                              required
-                              className="w-full"
-                              color={color}
-                              onChange={(e) => {
-                                setPassword(e.target.value);
-                                if (passwordValidation.test(e?.target?.value)) {
-                                  if (
-                                    time &&
-                                    e?.target?.value &&
-                                    emailValidation.test(email)
-                                  ) {
-                                    setDisabled(false);
-                                    setColor("primary");
-                                  } else {
-                                    setColor("error");
-                                    setDisabled(true);
-                                  }
-                                } else {
-                                  setDisabled(true);
-                                  setColor("error");
+                            <div className="wrapper relative">
+                              <TextField
+                                id="password"
+                                placeholder="Password"
+                                type={typeInput}
+                                name="password"
+                                required
+                                error={colorPass === "error" ? true : false}
+                                className="w-full"
+                                color={colorPass}
+                                onChange={(e) => {
+                                  setPassword(e.target.value);
+                                }}
+                                size="small"
+                                value={password}
+                                autoComplete={"false"}
+                              />
+                              <img
+                                width={17}
+                                height={17}
+                                className={`absolute cursor-pointer right-[10px] bottom-[10px]`}
+                                onClick={() => {
+                                  if (typeInput === "password") {
+                                    setTypeInput("text");
+                                  } else setTypeInput("password");
+                                }}
+                                src={
+                                  typeInput === "password" ? eyeIcon : closeEye
                                 }
-                              }}
-                              size="small"
-                              value={password}
-                              autoComplete={"false"}
-                            />
-                            <img
-                              width={17}
-                              height={17}
-                              className={`absolute cursor-pointer right-[10px] bottom-[10px]`}
-                              onClick={() => {
-                                if (typeInput === "password") {
-                                  setTypeInput("text");
-                                } else setTypeInput("password");
-                              }}
-                              src={eyeIcon}
-                              alt="toggle input type"
-                            />
+                                alt="toggle input type"
+                              />
+                            </div>
+                            <ul
+                              className={`transition-all ${
+                                true
+                                  ? "translate-y-1 flex flex-col"
+                                  : "h-0 w-0 opacity-0"
+                              } duration-500 items-start justify-start text-[14px] mt-[10px]`}
+                            >
+                              <li className="flex space-x-2 items-center justify-center">
+                                <img
+                                  src={
+                                    passwordIndividualCheck.check1
+                                      ? checkIcon
+                                      : crossIcon
+                                  }
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>a minimum of 6 characters</span>
+                              </li>
+                              <li className="flex space-x-2 items-center justify-center">
+                                <img
+                                  src={
+                                    passwordIndividualCheck.check2
+                                      ? checkIcon
+                                      : crossIcon
+                                  }
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>a number</span>
+                              </li>
+                              <li className="flex space-x-2 items-center justify-center">
+                                <img
+                                  src={
+                                    passwordIndividualCheck.check3
+                                      ? checkIcon
+                                      : crossIcon
+                                  }
+                                  width={15}
+                                  height={15}
+                                  alt="check-cross-icon"
+                                />
+                                <span>must contain letters</span>
+                              </li>
+                            </ul>
                           </div>
                           <Button
                             type="submit"
@@ -638,7 +727,7 @@ export default function CompanyRegister() {
                             Continiue
                           </Button>
                         </FormControl>
-                      </form>
+                      </Box>
                     </div>
                   </div>
                 </div>
@@ -664,7 +753,13 @@ export default function CompanyRegister() {
                       }}
                       className="absolute top-[40px] right-0"
                     />
-                    <button onClick={(e) => setStep(1)} className="">
+                    <button
+                      onClick={(e) => {
+                        setStep(1);
+                        setShowConfirmationCode(false);
+                      }}
+                      className=""
+                    >
                       <img
                         src={backImg}
                         alt="back btn"
@@ -707,12 +802,10 @@ export default function CompanyRegister() {
                               required
                               fullWidth
                               size="small"
-                              color={color}
                               id="companyName"
                               name="companyName"
                               value={companyName}
                               label="Company Name"
-                              // autoComplete="companyName"
                               onChange={(e) => setCompanyName(e.target.value)}
                             />
                           </Grid>
@@ -805,11 +898,15 @@ export default function CompanyRegister() {
                             <PhoneInput
                               inputStyle={{
                                 width: "100%",
-                                borderColor:
-                                  phoneNumber.length <= 10 ? "red" : "",
+                                borderColor: focusedPhone
+                                  ? phoneNumber.length <= 10
+                                    ? "red"
+                                    : ""
+                                  : "",
                               }}
                               isValid={true}
                               required={true}
+                              onFocus={() => setFocusedPhone(true)}
                               country={"uz"} //KR - South Korea
                               onChange={(value) => setPhoneNumber(value)}
                               value={phoneNumber}
@@ -823,24 +920,38 @@ export default function CompanyRegister() {
                               name="website"
                               size="small"
                               value={website}
-                              color={color}
+                              color={colorHttp}
                               onChange={(e) => {
                                 setCompanyWebsite(e.target.value.trim());
                                 if (
                                   validHttp1.test(e.target.value) ||
                                   validHttp2.test(e.target.value)
                                 ) {
-                                  setColor("primary");
+                                  setColorHttp("primary");
                                   setDisabled2(false);
                                 } else {
                                   setDisabled2(true);
-                                  setColor("error");
+                                  setColorHttp("error");
                                 }
                               }}
-                              // autoComplete="Company Website link url"
                               label="Company Website (Optional)"
                             />
                           </Grid>
+                          {showConfirmationCode ? (
+                            <Grid item xs={12}>
+                              <TextField
+                                required
+                                size="small"
+                                fullWidth
+                                name="confirmationCode"
+                                label="Confirmation Code"
+                                type="number"
+                                id="confirmationCode"
+                              />
+                            </Grid>
+                          ) : (
+                            ""
+                          )}
                         </Grid>
                         <Button
                           disabled={disabled2}
@@ -853,14 +964,13 @@ export default function CompanyRegister() {
                         </Button>
                         <Grid container justifyContent="flex-end">
                           <Grid item>
-                            <Link variant="body2">
-                              <LinkDom
-                                to={"/company/login"}
-                                onClick={() => setStep(1)}
-                              >
-                                Already have an account? Sign in
-                              </LinkDom>
-                            </Link>
+                            <LinkDom
+                              to={"/company/login"}
+                              onClick={() => setStep(1)}
+                              className="text-[0.875rem] font-normal text-[#1976d2] underline"
+                            >
+                              Already have an account? Sign in
+                            </LinkDom>
                           </Grid>
                         </Grid>
                       </Box>
