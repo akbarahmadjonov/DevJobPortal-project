@@ -24,6 +24,7 @@ import emailIcon from "../../Assets/Icons/email-icon.svg"
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../Redux/UserSlice";
 import { homeActions } from "../../Redux/HomeSlice";
+import { CustomSelect } from "./Components";
 
 
 
@@ -39,9 +40,7 @@ export const DevProfile = ()=>{
   const [applyImg, setApplyImg] = useState(null) //upload image //can be removed
   const [imageUrl, setImageUrl] = useState(null); //preview image // can be removed
   // const [fileName, setFileName] = useState("")
-  const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Expirience
-  const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
-
+ 
   //Exception, couldn't access if declare after 
   const available = userData?.available
   const [avia, setAvia] = useState(available)
@@ -68,13 +67,21 @@ export const DevProfile = ()=>{
 
   //Managing inputs adding
 
+  const [educationsList, setEducationsList] = useState()
+
+  const [workSkill, setWorkSkillList] = useState([])
+
+  //Work Modal Checkbox
+  const [isWorkChecked, setIsWorkChecked] = useState()
+
+
+
 
   
 const skillsInfo = userData?.skills
 
-console.log(skillsInfo);
 
-  const [inputs, setInputs] = useState([{ skill: '', experience: '', level: '' }]);
+const [inputs, setInputs] = useState([{ skill: '', experience: '', level: '' }]);
 
 
   // if(userData?.data){
@@ -82,13 +89,10 @@ console.log(skillsInfo);
   // }
  
 
-console.log(inputs);
 
-
-
- 
   const handleInputChange = (index, inputName, selectedOption) => {
     const newInputs = [...inputs];
+    //May be let 
     newInputs[index][inputName] = selectedOption;
     setInputs(newInputs);
 
@@ -193,9 +197,9 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const monthlySalary = userData?.roleAndSalary?.monthlySalary
   const expectedSalary = userData?.roleAndSalary?.expectedSalary
 
-  const educationsList = userData?.education
+  // const educationsList = userData?.education
 
-  console.log(educationsList);
+
 
 
   //
@@ -205,6 +209,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const [nationality, setNationality] = useState("");
 
   const [residance, setResidance] = useState("");
+
+  const [location, setLocation] = useState("");
 
 
   //
@@ -216,25 +222,43 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   //This code for getting values for input from server in education modal, while editing
 
-  const selectedEdu = educationsList?.find(item => item._id === eduId
-)
-
-  console.log(selectedEdu);
 
 
+  const selectedEdu = educationsList?.find(item => item?._id === eduId)
+
+
+//This code was written for inserting date to DatePicker in education and work exp. modals which comes from backend
+
+// const eduStartDateString = selectedEdu?.startDate
+// console.log(eduStartDateString);
+// const [month, year] = (eduStartDateString ?? "").split("/");
+// const eduModalStartDate = new Date(`${year}-${month}-01`);
+
+
+
+//State for date formats
+
+const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Expirience
+const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
+
+console.log(endDateWorkExp);
+
+const [startDateEdu, setStartDateEdu] = useState(new Date()); //DatePicker start date education
+const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date  education
 
 
 
 
-  console.log(userData);
 
-  const url = "https://job-px4t.onrender.com/api"
+
+   const url = "https://job-px4t.onrender.com/api"
 
   //Draft token
 
   //
   //Handles and integration
 //First form upload resume
+
 
 useEffect(()=>{
   dispatch(userActions.setLoading(true))
@@ -248,11 +272,17 @@ useEffect(()=>{
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
     setPhoneCode(data.data?.phoneNumber.split(" ")[0])
+    setInputs(data.data?.skills)
+    setEducationsList(data?.data?.education)
+
+    
   }).catch(()=>{
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
   })
 }, [])
+;
+
 
 const handleResumeUpload = (evt)=> {
   //can be removed then
@@ -322,8 +352,6 @@ console.log(res);
 
 
 
-
-
 //General info modal 2nd form control:
   const handleGenModalSubmit = (evt)=>{
     evt.preventDefault()
@@ -367,7 +395,7 @@ axios.put(`${url}/user`, formData, {
   dispatch(userActions.setLoading(false))
 })
 
-console.log(profileImg,  fullName, nationality, residance, phoneCode, phoneNumber, aboutyourself, linkedIn);
+
 
   }
 
@@ -444,8 +472,6 @@ formData.append("available", avia )
     const monthlySalary = target.salaryInputCurrent.value
     const expectedSalary = target.salaryInputExp.value
 
-    console.log(preferredRole, monthlySalary,expectedSalary );
-
     const body = {
       preferredRole, monthlySalary, expectedSalary 
     }
@@ -489,9 +515,52 @@ return null
 
   //7th modal Work experience form
 
+  console.log(isWorkChecked);
+
   const handleWorkExpModalSubmit = (evt)=> {
     evt.preventDefault()
+
+    dispatch(userActions.setLoading(true))
+
     const target = evt.target
+
+    const companyName = target.companyName.value
+    const jobTitle = target.jobTitle.value
+    const description = target.textAreaWorkExp.value
+    
+
+    const skill = workSkill.map((option) => option.value);
+    console.log(skill);
+    
+   
+    // const body = {
+    //   companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: endDateWorkExp,
+    //   description, 
+    //   // isWorkingNow: endDateWorkExp ? false : true
+    // }
+
+       const body = {
+      companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: isWorkChecked ? "" : endDateWorkExp,
+      description, 
+      workingNow: isWorkChecked
+    }
+
+
+
+    console.log(body);
+
+
+    axios.post(`${url}/workExperience`, body, {
+      headers: {token}
+    }).then((res)=>{
+      console.log(res);
+      setWorkExpModal(false)
+    }).catch((err)=>{
+      console.log(err.message);
+    }).finally(()=>{
+      dispatch(userActions.setLoading(false))
+    })
+    
 
   
   }
@@ -505,14 +574,19 @@ return null
 
     dispatch(userActions.setLoading(true))
 
+
+
+    
+
     const target = evt.target
 
     const name = target.schoolInput.value
     const fieldOfStudy = target.fieldOfStudy.value
-    const startDate = target.eduStartDate.value
-    const endDate = target.eduEndDate.value
+    let startDate = target.eduStartDate.value
+    let endDate = target.eduEndDate.value
 
-    const body ={
+
+      const body ={
       name, degree, fieldOfStudy,startDate, endDate
     }
 
@@ -530,7 +604,7 @@ return null
       dispatch(userActions.setLoading(false))
     })
 
-    console.log(name, degree, fieldOfStudy, startDate, endDate);
+
   }
 
 
@@ -560,6 +634,9 @@ return null
   //   }
 
   // }, [applyImg]);
+
+ 
+
 
 return  <div className="dev-profile">
   
@@ -922,68 +999,71 @@ ducting background checks).</p>
     <button type="button" onClick={()=>setSkillsModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
       <div className="dev-profile__modal-body">
-        <form onSubmit={handleSkillsModalSubmit}>{inputs?.map((input, index)=>(
-        <div key={index} className="dev-profile__modal-inputs-wrapper dev-profile__skills-modal-wrapper-1">
-        <div className="dev-profile__skills-modal-skills-wrapper">
-        <p className="dev-profile__skills-modal-label">Skill&nbsp;
-        <span style={{color: "blue"}}>*</span></p>
-        {/*React library*/}
-        <Select 
-        menuPortalTarget={document.body} 
-        styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}}
-        classNamePrefix="mySelect" 
-        options={skillsList}
-        placeholder="Skill name"
-        className="select" 
-        menuPlacement="auto"
-        // onChange={handleSkillSelect}
-        value={input.skill}
-        onChange={(selectedOption) => handleInputChange(index, 'skill', selectedOption)}
-        //  onChange={opt => console.log(opt.label, opt.value)}
-        />
-        </div>
-        <div className="dev-profile__skills-modal-skills-wrapper">
-        <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
-        <span style={{color: "blue"}}>*</span></p>
-        {/*React library*/}
-        <Select 
-          menuPortalTarget={document.body} 
-          styles={{ menuPortal: base => ({ ...base, zIndex: 9999}) }}
-        classNamePrefix="mySelect" 
-        options={yearsList}
-        placeholder="Years of experience"
-        className="select" 
-        menuPlacement="auto"
-        value={input.experience}
-        onChange={(selectedOption) => handleInputChange(index, 'experience', selectedOption)}
-        // onChange={handleSkillYearSelect}
-        //  onChange={opt => console.log(opt.label, opt.value)}
-        />
-        </div>
+        <form onSubmit={handleSkillsModalSubmit}>
+   {inputs?.map((input, index)=>(
+  <div key={index} className="dev-profile__modal-inputs-wrapper dev-profile__skills-modal-wrapper-1">
+  <div className="dev-profile__skills-modal-skills-wrapper">
+  <p className="dev-profile__skills-modal-label">Skill&nbsp;
+  <span style={{color: "blue"}}>*</span></p>
+  {/*React library*/}
+  <Select 
+  menuPortalTarget={document.body} 
+  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}}
+  classNamePrefix="mySelect" 
+  options={skillsList}
+  placeholder="Skill name"
+  className="select" 
+  menuPlacement="auto"
+  // onChange={handleSkillSelect}
+  // value={input.skill}
+  defaultInputValue={input.skill}
+  onChange={(selectedOption) => handleInputChange(index, "skill", selectedOption )}
+  //  onChange={opt => console.log(opt.label, opt.value)}
+  />
+  </div>
+  <div className="dev-profile__skills-modal-skills-wrapper">
+  <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
+  <span style={{color: "blue"}}>*</span></p>
+  {/*React library*/}
+  <Select 
+    menuPortalTarget={document.body} 
+    styles={{ menuPortal: base => ({ ...base, zIndex: 9999}) }}
+  classNamePrefix="mySelect" 
+  options={yearsList}
+  placeholder="Years of experience"
+  className="select" 
+  menuPlacement="auto"
+  onChange={(selectedOption) => handleInputChange(index, "experience", selectedOption )}
+    defaultInputValue={input.experience}
+  // onChange={handleSkillYearSelect}
+  //  onChange={opt => console.log(opt.label, opt.value)}
+  />
+  </div>
 
-        <div className="dev-profile__skills-modal-skills-wrapper">
-        <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
-        <span style={{color: "blue"}}>*</span></p>
-        {/*React library*/}
-        <Select 
-          menuPortalTarget={document.body} 
-          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
-        classNamePrefix="mySelect" 
-        options={competencyOptions}
-        placeholder="Enter competency"
-        className="select" 
-        menuPlacement="auto"
-        value={input.level}
-        onChange={(selectedOption) => handleInputChange(index, 'level', selectedOption)}
-        // onChange={handleSkillCompetencySelect}
-        //  onChange={opt => console.log(opt.label, opt.value)}
-        />
-        </div>
-        <span 
-        className="dev-profile-skills-modal-delete">&#10005;</span>
-        </div>
-        ))
-        }
+  <div className="dev-profile__skills-modal-skills-wrapper">
+  <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
+  <span style={{color: "blue"}}>*</span></p>
+  {/*React library*/}
+  <Select 
+    menuPortalTarget={document.body} 
+    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+  classNamePrefix="mySelect" 
+  options={competencyOptions}
+  placeholder="Enter competency"
+  className="select" 
+  menuPlacement="auto"
+  // value={input.level}
+  defaultInputValue={input.level}
+  onChange={(selectedOption) => handleInputChange(index, "level",selectedOption, )}
+  // onChange={handleSkillCompetencySelect}
+  //  onChange={opt => console.log(opt.label, opt.value)}
+  />
+  </div>
+  <span 
+  className="dev-profile-skills-modal-delete">&#10005;</span>
+  </div>
+  ))
+  }
         <div className="dev-profile__modal-inputs-wrapper">
      <div className="dev-profile__skills-modal-lang-wrapper">
 <p className="dev-profile__skills-modal-label">Language (Optional)</p>
@@ -1018,8 +1098,8 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
       <div className="dev-profile__modal-body">
         <form onSubmit={handleWorkExpModalSubmit}>
        <div className="dev-profile__modal-inputs-wrapper">
-       <TextInput forId={"CompanyName"}>Company name</TextInput>
-      <TextInput forId={"JobTitle"}>Job title</TextInput>
+       <TextInput forId={"companyName"}>Company name</TextInput>
+      <TextInput forId={"jobTitle"}>Job title</TextInput>
        </div>
        <div className="dev-profile__modal-inputs-wrapper">
         <div className="dev-profile__modal-date-wrapper">
@@ -1030,7 +1110,9 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
        className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
-  selected={startDateWorkExp} onChange={(date) => setStartDateWorkExp(date)} 
+  selected={startDateWorkExp} onChange={(date) =>{ setStartDateWorkExp(date)
+  }
+  } 
   
 />
         </div>
@@ -1038,23 +1120,25 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
         <p className="dev-profile__skills-modal-label">End date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
 <DatePicker
-
+disabled={isWorkChecked}
 wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
-  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
+  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date) }
 />
         </div>
 
        </div>
        <div className="dev-profile__work-exp-modal-checkbox-wrapper">
-       <Checkbox  /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
+       <Checkbox 
+        onChange={(event) => setIsWorkChecked(event.target.checked)}
+       /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
        </div>
        <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
 <p className="select-flags-label">Loaction (Optional)</p>
-<ReactFlagsSelect  selected={residance}
-      onSelect={(code) => setResidance(code)
+<ReactFlagsSelect  selected={location}
+      onSelect={(code) => setLocation(code)
       }
       placeholder=""
       searchable
@@ -1076,6 +1160,7 @@ className="dev-profile__work-exp-modal-date-picker-input"
       } forId={"textAreaWorkExp"}>Description</TextInput>
 </div>
 <Select
+onChange={(list) => setWorkSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
  classNamePrefix="mySelect"  
@@ -1130,7 +1215,8 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
   dateFormat="MM/yyyy"
   showMonthYearPicker
   id="eduStartDate"
-  selected={startDateWorkExp} onChange={(date) => setStartDateWorkExp(date)} 
+
+  selected={startDateEdu} onChange={(date) => setStartDateEdu(date)} 
   
 />
         </div>
@@ -1142,9 +1228,10 @@ wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
+  selected={endDateEdu}
   // showMonthYearDropdown
   id="eduEndDate"
-  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
+   onChange={(date) => setEndDateEdu(date)} 
 />
         </div>
 
@@ -1161,3 +1248,6 @@ className="dev-profile__work-exp-modal-date-picker-input"
   }
 </div>
 }
+
+
+
