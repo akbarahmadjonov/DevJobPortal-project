@@ -9,15 +9,39 @@ import { BsThreeDots } from "react-icons/bs";
 import { Modal, Select, Skeleton } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
-import { useNavigate } from "react-router-dom";
 
 export const OpenPaused = () => {
   const [companyJob, setCompanyJob] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState({});
+  const [viewModalVisible, setViewModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
 
-  const navigate = useNavigate();
+  //* EDIT MODAL
+  // Function to open the view modal
+  const handleOpenViewModal = (job) => {
+    setSelectedJob(job);
+    setViewModalVisible(true);
+  };
+
+  // Function to open the edit modal
+  const handleOpenEditModal = (job) => {
+    setSelectedJob(job);
+    setEditModalVisible(true);
+  };
+
+  // Function to close the view modal
+  const handleCloseViewModal = () => {
+    setSelectedJob({});
+    setViewModalVisible(false);
+  };
+
+  // Function to close the edit modal
+  const handleCloseEditModal = () => {
+    setSelectedJob({});
+    setEditModalVisible(false);
+  };
 
   const handleOpenModal = (job) => {
     setSelectedJob(job);
@@ -62,12 +86,7 @@ export const OpenPaused = () => {
 
   const dropdownMenu = (jobId) => (
     <Menu onClick={(e) => e.domEvent.stopPropagation()}>
-      <Menu.Item
-        key="1"
-        onClick={() =>
-          navigate(`editcomponent/${jobId}`, { state: { job: selectedJob } })
-        }
-      >
+      <Menu.Item key="1" onClick={() => handleOpenEditModal(jobId)}>
         Edit this post
       </Menu.Item>
       <Menu.Item
@@ -81,6 +100,12 @@ export const OpenPaused = () => {
       </Menu.Item>
     </Menu>
   );
+
+  const formatCreatedAt = (createdAt) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const date = new Date(createdAt);
+    return date.toLocaleDateString("en-US", options);
+  };
 
   return (
     <div className="open-paused">
@@ -97,7 +122,9 @@ export const OpenPaused = () => {
               >
                 <div className="open-paused__block">
                   <h2 className="job__title">{data.jobTitle}</h2>
-                  <span className="job__createdTime">Created: June 1</span>
+                  <span className="job__createdTime">
+                    Created: {formatCreatedAt(data.createdAt)}
+                  </span>
                 </div>
                 <div className="open-paused__box">
                   <div className="open-paused__block">
@@ -190,7 +217,12 @@ export const OpenPaused = () => {
         width={800}
       >
         <div className="modal-wrapper">
-          <h1 className="modal-upper__title">{`More info about your "${selectedJob.jobTitle}" post`}</h1>
+          <h1 style={{display: 'flex', alignItems:'center'}} className="modal-upper__title">
+            {`Detailed "${selectedJob.jobTitle}" post`}
+            <span  className="job__createdTime selectedJobTime">
+              Created: {formatCreatedAt(selectedJob.createdAt)}
+            </span>
+          </h1>
           <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">Company Image</span>
@@ -200,7 +232,7 @@ export const OpenPaused = () => {
           <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">Company Name</span>
-              <p>{selectedJob.jobTitle}</p>
+              <p>{selectedJob.comName}</p>
             </div>
           </div>
           <div className="modal-inner">
@@ -229,14 +261,14 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-inner">
             <div className="modal-values">
-              <span className="modal-title">Job Skills</span>
-              <p>{selectedJob.jobSkills}</p>
+              <span className="modal-title">Job Price</span>
+              <p>{selectedJob.jobPrice}</p>
             </div>
           </div>
           <div className="modal-inner">
             <div className="modal-values">
-              <span className="modal-title">More Info</span>
-              <p>{selectedJob.moreInfo}</p>
+              <span className="modal-title">Job Skills</span>
+              <p>{selectedJob.jobskills}</p>
             </div>
           </div>
           <div className="modal-inner">
@@ -247,12 +279,21 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-inner">
             <div className="modal-values">
-              <span className="modal-title">Job Price</span>
-              <p>{selectedJob.jobPrice}</p>
+              <span className="modal-title">More Info</span>
+              <p>{selectedJob.moreInfo}</p>
             </div>
           </div>
         </div>
         <div></div>
+      </Modal>
+      {/* Edit Job Details Modal */}
+      <Modal
+        visible={editModalVisible}
+        onCancel={handleCloseEditModal}
+        footer={null}
+        width={800}
+      >
+        <p>salom</p>
       </Modal>
     </div>
   );

@@ -4,17 +4,15 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal, Select } from "antd";
 import JobService from "../../../API/Jobs.service";
-import "./Jobs.scss";
 import axios from "axios";
+import "./Jobs.scss";
 
 export const JobsNested = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [jobCategories, setJobCategories] = useState([]);
-  const [images, setImages] = useState("");
+  const [images, setImages] = useState({});
   const [catIds, setCatId] = useState("");
-  const [data, setData] = useState({});
 
-  //* REF VALUES
   const nameRef = useRef();
   const locationRef = useRef();
   const titleRef = useRef();
@@ -26,7 +24,6 @@ export const JobsNested = () => {
   const moreInfoRef = useRef();
 
   const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
     setCatId(value);
   };
 
@@ -34,13 +31,13 @@ export const JobsNested = () => {
     event.preventDefault();
 
     const jobValues = {
-      comName: nameRef.current?.value,
-      comLocation: locationRef.current?.value,
-      jobTitle: titleRef.current?.value,
-      jobInfo: infoRef.current?.value,
-      jobType: typeRef.current?.value,
-      jobPrice: priceRef.current?.value,
-      jobskills: jobskillsRef.current?.value
+      comName: nameRef.current.value,
+      comLocation: locationRef.current.value,
+      jobTitle: titleRef.current.value,
+      jobInfo: infoRef.current.value,
+      jobType: typeRef.current.value,
+      jobPrice: priceRef.current.value,
+      jobskills: jobskillsRef.current.value
         .split(",")
         .map((skill) => skill.trim()),
       typeMoney: typeMoneyRef.current?.value,
@@ -50,32 +47,25 @@ export const JobsNested = () => {
     try {
       const imageUrls = await Promise.all(
         Object.values(images).map(async (image) => {
-          const data = new FormData();
-          data.append("file", image);
-          data.append("upload_preset", "upload");
+          const formData = new FormData();
+          formData.append("file", image);
+          formData.append("upload_preset", "upload");
 
           const uploadRes = await axios.post(
             "https://api.cloudinary.com/v1_1/dvpc9o81x/image/upload",
-            data
+            formData
           );
-          console.log(uploadRes);
-          const { url } = uploadRes.data;
-          setData({ ...jobValues, comImg: url, catId: catIds });
+          return uploadRes.data.url;
         })
       );
 
-      const postJob = async () => {
-        try {
-          const datas = await JobService.jobPost(data);
-          console.log(datas);
-          // setIsModalVisible(false);
-        } catch (error) {
-          console.error("Error posting", error);
-        }
-      };
-      postJob();
+      const catId = catIds;
+      const dataToSend = { ...jobValues, comImg: imageUrls[0], catId: catId };
+
+      const datas = await JobService.jobPost(dataToSend);
+      setIsModalVisible(false);
     } catch (error) {
-      console.error("Error uploading images", error);
+      console.error("Error uploading images or posting", error);
     }
   };
 
@@ -101,7 +91,6 @@ export const JobsNested = () => {
   }, []);
 
   function navigation() {
-    // Automatically takes to route
     navigate("openpaused");
   }
 
@@ -171,8 +160,17 @@ export const JobsNested = () => {
               <input ref={priceRef} type="number" name="jobPrice" />
             </div>
             <div className="job-nested__form">
-              <label htmlFor="jobSkills">Job Skills (comma-separated)</label>
-              <input ref={jobskillsRef} name="jobSkills" />
+              <label htmlFor="jobskills">Job Skills (comma-separated)</label>
+              <input
+                ref={jobskillsRef}
+                name="jobskills"
+                onChange={(e) => {
+                  const skills = e.target.value
+                    .split(",")
+                    .map((skill) => skill.trim());
+                  jobskillsRef.current.value = skills;
+                }}
+              />
             </div>
             <div className="job-nested__form">
               <label htmlFor="moreInfo">More Info</label>
