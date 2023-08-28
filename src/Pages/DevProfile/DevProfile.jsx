@@ -67,6 +67,15 @@ export const DevProfile = ()=>{
 
   //Managing inputs adding
 
+  const [educationsList, setEducationsList] = useState()
+
+  const [workSkill, setWorkSkillList] = useState([])
+
+  //Work Modal Checkbox
+  const [isWorkChecked, setIsWorkChecked] = useState()
+
+
+
 
   
 const skillsInfo = userData?.skills
@@ -188,7 +197,7 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const monthlySalary = userData?.roleAndSalary?.monthlySalary
   const expectedSalary = userData?.roleAndSalary?.expectedSalary
 
-  const educationsList = userData?.education
+  // const educationsList = userData?.education
 
 
 
@@ -200,6 +209,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const [nationality, setNationality] = useState("");
 
   const [residance, setResidance] = useState("");
+
+  const [location, setLocation] = useState("");
 
 
   //
@@ -215,23 +226,25 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const selectedEdu = educationsList?.find(item => item?._id === eduId)
 
-console.log(selectedEdu);
 
-const eduStartDateString = selectedEdu?.startDate
-console.log(eduStartDateString);
-const [month, year] = (eduStartDateString ?? "").split("/");
-const eduModalStartDate = new Date(`${year}-${month}-01`);
+//This code was written for inserting date to DatePicker in education and work exp. modals which comes from backend
 
-console.log(eduModalStartDate);
+// const eduStartDateString = selectedEdu?.startDate
+// console.log(eduStartDateString);
+// const [month, year] = (eduStartDateString ?? "").split("/");
+// const eduModalStartDate = new Date(`${year}-${month}-01`);
+
 
 
 //State for date formats
 
-const [startDateWorkExp, setStartDateWorkExp] = useState(); //DatePicker start date Work Expirience
-const [endDateWorkExp, setEndDateWorkExp] = useState(); //DatePicker end date  Work Expirience
+const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Expirience
+const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
 
-const [startDateEdu, setStartDateEdu] = useState(eduModalStartDate); //DatePicker start date education
-const [endDateEdu, setEndDateEdu] = useState(); //DatePicker end date  education
+console.log(endDateWorkExp);
+
+const [startDateEdu, setStartDateEdu] = useState(new Date()); //DatePicker start date education
+const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date  education
 
 
 
@@ -260,6 +273,8 @@ useEffect(()=>{
     setResidance(data.data?.residence)
     setPhoneCode(data.data?.phoneNumber.split(" ")[0])
     setInputs(data.data?.skills)
+    setEducationsList(data?.data?.education)
+
     
   }).catch(()=>{
   }).finally(()=>{
@@ -500,9 +515,52 @@ return null
 
   //7th modal Work experience form
 
+  console.log(isWorkChecked);
+
   const handleWorkExpModalSubmit = (evt)=> {
     evt.preventDefault()
+
+    dispatch(userActions.setLoading(true))
+
     const target = evt.target
+
+    const companyName = target.companyName.value
+    const jobTitle = target.jobTitle.value
+    const description = target.textAreaWorkExp.value
+    
+
+    const skill = workSkill.map((option) => option.value);
+    console.log(skill);
+    
+   
+    // const body = {
+    //   companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: endDateWorkExp,
+    //   description, 
+    //   // isWorkingNow: endDateWorkExp ? false : true
+    // }
+
+       const body = {
+      companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: isWorkChecked ? "" : endDateWorkExp,
+      description, 
+      workingNow: isWorkChecked
+    }
+
+
+
+    console.log(body);
+
+
+    axios.post(`${url}/workExperience`, body, {
+      headers: {token}
+    }).then((res)=>{
+      console.log(res);
+      setWorkExpModal(false)
+    }).catch((err)=>{
+      console.log(err.message);
+    }).finally(()=>{
+      dispatch(userActions.setLoading(false))
+    })
+    
 
   
   }
@@ -942,7 +1000,6 @@ ducting background checks).</p>
       </div>
       <div className="dev-profile__modal-body">
         <form onSubmit={handleSkillsModalSubmit}>
-   {/* <CustomSelect></CustomSelect> */}
    {inputs?.map((input, index)=>(
   <div key={index} className="dev-profile__modal-inputs-wrapper dev-profile__skills-modal-wrapper-1">
   <div className="dev-profile__skills-modal-skills-wrapper">
@@ -958,8 +1015,9 @@ ducting background checks).</p>
   className="select" 
   menuPlacement="auto"
   // onChange={handleSkillSelect}
-  value={input.skill}
-  onChange={(selectedOption) => handleInputChange(index, 'skill', selectedOption)}
+  // value={input.skill}
+  defaultInputValue={input.skill}
+  onChange={(selectedOption) => handleInputChange(index, "skill", selectedOption )}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
   </div>
@@ -975,8 +1033,8 @@ ducting background checks).</p>
   placeholder="Years of experience"
   className="select" 
   menuPlacement="auto"
-  value={input.experience}
-  onChange={(selectedOption) => handleInputChange(index, 'experience', selectedOption)}
+  onChange={(selectedOption) => handleInputChange(index, "experience", selectedOption )}
+    defaultInputValue={input.experience}
   // onChange={handleSkillYearSelect}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
@@ -994,8 +1052,9 @@ ducting background checks).</p>
   placeholder="Enter competency"
   className="select" 
   menuPlacement="auto"
-  value={input.level}
-  onChange={(selectedOption) => handleInputChange(index, 'level', selectedOption)}
+  // value={input.level}
+  defaultInputValue={input.level}
+  onChange={(selectedOption) => handleInputChange(index, "level",selectedOption, )}
   // onChange={handleSkillCompetencySelect}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
@@ -1039,8 +1098,8 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
       <div className="dev-profile__modal-body">
         <form onSubmit={handleWorkExpModalSubmit}>
        <div className="dev-profile__modal-inputs-wrapper">
-       <TextInput forId={"CompanyName"}>Company name</TextInput>
-      <TextInput forId={"JobTitle"}>Job title</TextInput>
+       <TextInput forId={"companyName"}>Company name</TextInput>
+      <TextInput forId={"jobTitle"}>Job title</TextInput>
        </div>
        <div className="dev-profile__modal-inputs-wrapper">
         <div className="dev-profile__modal-date-wrapper">
@@ -1061,23 +1120,25 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
         <p className="dev-profile__skills-modal-label">End date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
 <DatePicker
-
+disabled={isWorkChecked}
 wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
-  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date)} 
+  selected={endDateWorkExp} onChange={(date) => setEndDateWorkExp(date) }
 />
         </div>
 
        </div>
        <div className="dev-profile__work-exp-modal-checkbox-wrapper">
-       <Checkbox  /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
+       <Checkbox 
+        onChange={(event) => setIsWorkChecked(event.target.checked)}
+       /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
        </div>
        <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
 <p className="select-flags-label">Loaction (Optional)</p>
-<ReactFlagsSelect  selected={residance}
-      onSelect={(code) => setResidance(code)
+<ReactFlagsSelect  selected={location}
+      onSelect={(code) => setLocation(code)
       }
       placeholder=""
       searchable
@@ -1099,6 +1160,7 @@ className="dev-profile__work-exp-modal-date-picker-input"
       } forId={"textAreaWorkExp"}>Description</TextInput>
 </div>
 <Select
+onChange={(list) => setWorkSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
  classNamePrefix="mySelect"  
@@ -1166,6 +1228,7 @@ wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
+  selected={endDateEdu}
   // showMonthYearDropdown
   id="eduEndDate"
    onChange={(date) => setEndDateEdu(date)} 

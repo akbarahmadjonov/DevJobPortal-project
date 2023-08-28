@@ -88,7 +88,7 @@ const App = () => {
             <Route path="/company/register" element={<CompanyRegister />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route
-              path={user ? "/dev-profile" : "/user/login"}
+              path="/dev-profile"
               element={user ? <DevProfile /> : <Login />}
             />
             <Route path="/comprofile" element={<CompanyProfile />}>
