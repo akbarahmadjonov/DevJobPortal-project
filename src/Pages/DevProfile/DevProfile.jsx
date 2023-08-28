@@ -62,7 +62,7 @@ export const DevProfile = ()=>{
   //Detect button data-types and id
 
   const [btnType, setBtnType] = useState()
-  const [eduId, setEduId] = useState()
+  const [clickedId, setClickedId] = useState()
 
 
   //Managing inputs adding
@@ -197,6 +197,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const monthlySalary = userData?.roleAndSalary?.monthlySalary
   const expectedSalary = userData?.roleAndSalary?.expectedSalary
 
+  const workExperience = userData?.workExperience
+
   // const educationsList = userData?.education
 
 
@@ -224,7 +226,7 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
 
 
-  const selectedEdu = educationsList?.find(item => item?._id === eduId)
+  const selectedEdu = educationsList?.find(item => item?._id === clickedId)
 
 
 //This code was written for inserting date to DatePicker in education and work exp. modals which comes from backend
@@ -241,7 +243,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Expirience
 const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
 
-console.log(endDateWorkExp);
 
 const [startDateEdu, setStartDateEdu] = useState(new Date()); //DatePicker start date education
 const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date  education
@@ -515,7 +516,6 @@ return null
 
   //7th modal Work experience form
 
-  console.log(isWorkChecked);
 
   const handleWorkExpModalSubmit = (evt)=> {
     evt.preventDefault()
@@ -749,9 +749,37 @@ onClick={()=>{
   <button onClick={()=>setSkillsModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
     </div>
     {/*Work experience */}
-    <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title dev-profile-control-left-width">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button onClick={()=>setWorkExpModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+    <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
+      <div className="dev-profile__education-top-wrapper">
+      <p className="dev-profile__title dev-profile-control-left-width">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+ {workExperience ? <button data-type="edu-add"
+   onClick={()=>{setWorkExpModal(true)
+    setBtnType("add")
+   }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Company</button> :  <button onClick={()=>{setWorkExpModal(true)
+    setBtnType("add")
+   }} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>}
+      </div>
+ 
+  <ul className="dev-profile__work-exp-works-list">
+{workExperience?.map((item, index)=>(
+  <li key={item._id} className="dev-profile__work-exp-works-item">
+    <div className="flex dev-profile__work-exp-inner-wrapper">
+      <strong>{item.companyName}</strong>
+      <button type="button" 
+      onClick={()=>{
+        setClickedId(item._id)
+        setBtnType("edit") 
+        setWorkExpModal(true)
+      }}
+      className="dev-profile__edit-btn">Edit Company</button>
+      </div>
+      <div className="flex dev-profile__work-exp-inner-wrapper">
+      <p>{item.jobTitle}</p>
+      <p style={{color: "#989898"}}>{item.location} | {item.startDate.split("-")[0]}-{item.startDate.split("-")[1]} - {item.endDate ? `${item.endDate.split("-")[0]}-${item.endDate.split("-")[1]}` : "Current"}</p>
+      </div>
+  </li>
+))  }
+    </ul>
     </div>  
        {/*Education */}
        <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
@@ -774,7 +802,7 @@ onClick={()=>{
       <p>{item.startDate.split("T")[0]}&nbsp;-&nbsp;{item.endDate.split("T")[0]}</p>
       </div>
     <button onClick={()=>{
-      setEduId(item._id)
+      setClickedId(item._id)
       setBtnType("edit") 
       setEduModal(true)}} data-id={item._id} data-type="edu-edit" className="dev-profile__edit-btn">Edit Education</button>
     </li>
