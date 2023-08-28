@@ -1,10 +1,8 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Profile.scss";
-import { Form, input, Button } from "antd";
+import { Form, Input, Button, Skeleton } from "antd";
 import { ComHeader } from "../../../Widgets/CompanyProfileHeader/ComHeader";
 import ProfileService from "../../../API/CompanyProfile.service";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,11 +11,10 @@ import {
   faEnvelope,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { useRef } from "react";
 
-//* Only export company name to Component header
 export const Profile = () => {
   const [companyProfile, setCompanyProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -27,12 +24,12 @@ export const Profile = () => {
   const phoneNumberRef = useRef();
   const websiteRef = useRef();
 
-  //* GET REQUEST | FETCH
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await ProfileService.profileGet();
         setCompanyProfile(response.data);
+        setLoading(false);
         console.log(response);
       } catch (error) {
         console.error("Error occurred while fetching user profile", error);
@@ -42,7 +39,6 @@ export const Profile = () => {
     fetchUserProfile();
   }, []);
 
-  //* PUT REQUEST | PUT
   const handleUpdateProfile = (event) => {
     event.preventDefault();
     const changedCompanyInfo = {
@@ -93,45 +89,69 @@ export const Profile = () => {
                 onSubmit={handleUpdateProfile}
               >
                 <label label="Company Name" name="companyName">
-                  <input
-                    ref={companyNameRef}
-                    placeholder={companyProfile?.companyName}
-                    style={{ width: "100%" }}
-                  />
+                  {loading ? (
+                    <Skeleton.Input style={{ width: "100%" }} active />
+                  ) : (
+                    <input
+                      ref={companyNameRef}
+                      placeholder={companyProfile?.companyName}
+                      style={{ width: "100%" }}
+                    />
+                  )}
                 </label>
                 <label label="Email" name="email">
-                  <input
-                    ref={emailRef}
-                    placeholder={companyProfile?.email}
-                    style={{ width: "100%" }}
-                  />
+                  {loading ? (
+                    <Skeleton.Input style={{ width: "100%" }} active />
+                  ) : (
+                    <input
+                      ref={emailRef}
+                      placeholder={companyProfile?.email}
+                      style={{ width: "100%" }}
+                    />
+                  )}
                 </label>
                 <label label="Name" name="name">
-                  <input
-                    ref={nameRef}
-                    placeholder={companyProfile?.name}
-                    style={{ width: "100%" }}
-                  />
+                  {loading ? (
+                    <Skeleton.Input style={{ width: "100%" }} active />
+                  ) : (
+                    <input
+                      ref={nameRef}
+                      placeholder={companyProfile?.name}
+                      style={{ width: "100%" }}
+                    />
+                  )}
                 </label>
                 <label label="Phone Number" name="phoneNumber">
-                  <input
-                    ref={phoneNumberRef}
-                    placeholder={companyProfile?.phoneNumber}
-                    style={{ width: "100%" }}
-                  />
+                  {loading ? (
+                    <Skeleton.Input style={{ width: "100%" }} active />
+                  ) : (
+                    <input
+                      ref={phoneNumberRef}
+                      placeholder={companyProfile?.phoneNumber}
+                      style={{ width: "100%" }}
+                    />
+                  )}
                 </label>
                 <label label="Website" name="website">
-                  <input
-                    ref={websiteRef}
-                    id="websiteInput"
-                    style={{ width: "100%" }}
-                    defaultValue={companyProfile?.website}
-                  />
+                  {loading ? (
+                    <Skeleton.Input style={{ width: "100%" }} active />
+                  ) : (
+                    <input
+                      ref={websiteRef}
+                      id="websiteInput"
+                      style={{ width: "100%" }}
+                      defaultValue={companyProfile?.website}
+                    />
+                  )}
                 </label>
                 <label>
-                  <Button type="primary" htmlType="submit">
-                    Update Profile
-                  </Button>
+                  {loading ? (
+                    <Skeleton.Button style={{ width: "100%" }} active />
+                  ) : (
+                    <Button type="primary" htmlType="submit">
+                      Update Profile
+                    </Button>
+                  )}
                 </label>
               </form>
             </div>
@@ -144,7 +164,7 @@ export const Profile = () => {
                 />{" "}
                 Company Name:{" "}
                 <span className="profile__details-span">
-                  {companyProfile?.companyName}
+                  {loading ? <Skeleton active /> : companyProfile?.companyName}
                 </span>
               </p>
               <p className="profile__details-titles">
@@ -154,15 +174,14 @@ export const Profile = () => {
                 />{" "}
                 Email:{" "}
                 <span className="profile__details-span">
-                  {" "}
-                  {companyProfile?.email}
+                  {loading ? <Skeleton active /> : companyProfile?.email}
                 </span>
               </p>
               <p className="profile__details-titles">
                 <FontAwesomeIcon style={{ marginRight: "5px" }} icon={faUser} />{" "}
                 Name:{" "}
                 <span className="profile__details-span">
-                  {companyProfile?.name}
+                  {loading ? <Skeleton active /> : companyProfile?.name}
                 </span>
               </p>
               <p className="profile__details-titles">
@@ -172,7 +191,7 @@ export const Profile = () => {
                 />{" "}
                 Phone Number:{" "}
                 <span className="profile__details-span">
-                  {companyProfile?.phoneNumber}
+                  {loading ? <Skeleton active /> : companyProfile?.phoneNumber}
                 </span>
               </p>
               <p className="profile__details-titles">
@@ -184,7 +203,9 @@ export const Profile = () => {
                 </span>
                 Website:{" "}
                 <span className="profile__details-span">
-                  {companyProfile?.website ? (
+                  {loading ? (
+                    <Skeleton.Input style={{ width: "100%" }} active />
+                  ) : companyProfile?.website ? (
                     companyProfile?.website
                   ) : (
                     <>

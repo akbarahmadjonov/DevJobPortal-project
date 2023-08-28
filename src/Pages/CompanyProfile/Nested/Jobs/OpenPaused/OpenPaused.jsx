@@ -6,12 +6,52 @@ import { BsHeadphones } from "react-icons/bs";
 import { FaPeopleGroup, FaPodcast } from "react-icons/fa6";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
-import { Select } from "antd";
+import { Modal, Select, Skeleton } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
 
 export const OpenPaused = () => {
   const [companyJob, setCompanyJob] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedJob, setSelectedJob] = useState({});
+  const [viewModalVisible, setViewModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+
+  //* EDIT MODAL
+  // Function to open the view modal
+  const handleOpenViewModal = (job) => {
+    setSelectedJob(job);
+    setViewModalVisible(true);
+  };
+
+  // Function to open the edit modal
+  const handleOpenEditModal = (job) => {
+    setSelectedJob(job);
+    setEditModalVisible(true);
+  };
+
+  // Function to close the view modal
+  const handleCloseViewModal = () => {
+    setSelectedJob({});
+    setViewModalVisible(false);
+  };
+
+  // Function to close the edit modal
+  const handleCloseEditModal = () => {
+    setSelectedJob({});
+    setEditModalVisible(false);
+  };
+
+  const handleOpenModal = (job) => {
+    setSelectedJob(job);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedJob({});
+    setModalVisible(false);
+  };
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
@@ -25,11 +65,13 @@ export const OpenPaused = () => {
     try {
       const response = await JobService.jobGet();
       setCompanyJob(response.data.posts);
+      setLoading(false);
       console.log(response);
     } catch (error) {
       console.error("Error occurred while fetching user profile", error);
     }
   };
+
   const deleteJob = async (id) => {
     try {
       await JobService.jobDelete(id);
@@ -43,23 +85,46 @@ export const OpenPaused = () => {
   };
 
   const dropdownMenu = (jobId) => (
-    <Menu>
-      <Menu.Item key="1" danger onClick={() => deleteJob(jobId)}>
+    <Menu onClick={(e) => e.domEvent.stopPropagation()}>
+      <Menu.Item key="1" onClick={() => handleOpenEditModal(jobId)}>
+        Edit this post
+      </Menu.Item>
+      <Menu.Item
+        key="2"
+        danger
+        onClick={() => {
+          deleteJob(jobId);
+        }}
+      >
         Delete this job
       </Menu.Item>
     </Menu>
   );
 
+  const formatCreatedAt = (createdAt) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const date = new Date(createdAt);
+    return date.toLocaleDateString("en-US", options);
+  };
+
   return (
     <div className="open-paused">
       <div className="container">
-        {companyJob.length > 0 ? (
+        {loading ? (
+          <Skeleton active />
+        ) : companyJob.length > 0 ? (
           <div>
             {companyJob.map((data) => (
-              <div className="open-paused__inner" key={data._id}>
+              <div
+                className="open-paused__inner"
+                key={data._id}
+                onClick={() => handleOpenModal(data)}
+              >
                 <div className="open-paused__block">
                   <h2 className="job__title">{data.jobTitle}</h2>
-                  <span className="job__createdTime">Created: June 1</span>
+                  <span className="job__createdTime">
+                    Created: {formatCreatedAt(data.createdAt)}
+                  </span>
                 </div>
                 <div className="open-paused__box">
                   <div className="open-paused__block">
@@ -68,7 +133,7 @@ export const OpenPaused = () => {
                         style={{ color: "#0050C8", fontSize: "23px" }}
                       />
                       <span>Active</span>
-                      <span>0</span>
+                      <span>{data?.posts}</span>
                     </div>
                   </div>
                   <div className="open-paused__block">
@@ -114,6 +179,7 @@ export const OpenPaused = () => {
                       borderBottom: "1px solid #d9d9d9",
                     }}
                     onChange={handleChange}
+                    onClick={(e) => e.stopPropagation()}
                     options={[{ value: "Paused" }]}
                   />
                 </div>
@@ -121,11 +187,12 @@ export const OpenPaused = () => {
                   <Dropdown
                     overlay={dropdownMenu(data._id)}
                     trigger={["click"]}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
                   >
-                    <div
-                      onClick={(e) => e.preventDefault()}
-                      className="open-paused__dotsIcon"
-                    >
+                    <div className="open-paused__dotsIcon">
                       <BsThreeDots
                         style={{ color: "#0050C8", fontSize: "23px" }}
                       />
@@ -143,6 +210,91 @@ export const OpenPaused = () => {
           </div>
         )}
       </div>
+      <Modal
+        visible={modalVisible}
+        onCancel={handleCloseModal}
+        footer={null}
+        width={800}
+      >
+        <div className="modal-wrapper">
+          <h1 style={{display: 'flex', alignItems:'center'}} className="modal-upper__title">
+            {`Detailed "${selectedJob.jobTitle}" post`}
+            <span  className="job__createdTime selectedJobTime">
+              Created: {formatCreatedAt(selectedJob.createdAt)}
+            </span>
+          </h1>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Company Image</span>
+              <img src={selectedJob.comImg} width={100} alt="company image" />
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Company Name</span>
+              <p>{selectedJob.comName}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Company Location</span>
+              <p>{selectedJob.comLocation}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Title</span>
+              <p>{selectedJob.jobTitle}</p>
+            </div>
+          </div>
+          <div className="modal-">
+            <div className="modal-values">
+              <span className="modal-title">Job Info</span>
+              <p>{selectedJob.jobInfo}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Type (Online & Offline)</span>
+              <p>{selectedJob.jobType}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Price</span>
+              <p>{selectedJob.jobPrice}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Job Skills</span>
+              <p>{selectedJob.jobskills}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">Currency Type</span>
+              <p>{selectedJob.typeMoney}</p>
+            </div>
+          </div>
+          <div className="modal-inner">
+            <div className="modal-values">
+              <span className="modal-title">More Info</span>
+              <p>{selectedJob.moreInfo}</p>
+            </div>
+          </div>
+        </div>
+        <div></div>
+      </Modal>
+      {/* Edit Job Details Modal */}
+      <Modal
+        visible={editModalVisible}
+        onCancel={handleCloseEditModal}
+        footer={null}
+        width={800}
+      >
+        <p>salom</p>
+      </Modal>
     </div>
   );
 };

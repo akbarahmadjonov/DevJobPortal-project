@@ -54,6 +54,21 @@ const JobService = {
     }
   },
 
+  //* JOB POST | REQUEST
+  jobEdit: async (id) => {
+    try {
+      const data = await axios.delete(`job/${id}`, {
+        headers: {
+          token,
+        },
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+
   //* JOB CATEGORY | REQUEST
   jobCategoryGet: async () => {
     try {

@@ -92,6 +92,26 @@
   }
 }
 
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.job-nested__form {
+   flex-basis: calc(50% - 20px);
+}
+
+.job-nested__buttons {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  & button {
+    margin-left: 15px;
+  }
+}
+
 :where(.css-dev-only-do-not-override-1w4v3hc).ant-btn-primary:not(
     :disabled
   ):not(.ant-btn-disabled) {
