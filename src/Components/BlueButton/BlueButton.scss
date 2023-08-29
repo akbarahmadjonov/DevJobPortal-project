@@ -17,3 +17,12 @@
 .blue-button--loading {
   background: rgba($color: #4c7bc1, $alpha: 1);
 }
+
+.blue-button--disabled {
+  background-color: #717171;
+  pointer-events: none !important;
+
+  &:hover {
+    all: unset;
+  }
+}

@@ -76,6 +76,9 @@ export const DevProfile = ()=>{
 
 const [worksList, setWorksList] = useState()
 
+
+const [agree, setAgree] = useState(false)
+
   
 const skillsInfo = userData?.skills
 
@@ -323,7 +326,7 @@ useEffect(()=>{
 
 
 
-
+console.log(phoneNumber, agree);
 
 
 
@@ -893,11 +896,16 @@ onClick={()=>{
     </div>
     <div  className="dev-profile__bottom">
     <div className="dev-profile__input-wrapper">
-    <input type="checkbox" name="" id="" /><p>I understand that the information I provide will be used in accordance with Supercoder's applicant and candidate privacy policy. I content the processing of my information as described in the policy including the, unlimited circumstances, Supercoder may share my contact information with
+    {/* <input type="checkbox" name="" id="" />
+     */}
+     <Checkbox 
+        onChange={() => setAgree(!agree)}
+       /> 
+    <p> I understand that the information I provide will be used in accordance with Supercoder's applicant and candidate privacy policy. I content the processing of my information as described in the policy including the, unlimited circumstances, Supercoder may share my contact information with
 trusted parties, to assist in certain phases of the hiring process (such as conducting
 ducting background checks).</p>
     </div>
-<BlueButton style={{padding: "8px 60px", borderRadius: 4, marginBottom: 20}}>Submit</BlueButton>
+<BlueButton disabled={!agree && phoneNumber && true} to={"/jobs"}  style={{padding: "8px 60px", borderRadius: 4, marginBottom: 20}}>Submit</BlueButton>
     </div>
     </section>
   </main>
@@ -1121,8 +1129,8 @@ ducting background checks).</p>
   className="select" 
   menuPlacement="auto"
   // onChange={handleSkillSelect}
-  // value={input.skill}
-  defaultInputValue={input.skill}
+  value={input.skill}
+  // defaultInputValue={input.skill}
   onChange={(selectedOption) => handleInputChange(index, "skill", selectedOption )}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
@@ -1140,7 +1148,8 @@ ducting background checks).</p>
   className="select" 
   menuPlacement="auto"
   onChange={(selectedOption) => handleInputChange(index, "experience", selectedOption )}
-    defaultInputValue={input.experience}
+    // defaultInputValue={input.experience}
+    value={input.experience}
   // onChange={handleSkillYearSelect}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
@@ -1158,8 +1167,8 @@ ducting background checks).</p>
   placeholder="Enter competency"
   className="select" 
   menuPlacement="auto"
-  // value={input.level}
-  defaultInputValue={input.level}
+  value={input.level}
+  // defaultInputValue={input.level}
   onChange={(selectedOption) => handleInputChange(index, "level",selectedOption, )}
   // onChange={handleSkillCompetencySelect}
   //  onChange={opt => console.log(opt.label, opt.value)}
@@ -1270,7 +1279,6 @@ defaultValue={selectedWork?.description} wrapperStyle={{marginBottom: 30}} texta
       } forId={"textAreaWorkExp"}>Description</TextInput>
 </div>
 <Select
-// defaultValue={workSkill}
 value={workSkill}
 onChange={(list) => setWorkSkillList(list)}
 isMulti
