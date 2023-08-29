@@ -233,17 +233,24 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const selectedWork = worksList?.find(item => item?._id === clickedId)
 
-useEffect(()=>{
-  setWorkSkillList(selectedWork?.skill)
+  console.log(clickedId);
 
-})
 
-const selectedWorkData = workSkill?.map((item)=>({
-value: item,
-lavel: item
-}))
 
-console.log(selectedWorkData);
+// useEffect(()=>{
+//   // setWorkSkillList(selectedWork?.skill)
+  
+//   // const selectedWorkData = selectedWork?.skill.map((item)=>({
+//   //   value: item,
+//   //   label: item
+//   //   }))
+//   //   setWorkSkillList(selectedWorkData)
+//   })
+
+
+
+
+
   
 
 //This code was written for inserting date to DatePicker in education and work exp. modals which comes from backend
@@ -284,28 +291,39 @@ useEffect(()=>{
     headers: {
     token
     }
-  }).then((data)=>{
-   
+  }).then((data)=>{  
     dispatch(userActions.setUserData(data.data))
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
     setPhoneCode(data.data?.phoneNumber.split(" ")[0])
     setInputs(data.data?.skills)
     setEducationsList(data?.data?.education)
-    setWorksList(data.data?.workExperience)
+    setWorksList(data?.data?.workExperience)
 
-   const locationList =  data.data?.workExperience?.find((item)=>item._id === clickedId)
-
-   setLocation(locationList?.location)
-
+    //Work experience modal
     
-    
+   const selectedWorkExp =  data.data?.workExperience?.find((item)=>item._id === clickedId)
+
+
+  setLocation(selectedWorkExp?.location)
+
+
+ setWorkSkillList(selectedWorkExp?.skill.map((item)=>({
+  value: item,
+  label: item
+})))
+
+   
+    //---------
+  
   }).catch(()=>{
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
   })
 }, [clickedId])
-;
+
+
+
 
 
 
@@ -584,7 +602,7 @@ return null
     const description = target.textAreaWorkExp.value
     
 
-    const skill = workSkill.map((option) => option.value);
+    const skill = workSkill?.map((option) => option.value);
 
     
    
@@ -1188,7 +1206,8 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
         <form onSubmit={handleWorkExpModalSubmit}>
        <div className="dev-profile__modal-inputs-wrapper">
        <TextInput
-       defaultValue={btnType==="edit" ? selectedWork.companyName : ""} forId={"companyName"}>Company name</TextInput>
+       defaultValue={btnType==="edit" ? selectedWork.companyName : ""} 
+       forId={"companyName"}>Company name</TextInput>
       <TextInput defaultValue={btnType==="edit" ? selectedWork.jobTitle : ""} forId={"jobTitle"}>Job title</TextInput>
        </div>
        <div className="dev-profile__modal-inputs-wrapper">
@@ -1252,12 +1271,15 @@ defaultValue={selectedWork?.description} wrapperStyle={{marginBottom: 30}} texta
       } forId={"textAreaWorkExp"}>Description</TextInput>
 </div>
 <Select
-defaultValue={selectedWorkData}
+// defaultValue={workSkill}
+value={workSkill}
 onChange={(list) => setWorkSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
  classNamePrefix="mySelect"  
-menuPlacement="auto" options={skillsList} className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (optional)"/>
+menuPlacement="auto" 
+options={skillsList} 
+className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (optional)"/>
       <div className="dev-profile__modal-save-btn-wrapper">
        <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
