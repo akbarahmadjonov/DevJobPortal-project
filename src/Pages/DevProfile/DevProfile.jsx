@@ -237,6 +237,13 @@ useEffect(()=>{
   setWorkSkillList(selectedWork?.skill)
 
 })
+
+const selectedWorkData = workSkill?.map((item)=>({
+value: item,
+lavel: item
+}))
+
+console.log(selectedWorkData);
   
 
 //This code was written for inserting date to DatePicker in education and work exp. modals which comes from backend
@@ -807,7 +814,7 @@ onClick={()=>{
   <ul className="dev-profile__work-exp-works-list">
 {workExperience?.map((item, index)=>(
   <li key={item._id} className="dev-profile__work-exp-works-item">
-    <div className="flex dev-profile__work-exp-inner-wrapper">
+    <div className="custom-flex dev-profile__work-exp-inner-wrapper">
       <strong style={{color: "#3a6fff"}}>{item.companyName}</strong>
       <button type="button" 
   onClick={()=>{
@@ -817,7 +824,7 @@ onClick={()=>{
   }}
       className="dev-profile__edit-btn">Edit Company</button>
       </div>
-      <div className="flex dev-profile__work-exp-inner-wrapper">
+      <div className="custom-flex dev-profile__work-exp-inner-wrapper">
       <strong>{item.jobTitle}</strong>
       <p style={{color: "#989898"}}>{item.location} | {item.startDate.split("-")[0]}-{item.startDate.split("-")[1]} - {item.endDate ? `${item.endDate.split("-")[0]}-${item.endDate.split("-")[1]}` : "Current"}</p>
       </div>
@@ -1245,7 +1252,7 @@ defaultValue={selectedWork?.description} wrapperStyle={{marginBottom: 30}} texta
       } forId={"textAreaWorkExp"}>Description</TextInput>
 </div>
 <Select
-defaultInputValue={workSkill}
+defaultValue={selectedWorkData}
 onChange={(list) => setWorkSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
