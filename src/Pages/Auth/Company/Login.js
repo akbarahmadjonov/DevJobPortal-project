@@ -6,6 +6,7 @@ import {
   Fade,
   FormControl,
   FormHelperText,
+  Grid,
   Input,
   LinearProgress,
   Modal,
@@ -13,6 +14,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import checkIcon from "../../../Assets/Icons/check.png";
+import crossIcon from "../../../Assets/Icons/cross.png";
+import closeEye from "../../../Assets/Icons/close eye.png";
 import successImg from "../../../Assets/Images/check-your-inbox.png";
 import SuperCoderLogo from "./../../../Assets/Images/SuperCoderLogo.svg";
 import eyeIcon from "../../../Assets/Icons/eye.png";
@@ -20,18 +24,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import backImg from "../../../Assets/Icons/back.svg";
 import axios from "axios";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  boxShadow: 242,
-  borderRadius: "15px",
-  p: 4,
-};
 
 export default function CompanyLogin() {
   const [typeInput, setTypeInput] = useState("password");
@@ -45,9 +37,11 @@ export default function CompanyLogin() {
   const [showProgress, setShowProgress] = useState(false);
   const [progress, setProgress] = useState(0);
   const [disabled, setDisabled] = useState(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const emailValidation = new RegExp(
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,7}$/
   );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const passwordValidation = /^.{6,25}$/;
   const url = "https://job-px4t.onrender.com/api";
   const navigate = useNavigate();
@@ -56,6 +50,30 @@ export default function CompanyLogin() {
   const [successMsg, setSuccessMsg] = useState("Successfull Log In!");
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
   const [reset, setReset] = useState(false);
+  //
+  const [showConfirmationCode, setShowConfirmationCode] = useState(false);
+  const [focusedPass, setFocusedPass] = useState(false);
+  const [validPassword, setValidPassword] = useState(false);
+  const [colorPass, setColorPass] = useState("primary");
+  const [createNewPass, setCreateNewPass] = useState(false);
+  const [passwordIndividualCheck, setPasswordIndividualCheck] = useState({
+    check1: false,
+    check2: false,
+    check3: false,
+    check4: false,
+  });
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    boxShadow: 242,
+    borderRadius: "15px",
+    p: 4,
+  };
 
   const handleLoginFormSubmit = (e) => {
     e.preventDefault();
@@ -83,38 +101,94 @@ export default function CompanyLogin() {
 
   const handleReset = async (e) => {
     e.preventDefault();
-    setOpenAlertNotification(true)
-    // if (emailValidation.test(email)) {
-    //   await axios
-    //     .post(url + "/recruiter/login", {
-    //       email,
-    //     })
-    //     .then((res) => {
-    //       console.log(res);
-    //       setSuccessMsg("Reset Successful");
-    //       setOpenSuccess(true);
-    //       setReset(true);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // } else {
-    //   setErrorMsg("Please enter a valid email address!");
-    //   setOpenError(true);
-    // }
+    // setOpenAlertNotification(true);
+    const data = new FormData(e.currentTarget);
+    if (emailValidation.test(email)) {
+      await axios
+        .post(url + "/recruiter/forget", data)
+        .then((res) => {
+          const msg = res?.data?.message;
+          console.log(res);
+          if (msg?.includes("Confirmation code sent to the email!")) {
+            setShowConfirmationCode(true);
+            setSuccessMsg(msg);
+            setOpenSuccess(true);
+          }
+          if (msg?.includes("ok")) {
+            setCreateNewPass(true);
+            setSuccessMsg("Email successfully verified!");
+            setOpenSuccess(true);
+          }
+          if (msg === "Password updated") {
+            setSuccessMsg(msg + " Successfully!");
+            setOpenSuccess(true);
+            setTimeout(() => {
+              setForgotEmail(false);
+              setShowConfirmationCode(false);
+              setCreateNewPass(false);
+              navigate("/company/login");
+            }, 1000);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setErrorMsg(error.message);
+          setErrorMsg(error?.response?.data?.message);
+          setOpenError(true);
+        });
+    } else {
+      setErrorMsg("Please enter a valid email address!");
+      setOpenError(true);
+    }
   };
 
   useEffect(() => {
     if (forgotEmail) {
       if (emailValidation.test(email)) {
-        setDisabled(false);
+        if (createNewPass) {
+          if (validPassword) {
+            setDisabled(false);
+          } else setDisabled(true);
+        } else setDisabled(false);
       } else setDisabled(true);
     } else {
       if (passwordValidation.test(password) && emailValidation.test(email)) {
         setDisabled(false);
       } else setDisabled(true);
     }
-  }, [email, emailValidation, forgotEmail, password, passwordValidation]);
+  }, [
+    email,
+    emailValidation,
+    forgotEmail,
+    password,
+    passwordValidation,
+    validPassword,
+  ]);
+
+  const handlePasswordChange = (event) => {
+    const newPassword = event.target.value;
+    setPassword(newPassword);
+    validatePassword(newPassword);
+  };
+
+  const validatePassword = (password) => {
+    // Minimum length of 10 characters
+    const lengthValid = password.length >= 6;
+
+    // At least one lowercase letter
+    const lowercaseValid = /[a-z]/.test(password);
+    // At least one digit
+    const digitValid = /\d/.test(password);
+
+    setPasswordIndividualCheck({
+      ...passwordIndividualCheck,
+      check1: lengthValid,
+      check2: digitValid,
+      check3: lowercaseValid,
+    });
+    // Update the validity state
+    setValidPassword(lengthValid && lowercaseValid && digitValid);
+  };
 
   return (
     <>
@@ -180,7 +254,14 @@ export default function CompanyLogin() {
                 <h1 className="text-[26px] font-bold text-center">
                   Enter your email address
                 </h1>
-                <button onClick={(e) => setForgotEmail(false)} className="">
+                <button
+                  onClick={(e) => {
+                    setShowConfirmationCode(false);
+                    setCreateNewPass(false);
+                    setForgotEmail(false);
+                  }}
+                  className=""
+                >
                   <img
                     src={backImg}
                     alt="back btn"
@@ -222,6 +303,111 @@ export default function CompanyLogin() {
                       required
                       inputProps={{ "aria-label": "description" }}
                     />
+                    {showConfirmationCode ? (
+                      <Grid item xs={12} marginTop={2}>
+                        <TextField
+                          required
+                          size="small"
+                          fullWidth
+                          name="confirmationCode"
+                          label="Confirmation Code"
+                          type="number"
+                          id="confirmationCode"
+                          variant="standard"
+                        />
+                      </Grid>
+                    ) : (
+                      ""
+                    )}
+                    {createNewPass ? (
+                      <>
+                        <div className="w-full relative">
+                          <p className=" text-[16px] font-semibold leading-[16px] mb-[6px] mt-[18px]">
+                            Set New Password
+                          </p>
+                          <div className="wrapper relative">
+                            <TextField
+                              id="password"
+                              placeholder="Password"
+                              type={typeInput}
+                              name="password"
+                              required
+                              error={colorPass === "error" ? true : false}
+                              className="w-full"
+                              variant="standard"
+                              color={colorPass}
+                              onChange={handlePasswordChange}
+                              size="small"
+                              value={password}
+                              autoComplete={"false"}
+                            />
+                            <img
+                              width={17}
+                              height={17}
+                              className={`absolute cursor-pointer right-[10px] bottom-[10px]`}
+                              onClick={() => {
+                                if (typeInput === "password") {
+                                  setTypeInput("text");
+                                } else setTypeInput("password");
+                              }}
+                              src={
+                                typeInput === "password" ? eyeIcon : closeEye
+                              }
+                              alt="toggle input type"
+                            />
+                          </div>
+                          <ul
+                            className={`transition-all ${
+                              true
+                                ? "translate-y-1 flex flex-col"
+                                : "h-0 w-0 opacity-0"
+                            } duration-500 items-start justify-start text-[14px] mt-[10px]`}
+                          >
+                            <li className="flex space-x-2 items-center justify-center">
+                              <img
+                                src={
+                                  passwordIndividualCheck.check1
+                                    ? checkIcon
+                                    : crossIcon
+                                }
+                                width={15}
+                                height={15}
+                                alt="check-cross-icon"
+                              />
+                              <span>a minimum of 6 characters</span>
+                            </li>
+                            <li className="flex space-x-2 items-center justify-center">
+                              <img
+                                src={
+                                  passwordIndividualCheck.check2
+                                    ? checkIcon
+                                    : crossIcon
+                                }
+                                width={15}
+                                height={15}
+                                alt="check-cross-icon"
+                              />
+                              <span>a number</span>
+                            </li>
+                            <li className="flex space-x-2 items-center justify-center">
+                              <img
+                                src={
+                                  passwordIndividualCheck.check3
+                                    ? checkIcon
+                                    : crossIcon
+                                }
+                                width={15}
+                                height={15}
+                                alt="check-cross-icon"
+                              />
+                              <span>must contain letters</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <div className="flex items-center flex-col justify-center w-full space-y-[24px]">
                     <Button
@@ -238,7 +424,6 @@ export default function CompanyLogin() {
                       style={{ color: "white" }}
                       variant="contained"
                       disabled={disabled}
-                      onClick={handleReset}
                     >
                       Reset Password
                     </Button>
