@@ -37,6 +37,7 @@ import { homeActions } from "./Redux/HomeSlice";
 import { CompanyProfileProvider } from "./context/CompanyProfileContext";
 import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 import { userActions } from "./Redux/UserSlice";
+import { JobProvider } from "./context/JobContext";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -79,46 +80,48 @@ const App = () => {
   return (
     <main>
       <div>
-        <CompanyProfileProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/user/login" element={<Login />} />
-            <Route path="/user/register" element={<Register />} />
-            <Route path="/company/login" element={<CompanyLogin />} />
-            <Route path="/company/register" element={<CompanyRegister />} />
-            <Route path="/jobs" element={<Jobs />} />
-            <Route
-              path="/dev-profile"
-              element={user ? <DevProfile /> : <Login />}
-            />
-            <Route path="/comprofile" element={<CompanyProfile />}>
-              <Route index element={<JobsNested />} />
-              {/* Jobs */}
-              <Route path="jobs" element={<JobsNested />}>
-                <Route index path="openpaused" element={<OpenPaused />} />
-                <Route path="archived" element={<Archived />} />
+        <JobProvider>
+          <CompanyProfileProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/user/login" element={<Login />} />
+              <Route path="/user/register" element={<Register />} />
+              <Route path="/company/login" element={<CompanyLogin />} />
+              <Route path="/company/register" element={<CompanyRegister />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route
+                path="/dev-profile"
+                element={user ? <DevProfile /> : <Login />}
+              />
+              <Route path="/comprofile" element={<CompanyProfile />}>
+                <Route index element={<JobsNested />} />
                 {/* Jobs */}
+                <Route path="jobs" element={<JobsNested />}>
+                  <Route index path="openpaused" element={<OpenPaused />} />
+                  <Route path="archived" element={<Archived />} />
+                  {/* Jobs */}
+                </Route>
+                <Route path="timeoff" element={<TimeOffNested />} />
+                {/* Evaluation */}
+                <Route path="evaluation" element={<Evaluation />}>
+                  <Route index path="pending" element={<Pending />} />
+                  <Route path="completed" element={<Completed />} />
+                </Route>
+                {/* Evaluation */}
+                {/* Talentpool */}
+                <Route path="talentpool" element={<TalentPool />}>
+                  <Route index path="all" element={<All />} />
+                  <Route path="saved" element={<Saved />} />
+                  <Route path="opened" element={<Opened />} />
+                  <Route path="proposed" element={<Proposed />} />
+                </Route>
+                {/* Talentpool */}
+                {/* Profile */}
               </Route>
-              <Route path="timeoff" element={<TimeOffNested />} />
-              {/* Evaluation */}
-              <Route path="evaluation" element={<Evaluation />}>
-                <Route index path="pending" element={<Pending />} />
-                <Route path="completed" element={<Completed />} />
-              </Route>
-              {/* Evaluation */}
-              {/* Talentpool */}
-              <Route path="talentpool" element={<TalentPool />}>
-                <Route index path="all" element={<All />} />
-                <Route path="saved" element={<Saved />} />
-                <Route path="opened" element={<Opened />} />
-                <Route path="proposed" element={<Proposed />} />
-              </Route>
-              {/* Talentpool */}
-              {/* Profile */}
-            </Route>
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </CompanyProfileProvider>
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </CompanyProfileProvider>
+        </JobProvider>
       </div>
     </main>
   );

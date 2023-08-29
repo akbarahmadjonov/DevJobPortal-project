@@ -6,17 +6,32 @@ import { BsHeadphones } from "react-icons/bs";
 import { FaPeopleGroup, FaPodcast } from "react-icons/fa6";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
-import { Modal, Select, Skeleton } from "antd";
+import { Input, Modal, Select, Skeleton, message } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
+import { useJobContext } from "../../../../../context/JobContext";
 
 export const OpenPaused = () => {
-  const [companyJob, setCompanyJob] = useState([]);
+  const { companyJob, setCompanyJob } = useJobContext();
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedJob, setSelectedJob] = useState({});
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
+
+  // Delete success notification
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "This is a prompt message with custom className and style",
+      className: "custom-class",
+      style: {
+        marginTop: "200vh",
+      },
+    });
+  };
 
   //* EDIT MODAL
   // Function to open the view modal
@@ -64,7 +79,7 @@ export const OpenPaused = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await JobService.jobGet();
-      setCompanyJob(response.data.posts);
+      setCompanyJob(response.data?.posts);
       setLoading(false);
       console.log(response);
     } catch (error) {
@@ -79,6 +94,7 @@ export const OpenPaused = () => {
       setCompanyJob((prevCompanyJob) =>
         prevCompanyJob.filter((job) => job._id !== id)
       );
+      message.success("Successfully deleted post");
     } catch (error) {
       console.error("Error occurred while deleting job", error);
     }
@@ -108,22 +124,23 @@ export const OpenPaused = () => {
   };
 
   return (
-    <div className="open-paused">
+    <div className="open-paused open-paused__scroll">
+      {contextHolder}
       <div className="container">
         {loading ? (
           <Skeleton active />
-        ) : companyJob.length > 0 ? (
+        ) : companyJob?.length > 0 ? (
           <div>
-            {companyJob.map((data) => (
+            {companyJob?.map((data) => (
               <div
                 className="open-paused__inner"
                 key={data._id}
                 onClick={() => handleOpenModal(data)}
               >
                 <div className="open-paused__block">
-                  <h2 className="job__title">{data.jobTitle}</h2>
+                  <h2 className="job__title">{data?.jobTitle}</h2>
                   <span className="job__createdTime">
-                    Created: {formatCreatedAt(data.createdAt)}
+                    Created: {formatCreatedAt(data?.createdAt)}
                   </span>
                 </div>
                 <div className="open-paused__box">
@@ -133,7 +150,7 @@ export const OpenPaused = () => {
                         style={{ color: "#0050C8", fontSize: "23px" }}
                       />
                       <span>Active</span>
-                      <span>{data?.posts}</span>
+                      <span>{companyJob?.length}</span>
                     </div>
                   </div>
                   <div className="open-paused__block">
@@ -173,14 +190,14 @@ export const OpenPaused = () => {
                 </div>
                 <div className="open-paused__block">
                   <Select
-                    defaultValue="Paused"
+                    defaultValue="Active"
                     style={{
                       width: "120px",
                       borderBottom: "1px solid #d9d9d9",
                     }}
                     onChange={handleChange}
                     onClick={(e) => e.stopPropagation()}
-                    options={[{ value: "Paused" }]}
+                    options={[{ value: "Active" }, { value: "Paused" }]}
                   />
                 </div>
                 <div className="open-paused__block">
@@ -217,9 +234,12 @@ export const OpenPaused = () => {
         width={800}
       >
         <div className="modal-wrapper">
-          <h1 style={{display: 'flex', alignItems:'center'}} className="modal-upper__title">
+          <h1
+            style={{ display: "flex", alignItems: "center" }}
+            className="modal-upper__title"
+          >
             {`Detailed "${selectedJob.jobTitle}" post`}
-            <span  className="job__createdTime selectedJobTime">
+            <span className="job__createdTime selectedJobTime">
               Created: {formatCreatedAt(selectedJob.createdAt)}
             </span>
           </h1>
@@ -293,7 +313,13 @@ export const OpenPaused = () => {
         footer={null}
         width={800}
       >
-        <p>salom</p>
+        <span>{selectedJob.jobTitle}</span>
+        <Input
+          value={selectedJob.comName}
+          onChange={(e) =>
+            setSelectedJob({ ...selectedJob, comName: e.target.value })
+          }
+        />
       </Modal>
     </div>
   );
