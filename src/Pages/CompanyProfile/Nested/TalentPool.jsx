@@ -29,21 +29,21 @@ export const TalentPool = () => {
             className="talentpool_select-ant"
             defaultValue="Skills"
             onChange={handleChange}
-            options={[{ value: "Paused" }]}
+            options={[{ value: "Active" }]}
           />
           <Select
             style={{ borderBottom: "1px solid #0050c8" }}
             className="talentpool_select-ant"
             defaultValue="Total experience"
             onChange={handleChange}
-            options={[{ value: "Paused" }]}
+            options={[{ value: "Active" }]}
           />
           <Select
             style={{ borderBottom: "1px solid #0050c8" }}
             className="talentpool_select-ant"
             defaultValue="All"
             onChange={handleChange}
-            options={[{ value: "Paused" }]}
+            options={[{ value: "Active" }]}
           />
           <Button className="jobsTalentButtons">Search</Button>
         </div>
