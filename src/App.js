@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes, useNavigate, } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
@@ -39,7 +39,6 @@ import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 import { userActions } from "./Redux/UserSlice";
 import ErrorPage from "./Pages/Error/ErrorPage";
 import { JobProvider } from "./context/JobContext";
-
 
 const App = () => {
   const dispatch = useDispatch();
@@ -137,11 +136,11 @@ const App = () => {
               </Route>
               {/* Talentpool */}
               {/* Profile */}
-            </Route>
-            <Route path="/profile" element={<Profile />} />
-            <Route path="*" element={<ErrorPage />} />
-          </Routes>
-        </CompanyProfileProvider>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="*" element={<ErrorPage />} />
+            </Routes>
+          </CompanyProfileProvider>
+        </JobProvider>
       </div>
     </main>
   );
