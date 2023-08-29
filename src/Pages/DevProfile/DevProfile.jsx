@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactFlagsSelect from 'react-flags-select';
-import 'react-languages-select/scss/react-languages-select.scss';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { Link } from "react-router-dom";
