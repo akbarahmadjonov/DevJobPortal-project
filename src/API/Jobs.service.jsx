@@ -22,9 +22,23 @@ const JobService = {
     }
   },
 
+  jobGetByID: async (id) => {
+    try {
+      const data = await axios.get(`job/${id}`, {
+        headers: {
+          token,
+          // "Content-Type": "application/json",
+        },
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+
   //* JOB POST | REQUEST
   jobPost: async (body) => {
-    console.log(body);
     try {
       const data = await axios.post("job", body, {
         headers: {
@@ -54,10 +68,10 @@ const JobService = {
     }
   },
 
-  //* JOB POST | REQUEST
-  jobEdit: async (id) => {
+  //* JOB EDIT | REQUEST
+  jobEdit: async (id, updatedData) => {
     try {
-      const data = await axios.delete(`job/${id}`, {
+      const data = await axios.put(`job/${id}`, updatedData, {
         headers: {
           token,
         },
