@@ -53,6 +53,7 @@ export const DevProfile = ()=>{
   const [skillsModal, setSkillsModal] = useState(false)
   const [workExpModal, setWorkExpModal] = useState(false)
   const [eduModal, setEduModal] = useState(false)
+  const [workExpProjectModal, setWorkExpProjectModal] = useState(false)
   //
 
   
@@ -69,7 +70,7 @@ export const DevProfile = ()=>{
 
   const [educationsList, setEducationsList] = useState()
 
-  const [workSkill, setWorkSkillList] = useState([])
+  const [workSkill, setWorkSkillList] = useState()
 
   //Work Modal Checkbox
   const [isWorkChecked, setIsWorkChecked] = useState()
@@ -807,7 +808,7 @@ onClick={()=>{
 {workExperience?.map((item, index)=>(
   <li key={item._id} className="dev-profile__work-exp-works-item">
     <div className="flex dev-profile__work-exp-inner-wrapper">
-      <strong>{item.companyName}</strong>
+      <strong style={{color: "#3a6fff"}}>{item.companyName}</strong>
       <button type="button" 
   onClick={()=>{
     setClickedId(item._id)
@@ -817,9 +818,19 @@ onClick={()=>{
       className="dev-profile__edit-btn">Edit Company</button>
       </div>
       <div className="flex dev-profile__work-exp-inner-wrapper">
-      <p>{item.jobTitle}</p>
+      <strong>{item.jobTitle}</strong>
       <p style={{color: "#989898"}}>{item.location} | {item.startDate.split("-")[0]}-{item.startDate.split("-")[1]} - {item.endDate ? `${item.endDate.split("-")[0]}-${item.endDate.split("-")[1]}` : "Current"}</p>
       </div>
+      <p style={{marginBottom: 16}}>{item.description}</p>
+      <ul className="dev-profile__work-exp-skill-list">
+        {item.skill.map((skill, index)=>(
+         <li className="dev-profile__work-exp-skill-item" key={index}>{skill}</li> 
+        ))}
+      </ul>
+      <button
+   onClick={()=>{setWorkExpProjectModal(true)
+    setBtnType("add")
+   }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Project</button>
   </li>
 ))  }
     </ul>
@@ -1192,7 +1203,7 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
         <p className="dev-profile__skills-modal-label">End date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
 <DatePicker
-disabled={isWorkChecked || selectedWork.workingNow}
+disabled={isWorkChecked || selectedWork?.workingNow}
 wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
@@ -1204,7 +1215,7 @@ className="dev-profile__work-exp-modal-date-picker-input"
        </div>
        <div className="dev-profile__work-exp-modal-checkbox-wrapper">
        <Checkbox 
-       checked={selectedWork.workingNow}
+       checked={selectedWork?.workingNow}
         onChange={(event) => setIsWorkChecked(event.target.checked)}
        /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
        </div>
@@ -1227,7 +1238,7 @@ className="dev-profile__work-exp-modal-date-picker-input"
 </div>
 <div className="dev-profile__work-exp-modal-textarea-wrapper">
 <TextInput
-defaultValue={selectedWork.description} wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
+defaultValue={selectedWork?.description} wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
         3000 
       } rows={
         3
@@ -1235,6 +1246,93 @@ defaultValue={selectedWork.description} wrapperStyle={{marginBottom: 30}} textar
 </div>
 <Select
 defaultInputValue={workSkill}
+onChange={(list) => setWorkSkillList(list)}
+isMulti
+ styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+ classNamePrefix="mySelect"  
+menuPlacement="auto" options={skillsList} className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (optional)"/>
+      <div className="dev-profile__modal-save-btn-wrapper">
+       <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
+       </div>
+        </form>
+      </div>
+    </div>
+    </div>
+  </div>
+  }
+  {
+    workExpProjectModal && 
+    <div className="dev-profile__modal">
+    <div className="dev-profile__modal-wrapper">
+    <div className="dev-profile__modal-content">
+      <div className="dev-profile__modal-header">
+    <p className="dev-profile__modal-title">{btnType==="add" ? "Add" : "Edit"} Project</p>
+    <button type="button" onClick={()=>setWorkExpProjectModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
+      </div>
+      <div className="dev-profile__modal-body">
+        <form onSubmit={handleWorkExpModalSubmit}>
+       <div className="dev-profile__modal-inputs-wrapper">
+       <TextInput
+      //  defaultValue={btnType==="edit" ? selectedWork.companyName : ""} 
+       forId={"companyName"}>Company name</TextInput>
+      <TextInput 
+      // defaultValue={btnType==="edit" ? selectedWork.jobTitle : ""} 
+      forId={"jobTitle"}>Job title</TextInput>
+       </div>
+       <div className="dev-profile__modal-inputs-wrapper">
+        <div className="dev-profile__modal-date-wrapper">
+       <p className="dev-profile__skills-modal-label">Start date&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+       <DatePicker
+       wrapperClassName="dev-profile__modal-date-picker-wrapper"
+       className="dev-profile__work-exp-modal-date-picker-input"
+  dateFormat="MM/yyyy"
+  showMonthYearPicker
+  // selected={startDateWorkExp} 
+  onChange={(date) =>{ setStartDateWorkExp(date)
+  }
+  } 
+  
+/>
+        </div>
+        <div className="dev-profile__modal-date-wrapper">
+        <p className="dev-profile__skills-modal-label">End date&nbsp;
+        <span style={{color: "blue"}}>*</span></p>
+<DatePicker
+// disabled={isWorkChecked || selectedWork.workingNow}
+wrapperClassName="dev-profile__modal-date-picker-wrapper"
+className="dev-profile__work-exp-modal-date-picker-input"
+  dateFormat="MM/yyyy"
+  showMonthYearPicker
+  // selected={endDateWorkExp} 
+  onChange={(date) => setEndDateWorkExp(date) }
+/>
+        </div>
+
+       </div>
+       <div className="dev-profile__work-exp-modal-checkbox-wrapper">
+       <Checkbox 
+      //  checked={selectedWork.workingNow}
+        onChange={(event) => setIsWorkChecked(event.target.checked)}
+       /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
+       </div>
+       <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
+</div>
+<div>
+
+</div>
+<div className="dev-profile__work-exp-modal-textarea-wrapper">
+<TextInput
+// defaultValue={selectedWork.description}
+
+wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
+        3000 
+      } rows={
+        3
+      } forId={"textAreaWorkExp"}>Description</TextInput>
+</div>
+<Select
+// defaultInputValue={workSkill}
 onChange={(list) => setWorkSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}

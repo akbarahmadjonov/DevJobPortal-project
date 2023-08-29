@@ -4,6 +4,12 @@
 
 //General styles
 
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .dev-profile__edit-btn {
   background: #eaf0ff;
   color: #3a6fff;
@@ -811,4 +817,19 @@
   justify-content: space-between;
   margin-bottom: 8px;
 }
-  
+
+.dev-profile__work-exp-skill-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.dev-profile__work-exp-skill-item {
+  background: #fafafa;
+  padding: 4px 6.4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  color: #000;
+}
