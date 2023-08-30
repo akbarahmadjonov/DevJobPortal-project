@@ -10,7 +10,6 @@ import { Input, Modal, Select, Skeleton, message } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
 import { useJobContext } from "../../../../../context/JobContext";
-
 export const OpenPaused = () => {
   const { companyJob, setCompanyJob } = useJobContext();
   const [loading, setLoading] = useState(true);
@@ -19,9 +18,13 @@ export const OpenPaused = () => {
   const [viewModalVisible, setViewModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [updatedJobData, setUpdatedJobData] = useState({});
+  const [strangeState, setStrangeState] = useState({});
+  const [skillStext, setSkillsText] = useState({});
+  const [moreInfoText, setMoreInfoText] = useState({});
+  const [typeOfMoney, setTypeOfMoney] = useState({});
+
   // Delete success notification
   const [messageApi, contextHolder] = message.useMessage();
-
   const success = () => {
     messageApi.open({
       type: "success",
@@ -46,6 +49,28 @@ export const OpenPaused = () => {
     const getByID = await JobService.jobGetByID(jobId);
     getByID.data ? setSelectedJob(getByID.data) : setSelectedJob({});
     setUpdatedJobData(getByID.data || {});
+    if (getByID.data) {
+      let combinedSkills = getByID.data.jobSkills.skillName?.join(",");
+      setMoreInfoText({
+        ...moreInfoText,
+        id: getByID.data.moreInfo[0]._id,
+        moreInfo: getByID.data.moreInfo[0].jobText,
+      });
+      setTypeOfMoney({
+        ...typeOfMoney,
+        id: getByID.data.moneyTypeId?._id,
+        moneyText: getByID.data.moneyTypeId?.moneyType,
+      });
+      setSkillsText({
+        ...skillStext,
+        id: getByID.data.jobSkills._id,
+        skills: combinedSkills,
+      });
+    }
+    // setStrangeState({
+    //   ...strangeState,
+    //   jobSkills: combinedSkills?.join(','),
+    // })
     setEditModalVisible(true);
   };
 
@@ -64,7 +89,6 @@ export const OpenPaused = () => {
   const handleOpenModal = async (job) => {
     const getByID = await JobService.jobGetByID(job);
     getByID.data ? setSelectedJob(getByID.data) : setSelectedJob({});
-    console.log(getByID.data);
     // setSelectedJob(getByID?.data);
 
     console.log(job);
@@ -83,8 +107,6 @@ export const OpenPaused = () => {
   useEffect(() => {
     fetchUserProfile();
   }, []);
-
-  console.log(selectedJob);
 
   const fetchUserProfile = async () => {
     try {
@@ -110,10 +132,28 @@ export const OpenPaused = () => {
     }
   };
 
-  const handleEditJob = async (id, e) => {
+  const handleEditJob = async (e, _id) => {
     e.preventDefault();
     try {
-      await JobService.jobEdit(selectedJob._id, updatedJobData);
+      let updateJobObj = {
+        comImg: updatedJobData?.comImg,
+        comName: updatedJobData?.comName,
+        comLocation: updatedJobData?.comLocation,
+        jobTitle: updatedJobData?.jobTitle,
+        jobInfo: updatedJobData?.jobInfo,
+        jobType: updatedJobData?.jobType,
+        jobPrice: updatedJobData?.jobPrice,
+        jobskillsId: skillStext.id,
+        jobskills: skillStext.skills?.split(/[ ,]+/),
+        moreInfoId: moreInfoText.id,
+        moreInfo: moreInfoText.moreInfo,
+        typeMoneyId: typeOfMoney.id,
+        typeMoney: typeOfMoney.moneyText,
+      };
+      let { data } = await JobService.jobEdit(selectedJob._id, updateJobObj);
+      if (data) {
+        message.success("Successfully edited post");
+      }
       handleCloseEditModal();
     } catch (error) {
       console.error("Error occurred while updating job", error);
@@ -319,6 +359,7 @@ export const OpenPaused = () => {
               <p>{selectedJob?.moneyTypeId?.moneyType}</p>
             </div>
           </div>
+
           <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">More Info</span>
@@ -399,6 +440,42 @@ export const OpenPaused = () => {
             />
           </div>
           <div className="modal-values">
+            <span className="modal-title">Skills</span>
+            <Input
+              value={skillStext.skills}
+              onChange={(e) =>
+                setSkillsText({
+                  ...skillStext,
+                  skills: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="modal-values">
+            <span className="modal-title">More Info</span>
+            <Input
+              value={moreInfoText.moreInfo}
+              onChange={(e) =>
+                setMoreInfoText({
+                  ...moreInfoText,
+                  moreInfo: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="modal-values">
+            <span className="modal-title">Currency Type</span>
+            <Input
+              value={typeOfMoney.moneyText}
+              onChange={(e) =>
+                setTypeOfMoney({
+                  ...typeOfMoney,
+                  moneyText: e.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="modal-values">
             <span className="modal-title">Job Type</span>
             <Input
               value={updatedJobData.jobType}
@@ -422,42 +499,7 @@ export const OpenPaused = () => {
               }
             />
           </div>
-          <div className="modal-values">
-            <span className="modal-title">Job Skills</span>
-            <Input
-              value={updatedJobData.jobskills}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  jobskills: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Currency Type</span>
-            <Input
-              value={updatedJobData.typeMoney}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  typeMoney: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">More info</span>
-            <Input
-              value={updatedJobData.moreInfo}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  moreInfo: e.target.value,
-                })
-              }
-            />
-          </div>
+          <button type="submit"> submit</button>
         </form>
       </Modal>
     </div>
