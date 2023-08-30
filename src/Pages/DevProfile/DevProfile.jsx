@@ -884,7 +884,7 @@ onClick={()=>{
         </ul>
       </div>
       <div className="dev-profile__skills-inner-info dev-profile__skills-inner-info-2">
-        <p>Language</p>
+        <p className="dev-profile__skills-inner-level">Language</p>
         <ul> 
           <li>
           Afar | Advanced
