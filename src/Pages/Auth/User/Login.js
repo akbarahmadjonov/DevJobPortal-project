@@ -10,6 +10,7 @@ import { RightContent } from "./RightSide/RightContent";
 import { LeftContent } from "./LeftSide/LeftContent";
 import { useEffect } from "react";
 
+
 const apiUrl = process.env.URL || "https://job-px4t.onrender.com/api";
 
 const Login = () => {

@@ -115,12 +115,14 @@ export default function CompanyRegister() {
   });
 
   const navigate = useNavigate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const emailValidation = new RegExp(
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   );
-  const passwordValidation = new RegExp(/((?=.*\d)(?=.*[a-z]).{6,20})/);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const validHttp1 =
     /^[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$/;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const validHttp2 =
     /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$/;
 
