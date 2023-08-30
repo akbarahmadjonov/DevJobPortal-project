@@ -41,16 +41,10 @@ import ErrorPage from "./Pages/Error/ErrorPage";
 import { JobProvider } from "./context/JobContext";
 
 const App = () => {
-  const dispatch = useDispatch();
-  const url = "https://jobas.onrender.com/api";
-
-  //
-
-  const { token, userData, loading, error } = useSelector(
-    (state) => state.user
-  );
-
   const user = localStorage.getItem("userData");
+  const token = localStorage.getItem("token");
+  const companyInfo = localStorage.getItem("companyInfo");
+  const isLogedCompany = companyInfo && token;
   const navigate = useNavigate();
 
   //Test
@@ -81,6 +75,8 @@ const App = () => {
   //     });
   // }, [userData]);
 
+  useEffect(() => {}, []);
+
   return (
     <main>
       <div>
@@ -97,7 +93,10 @@ const App = () => {
                 path="/dev-profile"
                 element={user ? <DevProfile /> : <Login />}
               />
-              <Route path="/comprofile" element={<CompanyProfile />}>
+              <Route
+                path="/comprofile"
+                element={isLogedCompany ? <CompanyProfile /> : <CompanyLogin />}
+              >
                 <Route index element={<JobsNested />} />
                 {/* Jobs */}
                 <Route path="jobs" element={<JobsNested />}>
@@ -123,15 +122,24 @@ const App = () => {
                 {/* Profile */}
               </Route>
 
-              <Route path="timeoff" element={<TimeOffNested />} />
+              <Route
+                path="timeoff"
+                element={isLogedCompany ? <TimeOffNested /> : <CompanyLogin />}
+              />
               {/* Evaluation */}
-              <Route path="evaluation" element={<Evaluation />}>
+              <Route
+                path="evaluation"
+                element={isLogedCompany ? <Evaluation /> : <CompanyLogin />}
+              >
                 <Route index path="pending" element={<Pending />} />
                 <Route path="completed" element={<Completed />} />
               </Route>
               {/* Evaluation */}
               {/* Talentpool */}
-              <Route path="talentpool" element={<TalentPool />}>
+              <Route
+                path="talentpool"
+                element={isLogedCompany ? <TalentPool /> : <CompanyLogin />}
+              >
                 <Route index path="all" element={<All />} />
                 <Route path="saved" element={<Saved />} />
                 <Route path="opened" element={<Opened />} />
@@ -139,7 +147,10 @@ const App = () => {
               </Route>
               {/* Talentpool */}
               {/* Profile */}
-              <Route path="/profile" element={<Profile />} />
+              <Route
+                path="/profile"
+                element={isLogedCompany ? <Profile /> : <CompanyLogin />}
+              />
               <Route path="*" element={<ErrorPage />} />
             </Routes>
           </CompanyProfileProvider>
