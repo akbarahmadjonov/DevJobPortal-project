@@ -750,6 +750,28 @@
   width: 100%;
 }
 
+.dev-profile__skills-inner-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 525px;
+}
+
+.dev-profile__skills-inner-info-2 {
+  max-width: unset;
+}
+
+.dev-profile__skills-inner-level {
+  width: 100px;
+}
+
+.dev-profile__skills-inner-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 //React date picker
 
 .dev-profile__work-exp-modal-date-picker-input {

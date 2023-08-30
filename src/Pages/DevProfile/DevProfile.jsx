@@ -79,11 +79,10 @@ const [worksList, setWorksList] = useState()
 
 const [agree, setAgree] = useState(false)
 
-  
-const skillsInfo = userData?.skills
+const [profilePicture, setProfilePicture] = useState()
 
 
-const [inputs, setInputs] = useState([{ skill: '', experience: '', level: '' }]);
+const [inputs, setInputs] = useState([]);
 
 
 
@@ -162,7 +161,9 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const userName = userData?.fullName
   const userEmail = userData?.email
-  const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
+  // const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
+  //  const profilePicture = userData?.data?.profilePicture
+
 
 
   
@@ -273,22 +274,44 @@ useEffect(()=>{
     }
   }).then((data)=>{  
     dispatch(userActions.setUserData(data.data))
+    setProfilePicture(data.data?.profilePicture)
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
     setPhoneCode(data.data?.phoneNumber.split(" ")[0])
     setEducationsList(data?.data?.education)
     setWorksList(data?.data?.workExperience)
 
+
     //Skills and languages modal
 
-    setInputs(data.data?.skills?.map((item)=>({
-     skill: { value: item.skill,
-      label: item.skill},
-     experience: { value: item.experience,
-      label: item.experience},
-     level: { value: item.level,
-      label: item.level},
-    }, {skill: {value: "", label: "" }, experience: {value: "", label: "" }, level: {value: "", label: ""} })))
+
+
+  // data.data.skills === []  && setInputs(data.data?.skills?.map((item)=>({
+  //   skill: { value: item.skill,
+  //    label: item.skill},
+  //   experience: { value: item.experience,
+  //    label: item.experience},
+  //   level: { value: item.level,
+  //    label: item.level}
+  //  })))
+
+   
+ setInputs([...data.data?.skills?.map((item)=>({
+    skill: { value: item.skill,
+     label: item.skill},
+    experience: { value: item.experience,
+     label: item.experience},
+    level: { value: item.level,
+     label: item.level}
+   })), {skill: { value: "",
+       label: ""},
+      experience: { value: "",
+       label: ""},
+      level: { value: "",
+       label: ""}}])
+
+  
+
 
     //Work experience modal
     
@@ -327,9 +350,6 @@ useEffect(()=>{
   }, [userData]);
 
 
-// useEffect(()=>{
-//   setInputs([...inputs, {skill: {value: "", label: "" }, experience: {value: "", label: "" }, level: {value: "", label: ""} }])
-// }, [])
 
 const handleInputChange = (index, inputName, selectedOption) => {
   const newInputs = [...inputs];
@@ -342,6 +362,33 @@ const handleInputChange = (index, inputName, selectedOption) => {
     setInputs([...inputs, { skill: '', experience: '', level: '' }]);
   }
 };
+
+
+const handleSkillsModalSubmit = (evt)=>{
+evt.preventDefault()
+
+
+
+axios.post(`${url}/skill`, inputs, {
+  headers: {
+    token
+  }
+}).then((res)=>{ 
+  console.log(res);
+}).catch((err)=>{
+  console.log(err);
+  // setError(true)
+}).finally(()=>{
+  // setLoading(false)
+})
+
+
+
+
+
+
+
+}
 
 
 
@@ -597,10 +644,6 @@ return null
 return null
   }
 
-  const handleSkillsModalSubmit = (evt)=>  {
-    evt.preventDefault()
-
-  }
   
 
   //7th modal Work experience form
@@ -720,8 +763,6 @@ return null
 
   // }, [applyImg]);
 
- 
-
 
 return  <div className="dev-profile">
   
@@ -829,9 +870,31 @@ onClick={()=>{
   <button className={preferredRole && "dev-profile__edit-btn"} onClick={()=>setRoleModal(true)} type="button">{!preferredRole && <img width={18} height={18} src={editPen} alt="edit pen" />}{preferredRole && "Edit"}</button>
     </div>
     {/*Skills and Languages */}
-    <div className="dev-profile__info-wrapper-3">
-    <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
+    <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
+      <div className="dev-profile__education-top-wrapper">
+      <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
   <button onClick={()=>setSkillsModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+      </div>
+      <div className="dev-profile__skills-inner-info">
+        <ul>
+          <li className="dev-profile__skills-inner-list">
+        <p className="dev-profile__skills-inner-level">Advance</p>
+        <p>.NET | 2 years</p>
+          </li>
+        </ul>
+      </div>
+      <div className="dev-profile__skills-inner-info dev-profile__skills-inner-info-2">
+        <p>Language</p>
+        <ul> 
+          <li>
+          Afar | Advanced
+          </li>
+          <li>
+          Afar | Advanced
+          </li>
+        </ul>
+      </div>
+ 
     </div>
     {/*Work experience */}
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
@@ -1187,9 +1250,11 @@ ducting background checks).</p>
   // onChange={handleSkillCompetencySelect}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
+  
   </div>
-  <span 
-  className="dev-profile-skills-modal-delete">&#10005;</span>
+  {index !== inputs.length - 1 && (
+      <button className="dev-profile-skills-modal-delete">&#10005;</button>
+    )}
   </div>
   ))
   }
