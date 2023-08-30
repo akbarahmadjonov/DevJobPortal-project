@@ -106,6 +106,8 @@ export default function CompanyRegister() {
   const [select10, setSelect10] = useState(false);
   const [select11, setSelect11] = useState(false);
   const [select12, setSelect12] = useState(false);
+  const [focusedEmail, setFocusedEmail] = useState(false);
+  const [focusedPass, setFocusedPass] = useState(false);
   const [focusedPhone, setFocusedPhone] = useState(false);
   const [passwordIndividualCheck, setPasswordIndividualCheck] = useState({
     check1: false,
@@ -627,7 +629,14 @@ export default function CompanyRegister() {
                             type="email"
                             required
                             color={colorEmail}
-                            error={colorEmail === "error" ? true : false}
+                            onFocus={() => setFocusedEmail(true)}
+                            error={
+                              focusedEmail
+                                ? colorEmail === "error"
+                                  ? true
+                                  : false
+                                : false
+                            }
                             onChange={(e) => {
                               setEmail(e.target.value);
                             }}
@@ -647,7 +656,14 @@ export default function CompanyRegister() {
                                 type={typeInput}
                                 name="password"
                                 required
-                                error={colorPass === "error" ? true : false}
+                                onFocus={() => setFocusedPass(true)}
+                                error={
+                                  focusedPass
+                                    ? colorPass === "error"
+                                      ? true
+                                      : false
+                                    : false
+                                }
                                 className="w-full"
                                 color={colorPass}
                                 onChange={(e) => {
@@ -672,53 +688,55 @@ export default function CompanyRegister() {
                                 alt="toggle input type"
                               />
                             </div>
-                            <ul
-                              className={`transition-all ${
-                                true
-                                  ? "translate-y-1 flex flex-col"
-                                  : "h-0 w-0 opacity-0"
-                              } duration-500 items-start justify-start text-[14px] mt-[10px]`}
-                            >
-                              <li className="flex space-x-2 items-center justify-center">
-                                <img
-                                  src={
-                                    passwordIndividualCheck.check1
-                                      ? checkIcon
-                                      : crossIcon
-                                  }
-                                  width={15}
-                                  height={15}
-                                  alt="check-cross-icon"
-                                />
-                                <span>a minimum of 6 characters</span>
-                              </li>
-                              <li className="flex space-x-2 items-center justify-center">
-                                <img
-                                  src={
-                                    passwordIndividualCheck.check2
-                                      ? checkIcon
-                                      : crossIcon
-                                  }
-                                  width={15}
-                                  height={15}
-                                  alt="check-cross-icon"
-                                />
-                                <span>a number</span>
-                              </li>
-                              <li className="flex space-x-2 items-center justify-center">
-                                <img
-                                  src={
-                                    passwordIndividualCheck.check3
-                                      ? checkIcon
-                                      : crossIcon
-                                  }
-                                  width={15}
-                                  height={15}
-                                  alt="check-cross-icon"
-                                />
-                                <span>must contain letters</span>
-                              </li>
-                            </ul>
+                            {focusedPass && (
+                              <ul
+                                className={`transition-all ${
+                                  true
+                                    ? "translate-y-1 flex flex-col"
+                                    : "h-0 w-0 opacity-0"
+                                } duration-500 items-start justify-start text-[14px] mt-[10px]`}
+                              >
+                                <li className="flex space-x-2 items-center justify-center">
+                                  <img
+                                    src={
+                                      passwordIndividualCheck.check1
+                                        ? checkIcon
+                                        : crossIcon
+                                    }
+                                    width={15}
+                                    height={15}
+                                    alt="check-cross-icon"
+                                  />
+                                  <span>a minimum of 6 characters</span>
+                                </li>
+                                <li className="flex space-x-2 items-center justify-center">
+                                  <img
+                                    src={
+                                      passwordIndividualCheck.check2
+                                        ? checkIcon
+                                        : crossIcon
+                                    }
+                                    width={15}
+                                    height={15}
+                                    alt="check-cross-icon"
+                                  />
+                                  <span>a number</span>
+                                </li>
+                                <li className="flex space-x-2 items-center justify-center">
+                                  <img
+                                    src={
+                                      passwordIndividualCheck.check3
+                                        ? checkIcon
+                                        : crossIcon
+                                    }
+                                    width={15}
+                                    height={15}
+                                    alt="check-cross-icon"
+                                  />
+                                  <span>must contain letters</span>
+                                </li>
+                              </ul>
+                            )}
                           </div>
                           <Button
                             type="submit"
