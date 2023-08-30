@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Modal, Select } from "antd";
+import { Button, Modal, Select, message, Skeleton } from "antd";
 import JobService from "../../../API/Jobs.service";
 import axios from "axios";
+import { useJobContext } from "../../../context/JobContext";
 import "./Jobs.scss";
 
 export const JobsNested = () => {
@@ -12,6 +13,26 @@ export const JobsNested = () => {
   const [jobCategories, setJobCategories] = useState([]);
   const [images, setImages] = useState({});
   const [catIds, setCatId] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1400);
+  }, []);
+
+  // Success post message
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "This is a prompt message with custom className and style",
+      className: "custom-class",
+      style: {
+        marginTop: "200vh",
+      },
+    });
+  };
 
   const nameRef = useRef();
   const locationRef = useRef();
@@ -22,6 +43,8 @@ export const JobsNested = () => {
   const jobskillsRef = useRef();
   const typeMoneyRef = useRef();
   const moreInfoRef = useRef();
+
+  const { companyJob, setCompanyJob } = useJobContext();
 
   const handleChange = (value: string) => {
     setCatId(value);
@@ -63,7 +86,9 @@ export const JobsNested = () => {
       const dataToSend = { ...jobValues, comImg: imageUrls[0], catId: catId };
 
       const datas = await JobService.jobPost(dataToSend);
+      setCompanyJob((prevCompanyJob) => [...prevCompanyJob, datas.data?.data]);
       setIsModalVisible(false);
+      message.success("Successfully added post");
     } catch (error) {
       console.error("Error uploading images or posting", error);
     }
@@ -98,14 +123,22 @@ export const JobsNested = () => {
     <div className="job-nested">
       <div className="job-nested__inner">
         <h1 className="job-nested__title">Jobs</h1>
-        <Button className="jobsTalentButtons" onClick={showModal}>
-          <FontAwesomeIcon
-            className="icon"
-            icon={faPlus}
-            style={{ color: "#fff" }}
-          />{" "}
-          Create a job
-        </Button>
+        {isLoading ? (
+          <Skeleton.Input
+            active
+            size="small"
+            style={{ width: 140, height: 24 }}
+          />
+        ) : (
+          <Button className="jobsTalentButtons" onClick={showModal}>
+            <FontAwesomeIcon
+              className="icon"
+              icon={faPlus}
+              style={{ color: "#fff" }}
+            />{" "}
+            Create a job
+          </Button>
+        )}
         <Modal
           title="Create a new Job"
           visible={isModalVisible}
@@ -203,7 +236,9 @@ export const JobsNested = () => {
           to={"openpaused"}
           activeClassName="active"
         >
-          <h3 className="tab__innerTitle">Open and Paused 0</h3>
+          <h3 className="tab__innerTitle">
+            Open and Paused {companyJob?.length}
+          </h3>
         </NavLink>
         <NavLink
           className="tab__links"

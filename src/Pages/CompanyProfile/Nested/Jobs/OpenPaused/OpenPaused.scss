@@ -20,8 +20,32 @@
 }
 
 //* CUSTOM STYLES
-
 .open-paused {
+}
+
+/* ===== Scrollbar CSS ===== */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #d9d9d9 #ffffff;
+}
+
+*::-webkit-scrollbar {
+  width: 16px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #d9d9d9;
+  border-radius: 0px;
+  border: 3px solid #ffffff;
+}
+
+.open-paused__scroll {
+  height: 600px;
+  overflow-y: auto;
 }
 
 .open-paused__inner {
