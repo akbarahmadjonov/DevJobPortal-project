@@ -87,28 +87,6 @@ const [inputs, setInputs] = useState([{ skill: '', experience: '', level: '' }])
 
 
 
-
-  // if(userData?.data){
-  //   inputs = userData?.data?.skills
-  // }
- 
-
-
-  const handleInputChange = (index, inputName, selectedOption) => {
-    const newInputs = [...inputs];
-    //May be let 
-    newInputs[index][inputName] = selectedOption;
-    setInputs(newInputs);
-
-    // Add a new div with three inputs if the last div is filled
-    if (index === inputs.length - 1 && selectedOption !== '') {
-      setInputs([...inputs, { skill: '', experience: '', level: '' }]);
-    }
-  };
-
-
-
-
   // Input values
 
   // const [skill, setSkill] = useState()
@@ -298,9 +276,19 @@ useEffect(()=>{
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
     setPhoneCode(data.data?.phoneNumber.split(" ")[0])
-    setInputs(data.data?.skills)
     setEducationsList(data?.data?.education)
     setWorksList(data?.data?.workExperience)
+
+    //Skills and languages modal
+
+    setInputs(data.data?.skills?.map((item)=>({
+     skill: { value: item.skill,
+      label: item.skill},
+     experience: { value: item.experience,
+      label: item.experience},
+     level: { value: item.level,
+      label: item.level},
+    }, {skill: {value: "", label: "" }, experience: {value: "", label: "" }, level: {value: "", label: ""} })))
 
     //Work experience modal
     
@@ -326,8 +314,34 @@ useEffect(()=>{
 
 
 
-console.log(phoneNumber, agree);
 
+  useEffect(() => {
+    axios
+      .get(`${url}/category`)
+      .then((data) => {
+        dispatch(homeActions.setJobs(data.data));
+      })
+      .catch(() => {
+        dispatch(homeActions.setHomeError(true));
+      });
+  }, [userData]);
+
+
+// useEffect(()=>{
+//   setInputs([...inputs, {skill: {value: "", label: "" }, experience: {value: "", label: "" }, level: {value: "", label: ""} }])
+// }, [])
+
+const handleInputChange = (index, inputName, selectedOption) => {
+  const newInputs = [...inputs];
+  //May be let 
+  newInputs[index][inputName] = selectedOption;
+  setInputs(newInputs);
+
+  // Add a new div with three inputs if the last div is filled
+  if (index === inputs.length - 1 && selectedOption !== '') {
+    setInputs([...inputs, { skill: '', experience: '', level: '' }]);
+  }
+};
 
 
 

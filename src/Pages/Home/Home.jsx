@@ -27,19 +27,23 @@ export const Home =  ()=>{
 
 
 
-  //can be removed
-  // const dispatch = useDispatch()
-//can be removed
-  // const url = "https://jobas.onrender.com/api";
+ const dispatch = useDispatch()
 
-  //can be removed
-// useEffect(()=>{
-//   axios.get(`${url}/category`).then((data)=>{
-//     dispatch(homeActions.setJobs(data.data))
-//   }).catch(()=>{
-//     dispatch(homeActions.setHomeError(true))
-//   })
-// }, [])
+  const url = "https://jobas.onrender.com/api";
+
+
+
+  useEffect(() => {
+    axios
+      .get(`${url}/category`)
+      .then((data) => {
+        dispatch(homeActions.setJobs(data.data));
+      })
+      .catch(() => {
+        dispatch(homeActions.setHomeError(true));
+      });
+  }, []);
+
 
 useEffect(()=>{
   new Swiper('.swiper', {

@@ -65,18 +65,21 @@ const App = () => {
   //     localStorage.setItem("setupTime", now);
   //   }
   // }
+
   //Jobs categories as used in two or more pages
 
-  useEffect(() => {
-    axios
-      .get(`${url}/category`)
-      .then((data) => {
-        dispatch(homeActions.setJobs(data.data));
-      })
-      .catch(() => {
-        dispatch(homeActions.setHomeError(true));
-      });
-  }, [userData]);
+  //Can be removed then
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${url}/category`)
+  //     .then((data) => {
+  //       dispatch(homeActions.setJobs(data.data));
+  //     })
+  //     .catch(() => {
+  //       dispatch(homeActions.setHomeError(true));
+  //     });
+  // }, [userData]);
 
   return (
     <main>
