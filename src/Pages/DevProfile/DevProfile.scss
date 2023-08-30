@@ -734,6 +734,10 @@
   cursor: pointer;
 }
 
+.dev-profile-skills-modal-delete-2 {
+  margin-bottom: 14px;
+}
+
 .dev-profile__skills-modal-menu-wrapper {
   width: 75%;
 }
@@ -753,12 +757,18 @@
 .dev-profile__skills-inner-info {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  // justify-content: space-between;
   max-width: 525px;
 }
 
 .dev-profile__skills-inner-info-2 {
   max-width: unset;
+  display: flex;
+}
+
+.dev-profile__skills-inner-item {
+  display: flex;
+  margin-bottom: 20px;
 }
 
 .dev-profile__skills-inner-level {
@@ -767,9 +777,38 @@
 
 .dev-profile__skills-inner-list {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  // align-items: center;
+  flex-direction: column;
+  // gap: 10px;
+  // justify-content: space-between;
   width: 100%;
+}
+
+.dev-profile__skills-lang-inner-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  // justify-content: space-between;
+  width: 100%;
+  margin-left: 75px + 13px;
+}
+
+.dev-profile__skills-lang-inner-item {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+
+  // justify-content: space-between;
+  // width: 100%;
+}
+
+.dev-profile__skills-inner-text {
+  border-radius: 4px;
+  padding: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  margin-left: 75px;
 }
 
 //React date picker

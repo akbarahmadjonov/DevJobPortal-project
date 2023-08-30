@@ -1,29 +1,27 @@
-import axios from "axios"
 import { Backdrop, Checkbox, CircularProgress } from "@mui/material";
+import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactFlagsSelect from 'react-flags-select';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from 'react-select';
 import closeIcon from "../../Assets/Icons/close-button.svg";
 import editPen from "../../Assets/Icons/edit-pen.svg";
+import emailIcon from "../../Assets/Icons/email-icon.svg";
 import linkedin from "../../Assets/Icons/linkedin.svg";
+import phoneIcon from "../../Assets/Icons/phone-icon-2.svg";
 import pictureIcon from "../../Assets/Icons/picture.svg";
-import cSharpIcon from "../../Assets/Images/c#.png";
 import { DropDownMenu } from "../../Components";
 import { BlueButton } from "../../Components/BlueButton/BlueButton";
 import { TextInput } from "../../Components/TextInput";
+import { homeActions } from "../../Redux/HomeSlice";
+import { userActions } from "../../Redux/UserSlice";
 import langList from "./Components/langList/langList";
 import "./DevProfile.scss";
-import phoneIcon from "../../Assets/Icons/phone-icon-2.svg"
-import emailIcon from "../../Assets/Icons/email-icon.svg"
-import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../../Redux/UserSlice";
-import { homeActions } from "../../Redux/HomeSlice";
-import { CustomSelect } from "./Components";
 
 
 
@@ -31,7 +29,7 @@ import { CustomSelect } from "./Components";
 export const DevProfile = ()=>{
 
 
-  const dispatch =useDispatch()
+  const dispatch = useDispatch()
   const { token, userData, loading, error } = useSelector((state) => state.user);
   const {jobs, homeLoading, homeError} = useSelector((state)=>state.home)
   
@@ -83,6 +81,7 @@ const [profilePicture, setProfilePicture] = useState()
 
 
 const [inputs, setInputs] = useState([]);
+const [langInputs, setLangInputs] = useState([]);
 
 
 
@@ -161,10 +160,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const userName = userData?.fullName
   const userEmail = userData?.email
-  // const profilePicture = `https://job-px4t.onrender.com${userData?.data?.profilePicture}`
-  //  const profilePicture = userData?.data?.profilePicture
-
-
 
   
   const nationalityInfo = userData?.nationality
@@ -181,6 +176,9 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const expectedSalary = userData?.roleAndSalary?.expectedSalary
 
   const workExperience = userData?.workExperience
+
+  const skillsListData = userData?.skills
+  const langListData = userData?.lang
 
   // const educationsList = userData?.education
 
@@ -213,9 +211,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const selectedEdu = educationsList?.find(item => item?._id === clickedId)
 
   const selectedWork = worksList?.find(item => item?._id === clickedId)
-
-  console.log(clickedId);
-
 
 
 // useEffect(()=>{
@@ -266,6 +261,7 @@ const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date 
 //First form upload resume
 
 
+
 useEffect(()=>{
   dispatch(userActions.setLoading(true))
   axios.get(`${url}/user/token`, {
@@ -274,6 +270,7 @@ useEffect(()=>{
     }
   }).then((data)=>{  
     dispatch(userActions.setUserData(data.data))
+
     setProfilePicture(data.data?.profilePicture)
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
@@ -285,7 +282,7 @@ useEffect(()=>{
     //Skills and languages modal
 
 
-
+//can removed then
   // data.data.skills === []  && setInputs(data.data?.skills?.map((item)=>({
   //   skill: { value: item.skill,
   //    label: item.skill},
@@ -310,7 +307,17 @@ useEffect(()=>{
       level: { value: "",
        label: ""}}])
 
-  
+
+
+  setLangInputs([...data.data?.lang?.map((item)=>({
+        language: { value: item.language,
+         label: item.language},
+         level: { value: item.level,
+         label: item.level},
+       })), {language: { value: "",
+           label: ""},
+           level: { value: "",
+           label: ""}}])
 
 
     //Work experience modal
@@ -349,11 +356,11 @@ useEffect(()=>{
       });
   }, [userData]);
 
-
+//Skills and Languages modal handle
 
 const handleInputChange = (index, inputName, selectedOption) => {
   const newInputs = [...inputs];
-  //May be let 
+
   newInputs[index][inputName] = selectedOption;
   setInputs(newInputs);
 
@@ -363,29 +370,71 @@ const handleInputChange = (index, inputName, selectedOption) => {
   }
 };
 
+const handleLangInputChange = (index, inputName, selectedOption) => {
+  const newInputs = [...langInputs];
+
+  newInputs[index][inputName] = selectedOption;
+  setLangInputs(newInputs);
+
+  // Add a new div with three inputs if the last div is filled
+  if (index === langInputs.length - 1 && selectedOption !== '') {
+    setLangInputs([...langInputs, { language: '', level: '' }]);
+  }
+};
+
+
+const handleSkillDelete = (index)=>{
+  inputs.splice(index, 1)
+}
+
+const handleLangDelete = (index)=>{
+ langInputs.splice(index, 1)
+}
+
+
 
 const handleSkillsModalSubmit = (evt)=>{
 evt.preventDefault()
+dispatch(userActions.setLoading(true))
+
+inputs.pop()
+langInputs.pop()
+
+const newInputs = inputs.map((item)=>({
+  skill: item.skill.value,
+  experience: item.experience.value,
+  level: item.level.value,
+}))
+
+const newLangInputs = langInputs.map((item)=>({
+  language: item.language.value,
+  level: item.level.value,
+}))
 
 
+const body = {
+  skills: newInputs,
+  language: newLangInputs
+}
 
-axios.post(`${url}/skill`, inputs, {
+console.log(body);
+
+
+axios.post(`${url}/skillAndLanguages`, body, {
   headers: {
     token
   }
 }).then((res)=>{ 
   console.log(res);
+  setSkillsModal(false)
 }).catch((err)=>{
   console.log(err);
   // setError(true)
 }).finally(()=>{
   // setLoading(false)
+  dispatch(userActions.setLoading(false))
+
 })
-
-
-
-
-
 
 
 }
@@ -873,25 +922,32 @@ onClick={()=>{
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
       <div className="dev-profile__education-top-wrapper">
       <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button onClick={()=>setSkillsModal(true)} type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button>
+  <button className={skillsListData && "dev-profile__edit-btn"} onClick={()=>setSkillsModal(true)} type="button">{!skillsListData && <img width={18} height={18} src={editPen} alt="edit pen" />}{skillsListData && "Edit"}</button>
       </div>
       <div className="dev-profile__skills-inner-info">
-        <ul>
-          <li className="dev-profile__skills-inner-list">
-        <p className="dev-profile__skills-inner-level">Advance</p>
-        <p>.NET | 2 years</p>
+        <ul className="dev-profile__skills-inner-list">{skillsListData?.map((item)=>(
+          <li
+          key={item._id} 
+          className="dev-profile__skills-inner-item">
+        <strong className="dev-profile__skills-inner-level">{item.level}</strong>
+        <p>
+        <p className="dev-profile__skills-inner-text"><strong>{item.skill}&nbsp;</strong>|&nbsp;{item.experience}</p>
+        </p>
           </li>
+        ))
+          }
         </ul>
       </div>
       <div className="dev-profile__skills-inner-info dev-profile__skills-inner-info-2">
-        <p className="dev-profile__skills-inner-level">Language</p>
-        <ul> 
-          <li>
-          Afar | Advanced
+      {langListData === [] && <strong className="dev-profile__skills-inner-level">Language</strong>}
+        <ul className="dev-profile__skills-lang-inner-list"> 
+        {langListData?.map((item)=>(
+          <li 
+          key={item._id}
+          className="dev-profile__skills-lang-inner-item">
+         <strong>{item.language}</strong>&nbsp;|&nbsp; {item.level}
           </li>
-          <li>
-          Afar | Advanced
-          </li>
+        ))  }
         </ul>
       </div>
  
@@ -1192,7 +1248,7 @@ ducting background checks).</p>
       <div className="dev-profile__modal-body">
         <form onSubmit={handleSkillsModalSubmit}>
    {inputs?.map((input, index)=>(
-  <div key={index} className="dev-profile__modal-inputs-wrapper dev-profile__skills-modal-wrapper-1">
+  <div key={input._id} className="dev-profile__modal-inputs-wrapper dev-profile__skills-modal-wrapper-1">
   <div className="dev-profile__skills-modal-skills-wrapper">
   <p className="dev-profile__skills-modal-label">Skill&nbsp;
   <span style={{color: "blue"}}>*</span></p>
@@ -1252,26 +1308,50 @@ ducting background checks).</p>
   />
   
   </div>
-  {index !== inputs.length - 1 && (
-      <button className="dev-profile-skills-modal-delete">&#10005;</button>
-    )}
+  {index !== inputs.length - 1 ? (
+      <button type="button" 
+      // onClick={handleSkillDelete(index)}
+      // data-id={index}
+      
+      className="dev-profile-skills-modal-delete">&#10005;</button> 
+    ) : <button 
+    style={{pointerEvents: "none", opacity: 0}}
+    className="dev-profile-skills-modal-delete">&#10005;</button> }
   </div>
   ))
   }
-        <div className="dev-profile__modal-inputs-wrapper">
+     {langInputs?.map((input, index)=>(
+      <div
+      key={input._id} 
+      className="dev-profile__modal-inputs-wrapper">
      <div className="dev-profile__skills-modal-lang-wrapper">
 <p className="dev-profile__skills-modal-label">Language (Optional)</p>
 <Select 
+ value={input.language}
+ onChange={(selectedOption) => handleLangInputChange(index, "language", selectedOption )}
   menuPortalTarget={document.body} 
   styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
 classNamePrefix="mySelect" 
  menuPlacement="auto"  className="select"  placeholder="Enter language" options={langList}  isSearchable={true}  />
      </div>
 <Select 
+  value={input.level}
+  onChange={(selectedOption) => handleLangInputChange(index, "level", selectedOption )}
   menuPortalTarget={document.body} 
   styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
 classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  className="select"  options={langLevelOptions}/>
+   {index !== langInputs.length - 1 ? (
+          <button 
+          // type="button" 
+          // onClick={handleLangDelete(index)}
+          // data-id={index}
+          className="dev-profile-skills-modal-delete dev-profile-skills-modal-delete-2">&#10005;</button>
+        ) : <button 
+        style={{pointerEvents: "none", opacity: 0}}
+        className="dev-profile-skills-modal-delete">&#10005;</button>}
         </div>
+       
+     ))   }
       <div className="dev-profile__modal-save-btn-wrapper">
        <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
@@ -1334,7 +1414,8 @@ className="dev-profile__work-exp-modal-date-picker-input"
        </div>
        <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
 <p className="select-flags-label">Loaction (Optional)</p>
-<ReactFlagsSelect  selected={location}
+<ReactFlagsSelect  
+selected={location}
       onSelect={(code) => setLocation(code)
       }
       placeholder=""

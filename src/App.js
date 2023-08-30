@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
@@ -90,12 +90,18 @@ const App = () => {
               <Route path="/company/register" element={<CompanyRegister />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route
-                path="/dev-profile"
-                element={user ? <DevProfile /> : <Login />}
+                path={"/dev-profile"}
+                element={user ? <DevProfile /> : <Navigate to="/user/login" />}
               />
               <Route
                 path="/comprofile"
-                element={isLogedCompany ? <CompanyProfile /> : <CompanyLogin />}
+                element={
+                  isLogedCompany ? (
+                    <CompanyProfile />
+                  ) : (
+                    <Navigate to="/company/login" />
+                  )
+                }
               >
                 <Route index element={<JobsNested />} />
                 {/* Jobs */}
