@@ -75,7 +75,6 @@ const App = () => {
   //     });
   // }, [userData]);
 
-  useEffect(() => {}, []);
 
   return (
     <main>
