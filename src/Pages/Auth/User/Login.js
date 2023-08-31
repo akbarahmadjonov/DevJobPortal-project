@@ -4,12 +4,11 @@ import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { signInWithGoogle } from "../../../Components/Firebase";
 import { RightContent } from "./RightSide/RightContent";
 import { LeftContent } from "./LeftSide/LeftContent";
 import { useEffect } from "react";
-
 
 const apiUrl = process.env.URL || "https://job-px4t.onrender.com/api";
 
@@ -79,6 +78,9 @@ const Login = () => {
         localStorage.setItem("verify", JSON.stringify(true));
       }
       setOpenLoader(false);
+      setTimeout(() => {
+        navigate("/dev-profile");
+      }, 1000);
     } catch (err) {
       if (
         err.message !== "Firebase: Error (auth/cancelled-popup-request)." &&
@@ -93,6 +95,44 @@ const Login = () => {
       }
     }
   };
+  // async function handleGoogleClick() {
+  //   try {
+  //     const result = await signInWithGoogle();
+  //     setEmail(result?.user?.email);
+
+  //     const res = await axios.post(apiUrl + "/user/login", {
+  //       userEmail: result?.user?.email,
+  //     });
+
+  //     const token = res?.data?.token;
+  //     if (token) {
+  //       setSuccessMsg("Successfully Logged In!");
+  //       setOpenSuccess(true);
+  //       localStorage.setItem("token", token);
+  //       localStorage.setItem("userData", JSON.stringify(res?.data?.data));
+  //       localStorage.setItem("verify", JSON.stringify(true));
+  //       setTimeout(() => {
+  //         navigate('/dev-profile')
+  //       }, 1000);
+  //     }
+  //     setOpenLoader(false);
+  //   } catch (err) {
+  //     handleSignInError(err);
+  //   }
+  // }
+
+  // function handleSignInError(err) {
+  //   if (
+  //     err.message !== "Firebase: Error (auth/cancelled-popup-request)." &&
+  //     err.message !== "Firebase: Error (auth/popup-closed-by-user)."
+  //   ) {
+  //     setErrorMsg(err.message || err?.response?.data?.message);
+  //     setOpenError(true);
+  //     console.log(err?.message);
+  //   } else {
+  //     console.log(err?.message);
+  //   }
+  // }
   // Reset Function
   const handleReset = (e) => {
     e.preventDefault();
@@ -144,7 +184,7 @@ const Login = () => {
     ) {
       navigate("/dev-profile");
     }
-  }, [verify, navigate]);
+  }, []);
 
   return (
     <>
