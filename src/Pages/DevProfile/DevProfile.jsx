@@ -1,5 +1,6 @@
 import { Backdrop, Checkbox, CircularProgress } from "@mui/material";
 import axios from "axios";
+import { useDebugValue } from "react";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -216,6 +217,9 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const selectedWork = worksList?.find(item => item?._id === clickedId)
 
+  const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Experience
+
+
 
 // useEffect(()=>{
 //   // setWorkSkillList(selectedWork?.skill)
@@ -244,7 +248,9 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
 //State for date formats
 
-const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Expirience
+
+
+
 const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
 
 
@@ -263,6 +269,10 @@ const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date 
   //
   //Handles and integration
 //First form upload resume
+
+
+
+
 
 
 
@@ -345,6 +355,9 @@ useEffect(()=>{
     dispatch(userActions.setLoading(false))
   })
 }, [clickedId, trigger])
+
+
+
 
 
 
@@ -512,7 +525,11 @@ axios.post(`${url}/skillAndLanguages`, body, {
   
 
 // }
+
+
+
  
+
 
 
 const handleResumeUpload = (evt)=> {
@@ -749,7 +766,64 @@ return null
   //7th modal Work experience form
 
 
+
+  useEffect(()=>{
+    if(btnType === "add"){
+      setLocation("")
+      setWorkSkillList("")
+    }
+  }, [btnType])
+
+
+
   const handleWorkExpModalSubmit = (evt)=> {
+
+    evt.preventDefault()
+
+    
+    dispatch(userActions.setLoading(true))
+
+    const target = evt.target
+
+    const companyName = target.companyName.value
+    const jobTitle = target.jobTitle.value
+    const description = target.textAreaWorkExp.value
+    
+
+    const skill = workSkill?.map((option) => option.value);
+
+    
+   
+    // const body = {
+    //   companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: endDateWorkExp,
+    //   description, 
+    //   // isWorkingNow: endDateWorkExp ? false : true
+    // }
+
+       const body = {
+      companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: isWorkChecked ? "" : endDateWorkExp,
+      description, 
+      workingNow: isWorkChecked
+    }
+
+
+    axios.post(`${url}/workExperience`, body, {
+      headers: {token}
+    }).then((res)=>{
+      console.log(res);
+      setWorkExpModal(false)
+    }).catch((err)=>{
+      console.log(err.message);
+    }).finally(()=>{
+      setTrigger(!trigger)
+      dispatch(userActions.setLoading(false))
+    })
+    
+
+  
+  }
+
+  const handleWorkExpModalUpdate = (evt)=> {
     evt.preventDefault()
 
     dispatch(userActions.setLoading(true))
@@ -778,7 +852,7 @@ return null
     }
 
 
-    axios.post(`${url}/workExperience`, body, {
+    axios.put(`${url}/workExperience/${clickedId}`, body, {
       headers: {token}
     }).then((res)=>{
       console.log(res);
@@ -952,7 +1026,7 @@ onClick={()=>{
     {/* Overall experience - can be component */}
     <div className="dev-profile__info-wrapper-3">
     <p className="dev-profile__title dev-profile-control-left-width">Overall experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-    <p className="dev-profile-control-middle-width">{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s)` : ""}</p>
+    <p className="dev-profile-control-middle-width">{experience && `${experience} year(s)`}  {remoteExperience ? `/${remoteExperience} year(s) remote` : ""}</p>
   <button className={experience && "dev-profile__edit-btn"} onClick={()=>setExpModal(true)} type="button">{!experience && <img width={18} height={18} src={editPen} alt="edit pen" />}{experience && "Edit"}</button>
     </div>
     {/*Avaibility*/}
@@ -984,7 +1058,7 @@ onClick={()=>{
           className="dev-profile__skills-inner-item">
         <strong className="dev-profile__skills-inner-level">{item.level}</strong>
         <p>
-        <p className="dev-profile__skills-inner-text"><strong>{item.skill}&nbsp;</strong>|&nbsp;{item.experience}</p>
+        <p className="dev-profile__skills-inner-text"><strong>{item.skill}&nbsp;</strong>|&nbsp;{item.experience}&nbsp;year(s)</p>
         </p>
           </li>
         ))
@@ -1032,7 +1106,7 @@ onClick={()=>{
       </div>
       <div className="custom-flex dev-profile__work-exp-inner-wrapper">
       <strong>{item.jobTitle}</strong>
-      <p style={{color: "#989898"}}>{item.location} | {item.startDate.split("-")[0]}-{item.startDate.split("-")[1]} - {item.endDate ? `${item.endDate.split("-")[0]}-${item.endDate.split("-")[1]}` : "Current"}</p>
+      <p style={{color: "#989898"}}>{countryList[item.location]} | {item.startDate.split("-")[0]}-{item.startDate.split("-")[1]} - {item.endDate ? `${item.endDate.split("-")[0]}-${item.endDate.split("-")[1]}` : "Current"}</p>
       </div>
       <p style={{marginBottom: 16}}>{item.description}</p>
       <ul className="dev-profile__work-exp-skill-list">
@@ -1042,7 +1116,7 @@ onClick={()=>{
       </ul>
       <button
    onClick={()=>{setWorkExpProjectModal(true)
-    setBtnType("add")
+    setBtnType("  ")
    }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Project</button>
   </li>
 ))  }
@@ -1430,12 +1504,15 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
     <button type="button" onClick={()=>setWorkExpModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
       <div className="dev-profile__modal-body">
-        <form onSubmit={handleWorkExpModalSubmit}>
+        <form onSubmit={btnType === "add"  ?handleWorkExpModalSubmit : handleWorkExpModalUpdate}>
        <div className="dev-profile__modal-inputs-wrapper">
        <TextInput
+       required
        defaultValue={btnType==="edit" ? selectedWork.companyName : ""} 
        forId={"companyName"}>Company name</TextInput>
-      <TextInput defaultValue={btnType==="edit" ? selectedWork.jobTitle : ""} forId={"jobTitle"}>Job title</TextInput>
+      <TextInput
+      required 
+      defaultValue={btnType==="edit" ? selectedWork.jobTitle : ""} forId={"jobTitle"}>Job title</TextInput>
        </div>
        <div className="dev-profile__modal-inputs-wrapper">
         <div className="dev-profile__modal-date-wrapper">
@@ -1446,7 +1523,8 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
        className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
-  selected={startDateWorkExp} onChange={(date) =>{ setStartDateWorkExp(date)
+  selected={startDateWorkExp} 
+  onChange={(date) =>{ setStartDateWorkExp(date)
   }
   } 
   
@@ -1492,7 +1570,7 @@ selected={location}
 </div>
 <div className="dev-profile__work-exp-modal-textarea-wrapper">
 <TextInput
-defaultValue={selectedWork?.description} wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
+defaultValue={btnType === "edit" ? selectedWork?.description : ""} wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
         3000 
       } rows={
         3
@@ -1516,7 +1594,7 @@ className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (
     </div>
   </div>
   }
-  {
+  {/* {
     workExpProjectModal && 
     <div className="dev-profile__modal">
     <div className="dev-profile__modal-wrapper">
@@ -1602,7 +1680,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
     </div>
     </div>
   </div>
-  }
+  } */}
      {eduModal && <div className="dev-profile__modal">
     <div className="dev-profile__modal-wrapper">
     <div className="dev-profile__modal-content">
