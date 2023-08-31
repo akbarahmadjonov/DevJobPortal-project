@@ -10,6 +10,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@mui/icons-material": "^5.14.1",
+    "@mui/lab": "^5.0.0-alpha.142",
     "@mui/material": "^5.14.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.17.0",
