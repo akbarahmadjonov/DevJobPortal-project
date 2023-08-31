@@ -1032,7 +1032,7 @@ onClick={()=>{
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
       <div className="dev-profile__education-top-wrapper">
       <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button className={skillsListData.length !== 0 && "dev-profile__edit-btn"} onClick={()=>setSkillsModal(true)} type="button">{skillsListData.length === 0 && <img width={18} height={18} src={editPen} alt="edit pen" />}{skillsListData.length !== 0 && "Edit"}</button>
+  <button className={skillsListData?.length !== 0 && "dev-profile__edit-btn"} onClick={()=>setSkillsModal(true)} type="button">{skillsListData?.length === 0 && <img width={18} height={18} src={editPen} alt="edit pen" />}{skillsListData?.length !== 0 && "Edit"}</button>
       </div>
       <div className="dev-profile__skills-inner-info">
         <ul className="dev-profile__skills-inner-list">{skillsListData?.map((item)=>(
@@ -1066,7 +1066,7 @@ onClick={()=>{
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
       <div className="dev-profile__education-top-wrapper">
       <p className="dev-profile__title dev-profile-control-left-width">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
- {workExperience.length !== 0 ? <button data-type="edu-add"
+ {workExperience?.length !== 0 ? <button data-type="edu-add"
    onClick={()=>{setWorkExpModal(true)
     setBtnType("add")
    }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Company</button> :  <button onClick={()=>{setWorkExpModal(true)
