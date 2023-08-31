@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import "./main.scss";
-import { BackTop } from "antd";
+import { FloatButton } from "antd";
 import { Provider } from "react-redux";
 import store from './Redux/Store'
 
@@ -14,7 +14,7 @@ root.render(
       <App />
     </Provider>
     <div>
-      <BackTop />
+      <FloatButton.BackTop type="primary"/>
     </div>
   </BrowserRouter>
 );

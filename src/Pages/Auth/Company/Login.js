@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import backImg from "../../../Assets/Icons/back.svg";
 import axios from "axios";
+import { LoadingButton } from "@mui/lab";
 
 export default function CompanyLogin() {
   const [typeInput, setTypeInput] = useState("password");
@@ -50,6 +51,7 @@ export default function CompanyLogin() {
   const [successMsg, setSuccessMsg] = useState("Successfull Log In!");
   const [errorMsg, setErrorMsg] = useState("Unexpected Error!");
   const [reset, setReset] = useState(false);
+  const [resetBtnLoading, setResetBtnLoading] = useState(false);
   //
   const [showConfirmationCode, setShowConfirmationCode] = useState(false);
   const [focusedPass, setFocusedPass] = useState(false);
@@ -77,10 +79,12 @@ export default function CompanyLogin() {
 
   const handleLoginFormSubmit = (e) => {
     e.preventDefault();
+    setResetBtnLoading(true);
     const data = new FormData(e.target);
     axios
       .post(url + "/recruiter/login", data)
       .then((res) => {
+        setResetBtnLoading(false);
         localStorage.clear();
         localStorage.setItem("verify", JSON.stringify(false));
         localStorage.setItem("token", res?.data?.token);
@@ -91,6 +95,7 @@ export default function CompanyLogin() {
         window.location.reload();
       })
       .catch((err) => {
+        setResetBtnLoading(false);
         console.log(err);
         setErrorMsg(err?.message);
         setErrorMsg(err?.response?.data?.message);
@@ -102,12 +107,14 @@ export default function CompanyLogin() {
   const handleReset = async (e) => {
     e.preventDefault();
     // setOpenAlertNotification(true);
+    setResetBtnLoading(true);
     const data = new FormData(e.currentTarget);
     if (emailValidation.test(email)) {
       await axios
         .post(url + "/recruiter/forget", data)
         .then((res) => {
           const msg = res?.data?.message;
+          setResetBtnLoading(false);
           console.log(res);
           if (msg?.includes("Confirmation code sent to the email!")) {
             setShowConfirmationCode(true);
@@ -135,6 +142,7 @@ export default function CompanyLogin() {
           setErrorMsg(error.message);
           setErrorMsg(error?.response?.data?.message);
           setOpenError(true);
+          setResetBtnLoading(false);
         });
     } else {
       setErrorMsg("Please enter a valid email address!");
@@ -410,7 +418,7 @@ export default function CompanyLogin() {
                     )}
                   </div>
                   <div className="flex items-center flex-col justify-center w-full space-y-[24px]">
-                    <Button
+                    <LoadingButton
                       type="submit"
                       sx={{
                         paddingX: "16px",
@@ -423,10 +431,13 @@ export default function CompanyLogin() {
                       }}
                       style={{ color: "white" }}
                       variant="contained"
+                      endIcon=''
+                      loadingPosition="end"
+                      loading={resetBtnLoading}
                       disabled={disabled}
                     >
                       Reset Password
-                    </Button>
+                    </LoadingButton>
                   </div>
                 </form>
               </div>
@@ -539,7 +550,7 @@ export default function CompanyLogin() {
                   Forgot password?
                 </span>
                 <div className="flex items-center flex-col justify-center w-full space-y-[24px]">
-                  <Button
+                  <LoadingButton
                     type="submit"
                     sx={{
                       paddingX: "16px",
@@ -550,12 +561,15 @@ export default function CompanyLogin() {
                       fontSize: "14px",
                       backgroundColor: "#3a6fff",
                     }}
+                    loading={resetBtnLoading}
+                    loadingPosition="end"
+                    endIcon=''
                     style={{ color: "white" }}
                     variant="contained"
                     disabled={disabled}
                   >
                     LOGIN
-                  </Button>
+                  </LoadingButton>
                   <p>
                     Don't have an account?{" "}
                     <Link

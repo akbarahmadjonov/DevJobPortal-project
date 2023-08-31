@@ -47,6 +47,7 @@ import PhoneInput from "react-phone-input-2";
 import { Link as LinkDom, useNavigate } from "react-router-dom";
 import successImg from "../../../Assets/Icons/request-meeting-success-bg2.svg";
 import axios from "axios";
+import { LoadingButton } from "@mui/lab";
 
 function Copyright(props) {
   return (
@@ -106,6 +107,7 @@ export default function CompanyRegister() {
   const [select10, setSelect10] = useState(false);
   const [select11, setSelect11] = useState(false);
   const [select12, setSelect12] = useState(false);
+  const [btnLoad, setBtnLoad] = useState(false);
   const [focusedEmail, setFocusedEmail] = useState(false);
   const [focusedPass, setFocusedPass] = useState(false);
   const [focusedPhone, setFocusedPhone] = useState(false);
@@ -156,6 +158,7 @@ export default function CompanyRegister() {
   };
   const handleSubmitStep2 = async (e) => {
     e.preventDefault();
+    setBtnLoad(true);
     const form = new FormData(e.currentTarget);
     form.append("phoneNumber", phoneNumber);
     form.append("email", email);
@@ -165,6 +168,7 @@ export default function CompanyRegister() {
       .post(url + "/recruiter", form)
       .then((res) => {
         const msg = res?.data?.message;
+        setBtnLoad(false);
         console.log(res);
         if (msg?.includes("Code has sent your email. please confirm!")) {
           const checkEmail = msg.split(" ")[7];
@@ -187,6 +191,7 @@ export default function CompanyRegister() {
       })
       .catch((err) => {
         console.log(err);
+        setBtnLoad(false);
         setErrorMsg("Something went wrong! Try again");
         if (err?.response?.data?.message?.includes("duplicate")) {
           setErrorMsg("This email is already registered!");
@@ -276,11 +281,11 @@ export default function CompanyRegister() {
       <div className="container max-w-[1519px] ">
         <div className="flex flex-col">
           {/* Left Content */}
-          <div className="w-full flex justify-between py-[20px] items-center">
-            <img src={SuperCoderLogo} alt="SuperCoderLogo" width={160} />
+          <div className="w-full flex justify-end md:justify-between py-[20px] items-center">
+            <img src={SuperCoderLogo} className="hidden md:flex" alt="SuperCoderLogo" width={160} />
             <button
               onClick={() => navigate("/company/login")}
-              className="w-[200px] hover:bg-[#2144a5] transition-all rounded-3xl bg-[#3A6FFF] text-white font-bold py-[8px] text-sm"
+              className="w-[200px] text-center hover:bg-[#2144a5] transition-all rounded-3xl bg-[#3A6FFF] text-white font-bold py-[8px] text-sm"
             >
               Login
             </button>
@@ -288,7 +293,7 @@ export default function CompanyRegister() {
           {/* Right Content */}
           <main className="pb-[10px]">
             {step === 1 ? (
-              <div className="flex flex-col relative w-[512px] mx-auto items-center justify-center">
+              <div className="flex flex-col relative max-w-[512px] mx-auto items-center justify-center">
                 <div className="flex flex-col items-center mb-[20px] justify-center">
                   <h1 className="text-[26px] font-bold text-[#3A6FFF]">
                     Supercoder
@@ -740,8 +745,9 @@ export default function CompanyRegister() {
                           </div>
                           <Button
                             type="submit"
-                            sx={{ width: "50%", mx: "auto", mt: "20px" }}
+                            sx={{ width: "50%", mx: "auto", mt: "20px",  }}
                             variant="contained"
+                            className="text-[14px] md:text-[20px]"
                             disabled={disabled}
                           >
                             Continiue
@@ -754,7 +760,7 @@ export default function CompanyRegister() {
               </div>
             ) : step === 2 ? (
               <>
-                <div className="flex flex-col items-center justify-center mx-auto w-[512px] relative">
+                <div className="flex flex-col items-center justify-center mx-auto max-w-[512px] relative">
                   <div className="flex flex-col items-center mb-[20px] justify-center">
                     <h1 className="text-[26px] font-bold text-[#3A6FFF]">
                       Supercoder
@@ -771,32 +777,33 @@ export default function CompanyRegister() {
                         p: 0,
                         bgcolor: "#3a6fff0d",
                       }}
-                      className="absolute top-[40px] right-0"
+                      className="absolute transition-all duration-300 top-[10px] md:top-[40px] right-0"
                     />
                     <button
                       onClick={(e) => {
                         setStep(1);
                         setShowConfirmationCode(false);
                       }}
-                      className=""
+                      className="flex items-center justify-center"
                     >
                       <img
                         src={backImg}
                         alt="back btn"
                         width={20}
                         height={20}
-                        className="absolute left-[-110px] top-[10px]"
+                        className="absolute left-[20px] top-[10px] transition-all duration-300 md:left-[-110px] md:top-[10px]"
                       />
                     </button>
                   </div>
                   <Container
                     sx={{
                       mt: "0",
-                      paddingY: "21px",
-                      paddingX: "36px",
+                      // paddingY: "21px",
+                      // paddingX: "36px",
                       borderRadius: "5px",
                       border: `1px solid #bfd4ff`,
                     }}
+                    className="p-[10px] md:py-[21px] md:px-[36px]"
                     component="main"
                     width="100%"
                     // onChange={}
@@ -973,15 +980,18 @@ export default function CompanyRegister() {
                             ""
                           )}
                         </Grid>
-                        <Button
+                        <LoadingButton
                           disabled={disabled2}
                           type="submit"
                           fullWidth
                           variant="contained"
+                          loading={btnLoad}
+                          loadingPosition="end"
+                          endIcon=""
                           sx={{ mt: 3, mb: 2 }}
                         >
                           Submit
-                        </Button>
+                        </LoadingButton>
                         <Grid container justifyContent="flex-end">
                           <Grid item>
                             <LinkDom
@@ -996,7 +1006,7 @@ export default function CompanyRegister() {
                       </Box>
                     </Box>
                   </Container>
-                  <div className="text-[14px] p-[20px] flex flex-col w-[512px] items-center justify-center">
+                  <div className="text-[14px] p-[20px] flex flex-col max-w-[512px] items-center justify-center">
                     <p className="text-center">
                       By requesting a developer recruitment, you are deemed to
                       have agreed to our{" "}

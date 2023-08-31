@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
 import { Home } from "./Pages";
@@ -25,18 +25,14 @@ import { OpenPaused } from "./Pages/CompanyProfile/Nested/Jobs/OpenPaused/OpenPa
 import { Completed } from "./Pages/CompanyProfile/Nested/Evaluation/Completed/Completed";
 import { Pending } from "./Pages/CompanyProfile/Nested/Evaluation/Pending/Pending";
 // Talentpool
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
 import { All } from "./Pages/CompanyProfile/Nested/TalentPool/All/All";
 import { Opened } from "./Pages/CompanyProfile/Nested/TalentPool/Opened/Opened";
 import { Proposed } from "./Pages/CompanyProfile/Nested/TalentPool/Proposed/Proposed";
 import { Saved } from "./Pages/CompanyProfile/Nested/TalentPool/Saved/Saved";
-import { homeActions } from "./Redux/HomeSlice";
 
 // Profile
 import { CompanyProfileProvider } from "./context/CompanyProfileContext";
 import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
-import { userActions } from "./Redux/UserSlice";
 import ErrorPage from "./Pages/Error/ErrorPage";
 import { JobProvider } from "./context/JobContext";
 
@@ -45,7 +41,6 @@ const App = () => {
   const token = localStorage.getItem("token");
   const companyInfo = localStorage.getItem("companyInfo");
   const isLogedCompany = companyInfo && token;
-  const navigate = useNavigate();
 
   //Test
   // let hours = 5;
@@ -74,8 +69,6 @@ const App = () => {
   //       dispatch(homeActions.setHomeError(true));
   //     });
   // }, [userData]);
-
-  useEffect(() => {}, []);
 
   return (
     <main>
