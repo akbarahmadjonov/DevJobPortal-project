@@ -80,6 +80,7 @@ const Login = () => {
       setOpenLoader(false);
       setTimeout(() => {
         navigate("/dev-profile");
+        window.location.reload();
       }, 1000);
     } catch (err) {
       if (
@@ -176,15 +177,15 @@ const Login = () => {
   };
 
   // Checking if the user is authenticated
-  useEffect(() => {
-    if (
-      verify &&
-      localStorage.getItem("userData") &&
-      localStorage.getItem("token")
-    ) {
-      navigate("/dev-profile");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     verify &&
+  //     localStorage.getItem("userData") &&
+  //     localStorage.getItem("token")
+  //   ) {
+  //     navigate("/dev-profile");
+  //   }
+  // }, []);
 
   return (
     <>
