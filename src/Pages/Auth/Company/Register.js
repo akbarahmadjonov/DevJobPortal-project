@@ -47,6 +47,7 @@ import PhoneInput from "react-phone-input-2";
 import { Link as LinkDom, useNavigate } from "react-router-dom";
 import successImg from "../../../Assets/Icons/request-meeting-success-bg2.svg";
 import axios from "axios";
+import { LoadingButton } from "@mui/lab";
 
 function Copyright(props) {
   return (
@@ -106,6 +107,7 @@ export default function CompanyRegister() {
   const [select10, setSelect10] = useState(false);
   const [select11, setSelect11] = useState(false);
   const [select12, setSelect12] = useState(false);
+  const [btnLoad, setBtnLoad] = useState(false);
   const [focusedEmail, setFocusedEmail] = useState(false);
   const [focusedPass, setFocusedPass] = useState(false);
   const [focusedPhone, setFocusedPhone] = useState(false);
@@ -156,6 +158,7 @@ export default function CompanyRegister() {
   };
   const handleSubmitStep2 = async (e) => {
     e.preventDefault();
+    setBtnLoad(true);
     const form = new FormData(e.currentTarget);
     form.append("phoneNumber", phoneNumber);
     form.append("email", email);
@@ -165,6 +168,7 @@ export default function CompanyRegister() {
       .post(url + "/recruiter", form)
       .then((res) => {
         const msg = res?.data?.message;
+        setBtnLoad(false);
         console.log(res);
         if (msg?.includes("Code has sent your email. please confirm!")) {
           const checkEmail = msg.split(" ")[7];
@@ -187,6 +191,7 @@ export default function CompanyRegister() {
       })
       .catch((err) => {
         console.log(err);
+        setBtnLoad(false);
         setErrorMsg("Something went wrong! Try again");
         if (err?.response?.data?.message?.includes("duplicate")) {
           setErrorMsg("This email is already registered!");
@@ -973,15 +978,18 @@ export default function CompanyRegister() {
                             ""
                           )}
                         </Grid>
-                        <Button
+                        <LoadingButton
                           disabled={disabled2}
                           type="submit"
                           fullWidth
                           variant="contained"
+                          loading={btnLoad}
+                          loadingPosition="end"
+                          endIcon=""
                           sx={{ mt: 3, mb: 2 }}
                         >
                           Submit
-                        </Button>
+                        </LoadingButton>
                         <Grid container justifyContent="flex-end">
                           <Grid item>
                             <LinkDom

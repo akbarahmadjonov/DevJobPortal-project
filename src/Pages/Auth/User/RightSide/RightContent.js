@@ -297,10 +297,8 @@ export const RightContent = ({
                       <Grid container justifyContent="center" pt={"15px"}>
                         <Grid item>
                           Having trouble logging in?{" "}
-                          <Link variant="body2">
-                            <a href="mailto:support@supercoder.co">
+                          <Link href="mailto:support@supercoder.co" variant="body2">
                               Contact support
-                            </a>
                           </Link>
                         </Grid>
                       </Grid>
@@ -436,9 +434,7 @@ export const RightContent = ({
                   <Grid container justifyContent="center" pt={"15px"}>
                     <Grid item>
                       Don't have an account?{" "}
-                      <Link variant="body2">
-                        <LinkDom to={"/user/register"}>Sign up</LinkDom>
-                      </Link>
+                        <LinkDom to={"/user/register"} className="text-[16px] text-blue-400">Sign up</LinkDom>
                     </Grid>
                   </Grid>
                 </Box>
