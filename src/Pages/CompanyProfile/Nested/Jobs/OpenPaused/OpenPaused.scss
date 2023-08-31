@@ -187,19 +187,36 @@
 }
 
 .modal-values {
-  display: flex;
+  // display: flex;
   justify-content: flex-start;
   align-items: center;
   // height: 80px;
 
-  margin-bottom: 15px;
-  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
 
   & span {
     margin-right: 50px;
   }
+  border: 1px solid #eeeded;
+}
 
-  border-bottom: 2px solid #eeeded;
+.modal-values__input {
+  width: 100%;
+
+  padding: 7px 20px;
+  margin-bottom: 20px;
+
+  font-size: 15px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  border: 2px solid #000;
+
+  &:focus {
+    border: 2px solid #0050c8;
+  }
 }
 
 .modal-upper__title {
