@@ -20,6 +20,7 @@ import { BlueButton } from "../../Components/BlueButton/BlueButton";
 import { TextInput } from "../../Components/TextInput";
 import { homeActions } from "../../Redux/HomeSlice";
 import { userActions } from "../../Redux/UserSlice";
+import { countryList } from "./Components/countryList";
 import langList from "./Components/langList/langList";
 import "./DevProfile.scss";
 
@@ -38,6 +39,9 @@ export const DevProfile = ()=>{
   const [imageUrl, setImageUrl] = useState(null); //preview image // can be removed
   // const [fileName, setFileName] = useState("")
  
+
+  const [trigger, setTrigger] = useState(false)
+
   //Exception, couldn't access if declare after 
   const available = userData?.available
   const [avia, setAvia] = useState(available)
@@ -340,7 +344,7 @@ useEffect(()=>{
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
   })
-}, [clickedId])
+}, [clickedId, trigger])
 
 
 
@@ -361,6 +365,20 @@ useEffect(()=>{
 const handleInputChange = (index, inputName, selectedOption) => {
   const newInputs = [...inputs];
 
+  if (inputName === "skill" && selectedOption !== "" && newInputs[index].skill === "") {
+    newInputs[index].experience = yearsList[0];
+    newInputs[index].level = competencyOptions[0];
+    setInputs(newInputs);
+  } else if (inputName === "experience" && selectedOption !== '' && newInputs[index].experience === "") {
+    newInputs[index].skill = skillsList[0];
+    newInputs[index].level = competencyOptions[0];
+    setInputs(newInputs);
+  } else if (inputName === "level" && selectedOption !== "" && newInputs[index].level === "") {
+    newInputs[index].skill = skillsList[0];
+    newInputs[index].experience = yearsList[0];
+    setInputs(newInputs);
+  }
+
   newInputs[index][inputName] = selectedOption;
   setInputs(newInputs);
 
@@ -368,10 +386,22 @@ const handleInputChange = (index, inputName, selectedOption) => {
   if (index === inputs.length - 1 && selectedOption !== '') {
     setInputs([...inputs, { skill: '', experience: '', level: '' }]);
   }
+
+ 
+
+
 };
 
 const handleLangInputChange = (index, inputName, selectedOption) => {
   const newInputs = [...langInputs];
+
+  if (inputName === "language" && selectedOption !== '' &&  newInputs[index].language === '') {
+    newInputs[index].level = langLevelOptions[0];
+    setLangInputs(newInputs);
+  } else if (inputName === "level" && selectedOption !== '' &&  newInputs[index].level === '') {
+    newInputs[index].language = langList[0];
+    setLangInputs(newInputs);
+  } 
 
   newInputs[index][inputName] = selectedOption;
   setLangInputs(newInputs);
@@ -383,12 +413,26 @@ const handleLangInputChange = (index, inputName, selectedOption) => {
 };
 
 
-const handleSkillDelete = (index)=>{
-  inputs.splice(index, 1)
+const handleSkillDelete = (index, evt)=>{
+  evt.preventDefault()
+  if (inputs.length === 1) {
+    // Do not delete the last row
+    return;}
+
+    const newInputs = [...inputs];
+    newInputs.splice(index, 1);
+    setInputs(newInputs);
 }
 
-const handleLangDelete = (index)=>{
- langInputs.splice(index, 1)
+const handleLangDelete = (index, evt)=>{
+  evt.preventDefault()
+  if (langInputs.length === 1) {
+    // Do not delete the last row
+    return;}
+
+    const newInputs = [...langInputs];
+    newInputs.splice(index, 1);
+    setLangInputs(newInputs);
 }
 
 
@@ -407,7 +451,7 @@ const newInputs = inputs.map((item)=>({
 }))
 
 const newLangInputs = langInputs.map((item)=>({
-  language: item.language.value,
+  language: item.language.label,
   level: item.level.value,
 }))
 
@@ -432,6 +476,7 @@ axios.post(`${url}/skillAndLanguages`, body, {
   // setError(true)
 }).finally(()=>{
   // setLoading(false)
+  setTrigger(!trigger)
   dispatch(userActions.setLoading(false))
 
 })
@@ -493,6 +538,7 @@ const handleResumeUpload = (evt)=> {
     // setError(true)
   }).finally(()=>{
     // setLoading(false)
+    setTrigger(!trigger)
   })
 
 }
@@ -536,8 +582,6 @@ console.log(res);
 
 
 
-
-
 //General info modal 2nd form control:
   const handleGenModalSubmit = (evt)=>{
     evt.preventDefault()
@@ -553,6 +597,9 @@ const fullName = `${target.firstNameInput.value} ${target.lastNameInput.value}`
 const phoneNumber = target.phoneInput.value
 const aboutyourself = target.textAreaGeneral.value
 const linkedIn = target.linkedInLink.value
+
+
+
 
 
 const formData = new FormData()
@@ -575,12 +622,13 @@ axios.put(`${url}/user`, formData, {
 } ).then((res)=>{
   console.log(res);
   setGenModal(false)
+
 }).catch((err)=>{
   console.log(err.message);
 }).finally(()=>{
+  setTrigger(!trigger)
   dispatch(userActions.setLoading(false))
 })
-
 
 
   }
@@ -613,6 +661,7 @@ axios.put(`${url}/user`, formData, {
     }).catch((err)=>{
       console.log(err);
     }).finally(()=>{
+      setTrigger(!trigger)
       dispatch(userActions.setLoading(false))
     })
   }
@@ -641,6 +690,7 @@ formData.append("available", avia )
     }).catch((err)=>{
       console.log(err);
     }).finally(()=>{
+      setTrigger(!trigger)
       dispatch(userActions.setLoading(false))
     })
   }
@@ -673,6 +723,7 @@ formData.append("available", avia )
     }).catch((err)=>{
       console.log(err);
     }).finally(()=>{
+      setTrigger(!trigger)
       dispatch(userActions.setLoading(false))
     })
 
@@ -735,6 +786,7 @@ return null
     }).catch((err)=>{
       console.log(err.message);
     }).finally(()=>{
+      setTrigger(!trigger)
       dispatch(userActions.setLoading(false))
     })
     
@@ -778,6 +830,7 @@ return null
     }).catch((err)=>{
       console.log(err);
     }).finally(()=>{
+      setTrigger(!trigger)
       dispatch(userActions.setLoading(false))
     })
 
@@ -881,7 +934,7 @@ onClick={()=>{
 {/* <div className="dev-profile__account-image">B</div> */}
 <div className="dev-profile__account-inner-wrapper">
 <p className="dev-profile__account-name">{userName}</p>
-<p className="dev-profile__account-nation">{nationalityInfo}</p>
+<p className="dev-profile__account-nation">{countryList[nationalityInfo]}</p>
 </div>
 </div>}
 <div className="dev-profile__gen-info-middle-wrapper dev-profile-control-middle-width">
@@ -939,7 +992,7 @@ onClick={()=>{
         </ul>
       </div>
       <div className="dev-profile__skills-inner-info dev-profile__skills-inner-info-2">
-      {langListData === [] && <strong className="dev-profile__skills-inner-level">Language</strong>}
+      {langListData?.length !== 0  && <strong className="dev-profile__skills-inner-level">Language</strong>}
         <ul className="dev-profile__skills-lang-inner-list"> 
         {langListData?.map((item)=>(
           <li 
@@ -1079,7 +1132,9 @@ ducting background checks).</p>
         <span className="select-flags-label">Nationality&nbsp;<span style={{color: "blue"}}>*</span></span>
       <ReactFlagsSelect 
       selected={nationality}
-      onSelect={(country)=>setNationality(country)}
+      onSelect={(country)=>{
+        console.log(country);
+        setNationality(country)}}
       placeholder=""
       searchable
       className="menu-flags"
@@ -1254,6 +1309,7 @@ ducting background checks).</p>
   <span style={{color: "blue"}}>*</span></p>
   {/*React library*/}
   <Select 
+   required={index !== inputs.length - 1}
   menuPortalTarget={document.body} 
   styles={{ menuPortal: base => ({ ...base, zIndex: 9999 })}}
   classNamePrefix="mySelect" 
@@ -1267,12 +1323,14 @@ ducting background checks).</p>
   onChange={(selectedOption) => handleInputChange(index, "skill", selectedOption )}
   //  onChange={opt => console.log(opt.label, opt.value)}
   />
+  
   </div>
   <div className="dev-profile__skills-modal-skills-wrapper">
   <p className="dev-profile__skills-modal-label">Years of experience&nbsp;
   <span style={{color: "blue"}}>*</span></p>
   {/*React library*/}
   <Select 
+   required={index !== inputs.length - 1}
     menuPortalTarget={document.body} 
     styles={{ menuPortal: base => ({ ...base, zIndex: 9999}) }}
   classNamePrefix="mySelect" 
@@ -1293,6 +1351,7 @@ ducting background checks).</p>
   <span style={{color: "blue"}}>*</span></p>
   {/*React library*/}
   <Select 
+  required={index !== inputs.length - 1}
     menuPortalTarget={document.body} 
     styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
   classNamePrefix="mySelect" 
@@ -1308,13 +1367,14 @@ ducting background checks).</p>
   />
   
   </div>
-  {index !== inputs.length - 1 ? (
-      <button type="button" 
-      // onClick={handleSkillDelete(index)}
+  {index !== inputs.length - 1 && inputs.length !== 1 ? 
+      <button 
+      type="button" 
+      onClick={(evt)=>handleSkillDelete(index, evt)}
       // data-id={index}
       
       className="dev-profile-skills-modal-delete">&#10005;</button> 
-    ) : <button 
+    : <button 
     style={{pointerEvents: "none", opacity: 0}}
     className="dev-profile-skills-modal-delete">&#10005;</button> }
   </div>
@@ -1340,13 +1400,13 @@ classNamePrefix="mySelect"
   menuPortalTarget={document.body} 
   styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
 classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  className="select"  options={langLevelOptions}/>
-   {index !== langInputs.length - 1 ? (
+   {index !== langInputs.length - 1 && langInputs.length !== 1  ? 
           <button 
-          // type="button" 
-          // onClick={handleLangDelete(index)}
+          type="button" 
+          onClick={(evt)=>handleLangDelete(index, evt)}
           // data-id={index}
           className="dev-profile-skills-modal-delete dev-profile-skills-modal-delete-2">&#10005;</button>
-        ) : <button 
+         : <button 
         style={{pointerEvents: "none", opacity: 0}}
         className="dev-profile-skills-modal-delete">&#10005;</button>}
         </div>
