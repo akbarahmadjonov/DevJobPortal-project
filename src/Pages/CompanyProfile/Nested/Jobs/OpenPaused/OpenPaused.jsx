@@ -6,7 +6,7 @@ import { BsHeadphones } from "react-icons/bs";
 import { FaPeopleGroup, FaPodcast } from "react-icons/fa6";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
-import { Input, Modal, Select, Skeleton, message } from "antd";
+import { Button, Input, Modal, Select, Skeleton, message } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
 import { useJobContext } from "../../../../../context/JobContext";
@@ -135,22 +135,22 @@ export const OpenPaused = () => {
   const handleEditJob = async (e, _id) => {
     e.preventDefault();
     try {
-      let updateJobObj = {
-        comImg: updatedJobData?.comImg,
-        comName: updatedJobData?.comName,
-        comLocation: updatedJobData?.comLocation,
-        jobTitle: updatedJobData?.jobTitle,
-        jobInfo: updatedJobData?.jobInfo,
-        jobType: updatedJobData?.jobType,
-        jobPrice: updatedJobData?.jobPrice,
-        jobskillsId: skillStext.id,
-        jobskills: skillStext.skills?.split(/[ ,]+/),
-        moreInfoId: moreInfoText.id,
-        moreInfo: moreInfoText.moreInfo,
-        typeMoneyId: typeOfMoney.id,
-        typeMoney: typeOfMoney.moneyText,
-      };
-      let { data } = await JobService.jobEdit(selectedJob._id, updateJobObj);
+      const formData = new FormData();
+      formData.append("comImg", updatedJobData.comImg);
+      formData.append("comName", updatedJobData.comName);
+      formData.append("comLocation", updatedJobData.comLocation);
+      formData.append("jobTitle", updatedJobData.jobTitle);
+      formData.append("jobInfo", updatedJobData.jobInfo);
+      formData.append("jobType", updatedJobData.jobType);
+      formData.append("jobPrice", updatedJobData.jobPrice);
+      formData.append("jobskillsId", skillStext.id);
+      formData.append("jobskills", skillStext.skills?.split(/[ ,]+/));
+      formData.append("moreInfoId", moreInfoText.id);
+      formData.append("moreInfo", moreInfoText.moreInfo);
+      formData.append("typeMoneyId", typeOfMoney.id);
+      formData.append("typeMoney", typeOfMoney.moneyText);
+
+      let { data } = await JobService.jobEdit(selectedJob._id, formData);
       if (data) {
         message.success("Successfully edited post");
       }
@@ -381,19 +381,22 @@ export const OpenPaused = () => {
         <form onSubmit={(e) => handleEditJob(e)}>
           <div className="modal-values">
             <span className="modal-title">Company Image</span>
-            <Input
-              value={updatedJobData.comImg}
+            <input
+              type="file"
+              className="modal-values__input"
+              // value={updatedJobData.comImg}
               onChange={(e) =>
                 setUpdatedJobData({
                   ...updatedJobData,
-                  comImg: e.target.value,
+                  comImg: e.target.files[0], // Store the selected file
                 })
               }
             />
           </div>
           <div className="modal-values">
             <span className="modal-title">Company Name</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={updatedJobData.comName}
               onChange={(e) =>
                 setUpdatedJobData({
@@ -405,7 +408,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Company Location</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={updatedJobData.comLocation}
               onChange={(e) =>
                 setUpdatedJobData({
@@ -417,7 +421,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Job Title</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={updatedJobData.jobTitle}
               onChange={(e) =>
                 setUpdatedJobData({
@@ -429,7 +434,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Job Info</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={updatedJobData.jobInfo}
               onChange={(e) =>
                 setUpdatedJobData({
@@ -441,7 +447,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Skills</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={skillStext.skills}
               onChange={(e) =>
                 setSkillsText({
@@ -453,7 +460,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">More Info</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={moreInfoText.moreInfo}
               onChange={(e) =>
                 setMoreInfoText({
@@ -465,7 +473,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Currency Type</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={typeOfMoney.moneyText}
               onChange={(e) =>
                 setTypeOfMoney({
@@ -477,7 +486,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Job Type</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={updatedJobData.jobType}
               onChange={(e) =>
                 setUpdatedJobData({
@@ -489,7 +499,8 @@ export const OpenPaused = () => {
           </div>
           <div className="modal-values">
             <span className="modal-title">Job Price</span>
-            <Input
+            <input
+              className="modal-values__input"
               value={updatedJobData.jobPrice}
               onChange={(e) =>
                 setUpdatedJobData({
@@ -499,7 +510,9 @@ export const OpenPaused = () => {
               }
             />
           </div>
-          <button type="submit"> submit</button>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button type="submit">Save changes</Button>
+          </div>
         </form>
       </Modal>
     </div>
