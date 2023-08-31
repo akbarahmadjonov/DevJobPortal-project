@@ -44,7 +44,7 @@ export const Jobs = () => {
 
   const indexOfLastTodo = currentPage * todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-  let currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  let currentTodos = todos?.slice(indexOfFirstTodo, indexOfLastTodo);
 
   //User data
 
@@ -60,7 +60,7 @@ export const Jobs = () => {
       ...prevState,
       todosPerPage: todosPerPage + 3,
     }));
-    if (todosPerPage + 3 >= todos.length) {
+    if (todosPerPage + 3 >= todos?.length) {
       return setShowBtnLoadMore(false);
     }
   }
@@ -496,7 +496,7 @@ export const Jobs = () => {
       <div className="job-posts">
         <div className="container jobs-container">
           <h3 className="job-posts__title">Latest added</h3>
-          {currentTodos.length > 0 ? (
+          {currentTodos?.length > 0 ? (
             <div className="job-posts__inner-wrapper">
               {/* Pagination */}
               {/* <div className="flex  items-center flex-col justify-between w-full"> */}

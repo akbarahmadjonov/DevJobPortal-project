@@ -2,13 +2,13 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import "./index.css";
 import "./main.scss";
-import { Home } from "./Pages";
+import { DevProfile, Home } from "./Pages";
 import { CompanyProfile } from "./Pages/CompanyProfile/CompanyProfile";
 import { Evaluation } from "./Pages/CompanyProfile/Nested/EvaluationNested";
 import { JobsNested } from "./Pages/CompanyProfile/Nested/JobsNested";
 import { TalentPool } from "./Pages/CompanyProfile/Nested/TalentPool";
 import { TimeOffNested } from "./Pages/CompanyProfile/Nested/TimeOffNested";
-import { DevProfile } from "./Pages/DevProfile";
+
 import { Jobs } from "./Pages/Jobs/Jobs";
 // Auth
 
@@ -55,21 +55,6 @@ const App = () => {
   //   }
   // }
 
-  //Jobs categories as used in two or more pages
-
-  //Can be removed then
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${url}/category`)
-  //     .then((data) => {
-  //       dispatch(homeActions.setJobs(data.data));
-  //     })
-  //     .catch(() => {
-  //       dispatch(homeActions.setHomeError(true));
-  //     });
-  // }, [userData]);
-
   return (
     <main>
       <div>
@@ -84,7 +69,7 @@ const App = () => {
               <Route path="/jobs" element={<Jobs />} />
               <Route
                 path={"/dev-profile"}
-                element={user ? <DevProfile /> : <Navigate to="/user/login" />}
+                element={user ? <DevProfile /> : <Login />}
               />
               <Route
                 path="/comprofile"

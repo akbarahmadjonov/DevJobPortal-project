@@ -1,6 +1,5 @@
 import { Backdrop, Checkbox, CircularProgress } from "@mui/material";
 import axios from "axios";
-import { useDebugValue } from "react";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,7 +7,7 @@ import ReactFlagsSelect from 'react-flags-select';
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Select from 'react-select';
 import closeIcon from "../../Assets/Icons/close-button.svg";
 import editPen from "../../Assets/Icons/edit-pen.svg";
@@ -30,22 +29,19 @@ import "./DevProfile.scss";
 
 export const DevProfile = ()=>{
 
-
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const { token, userData, loading, error } = useSelector((state) => state.user);
   const {jobs, homeLoading, homeError} = useSelector((state)=>state.home)
-  
-  const [applyFile, setApplyFile] = useState(null) //upload resume // can be removed  
-  const [applyImg, setApplyImg] = useState(null) //upload image //can be removed
-  const [imageUrl, setImageUrl] = useState(null); //preview image // can be removed
-  // const [fileName, setFileName] = useState("")
- 
 
   const [trigger, setTrigger] = useState(false)
 
   //Exception, couldn't access if declare after 
   const available = userData?.available
+
   const [avia, setAvia] = useState(available)
+
+  const [menu, setMenu] = useState(false)
 
   //Modals
   const [genModal, setGenModal] = useState(false)
@@ -57,7 +53,6 @@ export const DevProfile = ()=>{
   const [eduModal, setEduModal] = useState(false)
   const [workExpProjectModal, setWorkExpProjectModal] = useState(false)
   //
-
   
   const [phoneCode, setPhoneCode] = useState()
   const [currentSalary, setCurrentSalary] = useState(0);
@@ -66,6 +61,7 @@ export const DevProfile = ()=>{
 
   const [btnType, setBtnType] = useState()
   const [clickedId, setClickedId] = useState()
+  const [clickedIdAlpha, setClickedIdAlpha] = useState()
 
 
   //Managing inputs adding
@@ -74,10 +70,16 @@ export const DevProfile = ()=>{
 
   const [workSkill, setWorkSkillList] = useState()
 
-  //Work Modal Checkbox
-  const [isWorkChecked, setIsWorkChecked] = useState()
+  const [projectSkill, setProjectSkillList] = useState()
 
-const [worksList, setWorksList] = useState()
+
+  //Work Modal Checkbox
+  const [isWorkChecked, setIsWorkChecked] = useState(false)
+
+  const [isProjectChecked, setIsProjectChecked] = useState(false)
+
+  const [worksList, setWorksList] = useState()
+
 
 
 const [agree, setAgree] = useState(false)
@@ -88,14 +90,11 @@ const [profilePicture, setProfilePicture] = useState()
 const [inputs, setInputs] = useState([]);
 const [langInputs, setLangInputs] = useState([]);
 
-
-
   // Input values
-
-  // const [skill, setSkill] = useState()
 
   //refs
 const roleRef = useRef(null); //for role and salary dropdown
+const menuRef = useRef(null) //for menu in header
   //
 
   //Mock datas
@@ -139,27 +138,11 @@ const skills = [
 const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
 
-
-
-
-
-  //
-
-  //Select--------------
-
-
-
-  
-
-  //
-
-  //Variables------------
+ //Variables------------
 
   //resume file name
   const fileName = userData?.resume?.filePath
   const filePath = `https://job-px4t.onrender.com/resumes/${fileName}`
-
-
 
   //User data from server
 
@@ -168,8 +151,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   
   const nationalityInfo = userData?.nationality
-  const residanceInfo = userData?.residence
-
 
   const phoneNumber = userData?.phoneNumber
   const aboutyourself = userData?.aboutyourself
@@ -184,32 +165,26 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const skillsListData = userData?.skills
   const langListData = userData?.lang
-
-  // const educationsList = userData?.education
-
-
-
-
-  //
-
-
-
   
   const [nationality, setNationality] = useState("");
 
   const [residance, setResidance] = useState("");
 
   const [location, setLocation] = useState("");
-
-
-  //
  
- 
-  
   //
   //Logics--------------------------
 
-  //This code for getting values for input from server in education modal, while editing
+
+
+  useEffect(() => {
+    const handleClickOutside = (evt) => {
+      if (!menuRef?.current?.contains(evt.target)) {
+        setMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+  }, [menuRef]);
 
 
 
@@ -217,23 +192,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 
   const selectedWork = worksList?.find(item => item?._id === clickedId)
 
-  const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Experience
 
-
-
-// useEffect(()=>{
-//   // setWorkSkillList(selectedWork?.skill)
-  
-//   // const selectedWorkData = selectedWork?.skill.map((item)=>({
-//   //   value: item,
-//   //   label: item
-//   //   }))
-//   //   setWorkSkillList(selectedWorkData)
-//   })
-
-
-
-
+  const selectedProject = selectedWork?.projects?.find(item => item?._id === clickedIdAlpha)
 
   
 
@@ -245,36 +205,25 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 // const eduModalStartDate = new Date(`${year}-${month}-01`);
 
 
-
 //State for date formats
 
-
-
+const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Experience
 
 const [endDateWorkExp, setEndDateWorkExp] = useState(new Date()); //DatePicker end date  Work Expirience
 
+const [startDateProject, setStartDateProject] = useState(new Date()); //DatePicker start date project
+
+const [endDateProject, setEndDateProject] = useState(new Date()); //DatePicker end date  project
 
 const [startDateEdu, setStartDateEdu] = useState(new Date()); //DatePicker start date education
+
 const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date  education
 
-
-
-
-
-
    const url = "https://job-px4t.onrender.com/api"
-
-  //Draft token
 
   //
   //Handles and integration
 //First form upload resume
-
-
-
-
-
-
 
 useEffect(()=>{
   dispatch(userActions.setLoading(true))
@@ -292,19 +241,8 @@ useEffect(()=>{
     setEducationsList(data?.data?.education)
     setWorksList(data?.data?.workExperience)
 
-
+  
     //Skills and languages modal
-
-
-//can removed then
-  // data.data.skills === []  && setInputs(data.data?.skills?.map((item)=>({
-  //   skill: { value: item.skill,
-  //    label: item.skill},
-  //   experience: { value: item.experience,
-  //    label: item.experience},
-  //   level: { value: item.level,
-  //    label: item.level}
-  //  })))
 
    
  setInputs([...data.data?.skills?.map((item)=>({
@@ -321,8 +259,6 @@ useEffect(()=>{
       level: { value: "",
        label: ""}}])
 
-
-
   setLangInputs([...data.data?.lang?.map((item)=>({
         language: { value: item.language,
          label: item.language},
@@ -336,13 +272,26 @@ useEffect(()=>{
 
     //Work experience modal
     
-   const selectedWorkExp =  data.data?.workExperience?.find((item)=>item._id === clickedId)
+   const selectedWorkExp =  data?.data?.workExperience?.find((item)=>item._id === clickedId)
+
+     
+    const selectedProject = selectedWorkExp?.projects?.find((item)=>item._id === clickedIdAlpha)
+
+    console.log(selectedProject);
 
 
-  setLocation(selectedWorkExp?.location)
+
+  setLocation(selectedWorkExp.location)
+
+  setIsWorkChecked(selectedWorkExp?.workingNow)
+
+ setWorkSkillList(selectedWorkExp?.skill?.map((item)=>({
+  value: item,
+  label: item
+})))
 
 
- setWorkSkillList(selectedWorkExp?.skill.map((item)=>({
+setProjectSkillList(selectedProject?.skill?.map((item)=>({
   value: item,
   label: item
 })))
@@ -354,10 +303,7 @@ useEffect(()=>{
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
   })
-}, [clickedId, trigger])
-
-
-
+}, [clickedId, clickedIdAlpha, trigger])
 
 
 
@@ -474,7 +420,6 @@ const body = {
   language: newLangInputs
 }
 
-console.log(body);
 
 
 axios.post(`${url}/skillAndLanguages`, body, {
@@ -499,45 +444,7 @@ axios.post(`${url}/skillAndLanguages`, body, {
 
 
 
-//Get one work experience info 
-
-// const handleWorkExpOne = (id)=> {
-//   // setBtnType("edit") 
-//   // setWorkExpModal(true)
-
-//     axios.get(`${url}/workExperience/${clickedId}`, {
-//     headers: {
-//     token
-//     }
-//   }).then((data)=>{
-//    setOneWork(data.data)
-//   }).catch((err)=>{
-//     console.log(err);
-//   }).finally(()=>{
-//     dispatch(userActions.setLoading(false))
-//   })
-
-
-//   dispatch(userActions.setLoading(true))
-
-  
-
-  
-
-// }
-
-
-
- 
-
-
-
 const handleResumeUpload = (evt)=> {
-  //can be removed then
-  // if (evt.target.files) {
-  //   // setApplyFile(evt.target.files[0]);
-  //   // setFileName(evt.target.files[0]?.name || "") 
-  // }
 
   const formData = new FormData()
 
@@ -565,7 +472,6 @@ const handleResumeEdit = (evt)=>{
   const formData = new FormData()
 
   formData.append("resume", evt.target.files[0])
-
 
   axios.put(`${url}/resume/${userData?.resume?._id}`, formData, {
     headers: {
@@ -616,9 +522,6 @@ const aboutyourself = target.textAreaGeneral.value
 const linkedIn = target.linkedInLink.value
 
 
-
-
-
 const formData = new FormData()
 
 formData.append("fullName", fullName)
@@ -628,8 +531,6 @@ formData.append("nationality", nationality)
 formData.append("residence", residance)
 formData.append("phoneNumber", `${phoneCode} ${phoneNumber}`)
 formData.append("linkedIn", linkedIn)
-
-
 
 
 axios.put(`${url}/user`, formData, {
@@ -746,25 +647,9 @@ formData.append("available", avia )
 
   }
 
-  //Skill and Languages 6th modal select handles
-
-  const handleSkillSelect = (opt)=> {
-    console.log(opt.value);
-    // setSkill(opt.value)
-  }
-
-  const handleSkillYearSelect = ()=>{
-return null
-  }
-
-  const handleSkillCompetencySelect = ()=> {
-return null
-  }
-
-  
+ 
 
   //7th modal Work experience form
-
 
 
   useEffect(()=>{
@@ -792,13 +677,6 @@ return null
 
     const skill = workSkill?.map((option) => option.value);
 
-    
-   
-    // const body = {
-    //   companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: endDateWorkExp,
-    //   description, 
-    //   // isWorkingNow: endDateWorkExp ? false : true
-    // }
 
        const body = {
       companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: isWorkChecked ? "" : endDateWorkExp,
@@ -837,15 +715,7 @@ return null
 
     const skill = workSkill?.map((option) => option.value);
 
-    
-   
-    // const body = {
-    //   companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: endDateWorkExp,
-    //   description, 
-    //   // isWorkingNow: endDateWorkExp ? false : true
-    // }
-
-       const body = {
+    const body = {
       companyName, jobTitle, location, skill, startDate: startDateWorkExp, endDate: isWorkChecked ? "" : endDateWorkExp,
       description, 
       workingNow: isWorkChecked
@@ -868,6 +738,85 @@ return null
   
   }
 
+  const handleProjectModalSubmit = (evt)=> {
+
+    evt.preventDefault()
+
+    
+    dispatch(userActions.setLoading(true))
+
+    const target = evt.target
+
+    const projectName = target.projectName.value
+
+    const description = target.textAreaProject.value
+    
+
+    const skill = projectSkill?.map((option) => option.value);
+
+       const body = {
+      projectName,  skill, startDate: startDateProject, endDate: isProjectChecked ? "" : endDateProject,
+      description, 
+      workingNow: isProjectChecked
+    }
+
+
+
+
+    axios.post(`${url}/workProject/${clickedId}`, body, {
+      headers: {token}
+    }).then((res)=>{
+      console.log(res);
+      setWorkExpProjectModal(false)
+    }).catch((err)=>{
+      console.log(err.message);
+    }).finally(()=>{
+      setTrigger(!trigger)
+      dispatch(userActions.setLoading(false))
+    })
+    
+
+  
+  }
+
+  const handleProjectModalUpdate = (evt)=>{
+    evt.preventDefault()
+
+    
+    dispatch(userActions.setLoading(true))
+
+    const target = evt.target
+
+    const projectName = target.projectName.value
+
+    const description = target.textAreaProject.value
+    
+
+    const skill = projectSkill?.map((option) => option.value);
+
+       const body = {
+      projectName,  skill, startDate: startDateProject, endDate: isProjectChecked ? "" : endDateProject,
+      description, 
+      workingNow: isProjectChecked
+    }
+
+
+
+
+    axios.put(`${url}/workProject/${clickedIdAlpha}`, body, {
+      headers: {token}
+    }).then((res)=>{
+      console.log(res);
+      setWorkExpProjectModal(false)
+    }).catch((err)=>{
+      console.log(err.message);
+    }).finally(()=>{
+      setTrigger(!trigger)
+      dispatch(userActions.setLoading(false))
+    })
+    
+  }
+
   //8th Last modal Education form
 
   const [degree, setDegree] = useState(selectedEdu?.degree)
@@ -876,10 +825,6 @@ return null
     evt.preventDefault()
 
     dispatch(userActions.setLoading(true))
-
-
-
-    
 
     const target = evt.target
 
@@ -911,34 +856,40 @@ return null
 
   }
 
+  const handleEduModalUpdate = (evt)=>{
+    evt.preventDefault()
 
-//Can be removed then
-  // const handleFileUpload =  (evt) => {
-  //   if (evt.target.files) {
-  //     setApplyFile(evt.target.files[0]);
-  //     setFileName(evt.target.files[0]?.name || "") 
-  //   }
-  // };
+    dispatch(userActions.setLoading(true))
 
-  //Can be removed then
-  // const handleImgUpload =  (evt) => {
-  //   if (evt.target.files) {
-  //     setApplyImg(evt.target.files[0]);
-  //   } 
+    const target = evt.target
 
-  // };
+    const name = target.schoolInput.value
+    const fieldOfStudy = target.fieldOfStudy.value
+    let startDate = target.eduStartDate.value
+    let endDate = target.eduEndDate.value
 
-  // can be removed then
-  // useEffect(() => {
-  //   if (applyImg) {
-  //     setImageUrl(URL.createObjectURL(applyImg));
-  //   } 
-  //   else {
-  //     setImageUrl(null)
-  //   }
 
-  // }, [applyImg]);
+      const body ={
+      name, degree, fieldOfStudy,startDate, endDate
+    }
 
+
+    axios.put(`${url}/education/${clickedId}`, body, {
+      headers: {
+        token
+      }
+    }).then((res)=>{
+      console.log(res);
+      setEduModal(false)
+    }).catch((err)=>{
+      console.log(err);
+    }).finally(()=>{
+      setTrigger(!trigger)
+      dispatch(userActions.setLoading(false))
+    })
+
+
+  }
 
 return  <div className="dev-profile">
   
@@ -950,7 +901,8 @@ return  <div className="dev-profile">
     <CircularProgress color="inherit" />
   </Backdrop>
   
-  <header className="dev-profile__header dev-profile__header-container">
+  <header className="dev-profile__header">
+    <div className="dev-profile__header-container">
     <div className="dev-profile__header-left-wrapper">
     <Link to={"/"} className="dev-profile__header-logo">
         TheJobportal
@@ -963,21 +915,52 @@ return  <div className="dev-profile">
                 <nav className="dev-profile__nav">
                   <ul className="dev-profile__nav-list">
                     <li className="dev-profile__nav-item dev-profile__nav-item-1">
-                      <Link>Jobs</Link>
+                      <Link to={"/jobs"}>Jobs</Link>
                     </li>
                     <li className="dev-profile__nav-item dev-profile__nav-item-2">
                       <Link>Assessment</Link>
                     </li>
                   </ul>
                 </nav>
-                <div className="dev-profile__account-wrapper">
-                    <div className="dev-profile__account-image">B</div>
+                <div  onClick={()=>setMenu(!menu)} className="dev-profile__account-wrapper">
+                   {profilePicture ? <img style={{borderRadius: "50%"}} width={30} height={30} className="dev-profile_general-picture-header" src={profilePicture} alt="profile" /> : <div className="dev-profile__account-image">A</div>}
                     <div className="dev-profile__account-inner-wrapper">
                     <p className="profile-name">{userName}</p>
                     <p className="profile-email">{userEmail}</p>
                     </div>
+                   {menu && 
+                   <div 
+              className="dev-profile__menu">
+                    <ul 
+                          ref={menuRef}
+                    className="dev-profile__menu-list">
+                      <li className="dev-profile__menu-item">
+                        <Link className="dev-profile__menu-link" to={"/dev-profile"}>My profile</Link>
+                      </li>
+                      <li className="dev-profile__menu-item">
+                        <Link 
+                        className="dev-profile__menu-link">My Contact</Link>
+                      </li>
+                      <li className="dev-profile__menu-item">
+                        <Link className="dev-profile__menu-link">Referral</Link>
+                      </li>
+                      <li className="dev-profile__menu-item">
+                        <button 
+                        typy="button"
+                        className="dev-profile__menu-link" onClick={()=>{
+                          localStorage.clear()
+                        navigate("/")
+                        }}>Log out</button>
+                      </li>
+                    </ul>
+                  </div>}
                   </div>
+                
+              
+      
                 </div>
+
+    </div>
   </header>
   <main className="dev-profile__main">
     <section className="dev-profile__info-section-container dev-profile__info-section">
@@ -991,7 +974,7 @@ return  <div className="dev-profile">
   {fileName ? <a className="dev-profile__text-2 dev-profile-control-middle-width" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
    <input onChange={!fileName ? handleResumeUpload : handleResumeEdit} accept=".pdf, .docx" type="file" id="selectedFile" style={{display: "none"}} />
    <div className="dev-profile__resume-btn-wrapper">
-   {fileName && <button onClick={handleResumeDelete} className="dev-profile__delete-btn">Delete resume</button>}
+   {/* {fileName && <button onClick={handleResumeDelete} className="dev-profile__delete-btn">Delete resume</button>} */}
 <input className={!fileName ? "dev-profile__upload" :  "dev-profile__edit-btn"} type="button" value={!fileName ? "Upload resume" : "Edit"} 
 onClick={()=>{
   document.getElementById('selectedFile').click()
@@ -1049,7 +1032,7 @@ onClick={()=>{
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
       <div className="dev-profile__education-top-wrapper">
       <p className="dev-profile__title dev-profile-control-left-width">Skills and languages<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
-  <button className={skillsListData && "dev-profile__edit-btn"} onClick={()=>setSkillsModal(true)} type="button">{!skillsListData && <img width={18} height={18} src={editPen} alt="edit pen" />}{skillsListData && "Edit"}</button>
+  <button className={skillsListData.length !== 0 && "dev-profile__edit-btn"} onClick={()=>setSkillsModal(true)} type="button">{skillsListData.length === 0 && <img width={18} height={18} src={editPen} alt="edit pen" />}{skillsListData.length !== 0 && "Edit"}</button>
       </div>
       <div className="dev-profile__skills-inner-info">
         <ul className="dev-profile__skills-inner-list">{skillsListData?.map((item)=>(
@@ -1083,7 +1066,7 @@ onClick={()=>{
     <div className="dev-profile__info-wrapper-3 dev-profile__info-wrapper-3a">
       <div className="dev-profile__education-top-wrapper">
       <p className="dev-profile__title dev-profile-control-left-width">Work experience<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
- {workExperience ? <button data-type="edu-add"
+ {workExperience.length !== 0 ? <button data-type="edu-add"
    onClick={()=>{setWorkExpModal(true)
     setBtnType("add")
    }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Company</button> :  <button onClick={()=>{setWorkExpModal(true)
@@ -1114,10 +1097,36 @@ onClick={()=>{
          <li className="dev-profile__work-exp-skill-item" key={index}>{skill}</li> 
         ))}
       </ul>
+      <ul>
+     {item?.projects?.map((project, index)=>(
+      <li 
+      key={project._id}
+      className="dev-profile__work-exp-project-wrapper">
+      <div className="custom-flex"><strong>{project.projectName}</strong><button type="button" 
+  onClick={()=>{
+    setClickedId(item._id)
+    setClickedIdAlpha(project._id)
+    setBtnType("edit-project")
+    setWorkExpProjectModal(true)
+  }}
+      className="dev-profile__edit-btn">Edit Project</button></div>
+<p style={{color: "#989898", marginBottom: 10}}>{project.startDate.split("-")[0]}-{project.startDate.split("-")[1]} - {project.endDate ? `${project.endDate.split("-")[0]}-${project.endDate.split("-")[1]}` : "Current"}</p>
+<p style={{marginBottom: 10}}>{project.description}</p>
+<ul className="dev-profile__work-exp-skill-list">
+  {project?.skill?.map((skill, index)=>(
+    <li key={index} className="dev-profile__work-exp-skill-item">
+   {skill}
+  </li>
+  ))}
+</ul>
+      </li>
+     )) }
+      </ul>
       <button
    onClick={()=>{setWorkExpProjectModal(true)
-    setBtnType("  ")
-   }} className="dev-profile__edit-btn dev-profile__edit-btn-2">&#43;&nbsp;Add Project</button>
+    setClickedId(item._id)
+    setBtnType("add-project")
+   }} className="dev-profile__edit-btn dev-profile__edit-btn-2 dev-profile__edit-btn-project">&#43;&nbsp;Add Project</button>
   </li>
 ))  }
     </ul>
@@ -1150,9 +1159,6 @@ onClick={()=>{
     ))}
 
     </ul>
-
-    
-  
     </div>
     <div  className="dev-profile__bottom">
     <div className="dev-profile__input-wrapper">
@@ -1190,12 +1196,9 @@ ducting background checks).</p>
 <input style={{color: "#0050c8", border: "1px solid #0050c8", backgroundColor: "transparent", padding: "3px 10px"}} className="dev-profile__upload" type="button"  value="Upload profile photo" onClick={()=>{
   document.getElementById('selectedFileImg').click()
 }} />
-<button onClick={()=>{
-  // setImageUrl(null)
-  // setApplyImg(null)
-  //can be removed
+{/* <button onClick={()=>{
 }
-  } className="dev-profile__general-modal-delete-button">Delete profile photo</button>
+  } className="dev-profile__general-modal-delete-button">Delete profile photo</button> */}
       </div>
       <div className="dev-profile__general-modal-input-wrapper">
       <TextInput defaultValue={userName?.split(" ")[0] || ""} required forId={"firstNameInput"}>First name</TextInput>
@@ -1207,7 +1210,6 @@ ducting background checks).</p>
       <ReactFlagsSelect 
       selected={nationality}
       onSelect={(country)=>{
-        console.log(country);
         setNationality(country)}}
       placeholder=""
       searchable
@@ -1308,7 +1310,7 @@ ducting background checks).</p>
         <form onSubmit={handleAviaModalSubmit}>
            <div className="dev-profile__avia-modal-main-wrapper">
      <label className="dev-profile__avia-modal-label" htmlFor="aviaInput">
-        <input onChange={handleAviaInputChange}  value={true}  defaultChecked={available===true} className="dev-profile__avia-modal-input" id="aviaInput" name="aviaInput" type="radio" />
+        <input onChange={handleAviaInputChange}   value={true}  defaultChecked={available===true} className="dev-profile__avia-modal-input" id="aviaInput" name="aviaInput" type="radio" />
     <div className="dev-profile__avia-modal-text-wrapper">
     <span className="dev-profile__avia-modal-text">Available for Jobs</span>
     <span className="dev-profile__avia-modal-text-2">I am looking for a remote job.</span>
@@ -1325,11 +1327,7 @@ ducting background checks).</p>
      <div className="dev-profile__modal-save-btn-wrapper">
        <BlueButton loading={loading} style={{padding:"12px 16px", minWidth: 200, borderRadius: 4}}>Save</BlueButton>
        </div>
-
         </form>
-    
- 
-   
       </div>
     </div>
     </div>
@@ -1521,6 +1519,7 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
        <DatePicker
        wrapperClassName="dev-profile__modal-date-picker-wrapper"
        className="dev-profile__work-exp-modal-date-picker-input"
+       popperClassName="datepicker-calendar"
   dateFormat="MM/yyyy"
   showMonthYearPicker
   selected={startDateWorkExp} 
@@ -1534,7 +1533,8 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
         <p className="dev-profile__skills-modal-label">End date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
 <DatePicker
-disabled={isWorkChecked || selectedWork?.workingNow}
+popperClassName="datepicker-calendar"
+disabled={isWorkChecked}
 wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
@@ -1546,16 +1546,15 @@ className="dev-profile__work-exp-modal-date-picker-input"
        </div>
        <div className="dev-profile__work-exp-modal-checkbox-wrapper">
        <Checkbox 
-       checked={selectedWork?.workingNow}
-        onChange={(event) => setIsWorkChecked(event.target.checked)}
+       checked={isWorkChecked}
+        onChange={(event) => setIsWorkChecked(!isWorkChecked)}
        /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
        </div>
        <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
-<p className="select-flags-label">Loaction (Optional)</p>
+<p className="select-flags-label">Location (Optional)</p>
 <ReactFlagsSelect  
 selected={location}
-      onSelect={(code) => setLocation(code)
-      }
+onSelect={(code) => setLocation(code)}    
       placeholder=""
       searchable
       className="menu-flags"
@@ -1594,36 +1593,34 @@ className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (
     </div>
   </div>
   }
-  {/* {
+  {
     workExpProjectModal && 
     <div className="dev-profile__modal">
     <div className="dev-profile__modal-wrapper">
     <div className="dev-profile__modal-content">
       <div className="dev-profile__modal-header">
-    <p className="dev-profile__modal-title">{btnType==="add" ? "Add" : "Edit"} Project</p>
+    <p className="dev-profile__modal-title">{btnType==="add-project" ? "Add" : "Edit"}&nbsp;Project</p>
     <button type="button" onClick={()=>setWorkExpProjectModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
       <div className="dev-profile__modal-body">
-        <form onSubmit={handleWorkExpModalSubmit}>
+        <form onSubmit={btnType==="add-project" ? handleProjectModalSubmit : handleProjectModalUpdate}>
        <div className="dev-profile__modal-inputs-wrapper">
        <TextInput
-      //  defaultValue={btnType==="edit" ? selectedWork.companyName : ""} 
-       forId={"companyName"}>Company name</TextInput>
-      <TextInput 
-      // defaultValue={btnType==="edit" ? selectedWork.jobTitle : ""} 
-      forId={"jobTitle"}>Job title</TextInput>
+       defaultValue={btnType==="edit-project" ? selectedProject.projectName : ""} 
+       forId={"projectName"}>Project name</TextInput>
        </div>
        <div className="dev-profile__modal-inputs-wrapper">
         <div className="dev-profile__modal-date-wrapper">
        <p className="dev-profile__skills-modal-label">Start date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
        <DatePicker
+       popperClassName="datepicker-calendar"
        wrapperClassName="dev-profile__modal-date-picker-wrapper"
        className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
-  // selected={startDateWorkExp} 
-  onChange={(date) =>{ setStartDateWorkExp(date)
+  selected={startDateProject} 
+  onChange={(date) =>{ setStartDateProject(date)
   }
   } 
   
@@ -1633,22 +1630,23 @@ className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (
         <p className="dev-profile__skills-modal-label">End date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
 <DatePicker
-// disabled={isWorkChecked || selectedWork.workingNow}
+popperClassName="datepicker-calendar"
+disabled={isProjectChecked}
 wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
   showMonthYearPicker
-  // selected={endDateWorkExp} 
-  onChange={(date) => setEndDateWorkExp(date) }
+  selected={endDateProject} 
+  onChange={(date) => setEndDateProject(date) }
 />
         </div>
 
        </div>
        <div className="dev-profile__work-exp-modal-checkbox-wrapper">
        <Checkbox 
-      //  checked={selectedWork.workingNow}
-        onChange={(event) => setIsWorkChecked(event.target.checked)}
-       /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this role</p>
+       checked={isProjectChecked}
+        onChange={(event) => setIsProjectChecked(!isProjectChecked)}
+       /> <p className="dev-profile__work-exp-modal-checkbox-text">I am currently working in this project</p>
        </div>
        <div className="select-flags-wrapper dev-profile__work-exp-modal-flags-wrapper">
 </div>
@@ -1657,17 +1655,17 @@ className="dev-profile__work-exp-modal-date-picker-input"
 </div>
 <div className="dev-profile__work-exp-modal-textarea-wrapper">
 <TextInput
-// defaultValue={selectedWork.description}
+defaultValue={btnType==="edit-project" ? selectedProject?.description : ""}
 
 wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
         3000 
       } rows={
         3
-      } forId={"textAreaWorkExp"}>Description</TextInput>
+      } forId={"textAreaProject"}>Description</TextInput>
 </div>
 <Select
-// defaultInputValue={workSkill}
-onChange={(list) => setWorkSkillList(list)}
+defaultInputValue={projectSkill}
+onChange={(list) => setProjectSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
  classNamePrefix="mySelect"  
@@ -1680,7 +1678,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
     </div>
     </div>
   </div>
-  } */}
+  }
      {eduModal && <div className="dev-profile__modal">
     <div className="dev-profile__modal-wrapper">
     <div className="dev-profile__modal-content">
@@ -1689,7 +1687,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
     <button type="button" onClick={()=>setEduModal(false)} className="dev-profile__modal-close"><img src={closeIcon} alt="close" /></button>
       </div>
       <div className="dev-profile__modal-body">
-        <form onSubmit={handleEduModalSubmit}>
+        <form onSubmit={btnType==="add" ? handleEduModalSubmit : handleEduModalUpdate}>
       <TextInput defaultValue={btnType==="edit" ?  selectedEdu.name : ""} forId={"schoolInput"}>School</TextInput>
       <div className="dev-profile__modal-inputs-wrapper dev-profile__edu-modal-select-wrapper">
         <div className="dev-profile__skills-modal-lang-wrapper">
@@ -1715,7 +1713,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
        <p className="dev-profile__skills-modal-label">Start date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
        <DatePicker
-
+popperClassName="datepicker-calendar"
        wrapperClassName="dev-profile__modal-date-picker-wrapper"
        className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"
@@ -1730,6 +1728,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
         <p className="dev-profile__skills-modal-label">End date&nbsp;
         <span style={{color: "blue"}}>*</span></p>
 <DatePicker
+popperClassName="datepicker-calendar"
 wrapperClassName="dev-profile__modal-date-picker-wrapper"
 className="dev-profile__work-exp-modal-date-picker-input"
   dateFormat="MM/yyyy"

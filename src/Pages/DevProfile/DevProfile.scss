@@ -10,6 +10,11 @@
   justify-content: space-between;
 }
 
+.datepicker-calendar {
+  position: relative;
+  z-index: 100;
+}
+
 .dev-profile__edit-btn {
   background: #eaf0ff;
   color: #3a6fff;
@@ -50,16 +55,48 @@
 }
 //header
 
+.dev-profile__menu {
+  position: absolute;
+  right: 0;
+  top: 78px;
+  width: 210px;
+}
+
+.dev-profile__menu-list {
+  height: 62px;
+  margin-bottom: 1px !important;
+  padding-top: 1px !important;
+}
+
+.dev-profile__menu-item {
+  background-color: #fff;
+  border-bottom-width: 1px !important;
+  border-bottom-style: solid;
+  border-color: rgba(0, 0, 0, 0.12);
+  padding: 16px;
+  border-left: 1px solid transparent;
+  &:hover {
+    border-left: 1px solid #0050c8;
+  }
+  &:hover ~ .dev-profile__account-wrapper {
+    background-color: initial;
+  }
+}
+
+.dev-profile__menu-link {
+}
+
 .dev-profile__header-container {
   max-width: 1465px;
   margin: 0 auto;
   padding: 0 20px;
-}
-
-.dev-profile__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.dev-profile__header {
+  background-color: #fff;
 }
 
 .dev-profile__header-left-wrapper {
@@ -117,11 +154,17 @@
 }
 
 .dev-profile__account-wrapper {
+  position: relative;
   margin-left: 32px;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 15px 0;
+  padding: 15px 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #dadada;
+  }
 }
 
 .dev-profile__account-image {
@@ -308,7 +351,17 @@
   border-width: 1px !important;
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.12);
-  padding: 8px;
+  padding: 15px;
+}
+
+.dev-profile__work-exp-project-wrapper {
+  padding: 20px 0 20px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.dev-profile__edit-btn-project {
+  margin-top: 30px;
 }
 
 //General inforamtion modal
@@ -395,6 +448,11 @@
 .dev-profile_general-picture {
   width: 50px;
   height: 50px;
+}
+
+.dev-profile_general-picture-header {
+  width: 30px;
+  height: 30px;
 }
 
 .dev-profile__general-account-wrapper {
