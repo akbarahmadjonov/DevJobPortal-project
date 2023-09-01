@@ -176,15 +176,15 @@ const Login = () => {
   };
 
   // Checking if the user is authenticated
-  useEffect(() => {
-    if (
-      verify &&
-      localStorage.getItem("userData") &&
-      localStorage.getItem("token")
-    ) {
-      navigate("/dev-profile");
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     verify &&
+  //     localStorage.getItem("userData") &&
+  //     localStorage.getItem("token")
+  //   ) {
+  //     navigate("/dev-profile");
+  //   }
+  // }, []);
 
   return (
     <>
