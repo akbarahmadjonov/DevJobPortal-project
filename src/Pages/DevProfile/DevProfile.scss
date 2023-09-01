@@ -59,7 +59,7 @@
   position: absolute;
   right: 0;
   top: 78px;
-  width: 210px;
+  width: 212px;
 }
 
 .dev-profile__menu-list {
@@ -73,7 +73,7 @@
   border-bottom-width: 1px !important;
   border-bottom-style: solid;
   border-color: rgba(0, 0, 0, 0.12);
-  padding: 16px;
+  // padding: 16px;
   border-left: 1px solid transparent;
   &:hover {
     border-left: 1px solid #0050c8;
@@ -84,6 +84,10 @@
 }
 
 .dev-profile__menu-link {
+  display: inline-flex;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 16px;
 }
 
 .dev-profile__header-container {

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
-import "./Jobs.scss";
 
-// Images
 import { Backdrop, CircularProgress } from "@mui/material";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Footer } from "../../Widgets";
+import axios from "axios";
+// Images
 import SaveButton from "../../Assets/Images/jobs-posts_save.svg";
 import Layer from "../../Assets/Images/layer.png";
 import Cancel from "../../Assets/Images/X-icon.svg";
-import { Footer } from "../../Widgets";
 import Header from "../../Widgets/Header/Header";
 import closeButton from "../../Assets/Icons/close-btn.svg"
+import errorIcon from "../../Assets/Icons/error.svg";
+import "./Jobs.scss";
 
 export const Jobs = () => {
   const [openLoader, setOpenLoader] = useState(false);
@@ -69,8 +70,7 @@ export const Jobs = () => {
   // Get Jobs
   useEffect(() => {
     setOpenLoader(true);
-    axios
-      .get(`${url}/job`,
+    axios.get(`${url}/job`,
       // {
       //   headers:{
       //     token:localStorage.getItem("token"),
@@ -86,7 +86,7 @@ export const Jobs = () => {
         }));
       })
       .catch((error) => {
-        // setError(true);
+        setError(true);
         console.log(error)
       })
       .finally(() => {
@@ -260,7 +260,7 @@ export const Jobs = () => {
 
 
 
-  if (error) return <p className="error">Something went wrong. Try again...</p>;
+  if (error) return <p className="error"><img src={errorIcon} alt="error" />Something went wrong. Try again...</p>;
 
   if (loading)
     return (

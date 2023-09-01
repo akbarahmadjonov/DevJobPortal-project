@@ -2,10 +2,8 @@ import { Backdrop, Checkbox, CircularProgress } from "@mui/material";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import ReactFlagsSelect from 'react-flags-select';
 import PhoneInput from 'react-phone-number-input';
-import 'react-phone-number-input/style.css';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Select from 'react-select';
@@ -15,6 +13,7 @@ import emailIcon from "../../Assets/Icons/email-icon.svg";
 import linkedin from "../../Assets/Icons/linkedin.svg";
 import phoneIcon from "../../Assets/Icons/phone-icon-2.svg";
 import pictureIcon from "../../Assets/Icons/picture.svg";
+import errorIcon from "../../Assets/Icons/error.svg";
 import { DropDownMenu } from "../../Components";
 import { BlueButton } from "../../Components/BlueButton/BlueButton";
 import { TextInput } from "../../Components/TextInput";
@@ -22,6 +21,8 @@ import { homeActions } from "../../Redux/HomeSlice";
 import { userActions } from "../../Redux/UserSlice";
 import { countryList } from "./Components/countryList";
 import langList from "./Components/langList/langList";
+import 'react-phone-number-input/style.css';
+import "react-datepicker/dist/react-datepicker.css";
 import "./DevProfile.scss";
 
 
@@ -34,6 +35,7 @@ export const DevProfile = ()=>{
   const { token, userData, loading, error } = useSelector((state) => state.user);
   const {jobs, homeLoading, homeError} = useSelector((state)=>state.home)
 
+  //To trigger useEffect for get, while submitting post, put, delete forms
   const [trigger, setTrigger] = useState(false)
 
   //Exception, couldn't access if declare after 
@@ -117,6 +119,8 @@ const menuRef = useRef(null) //for menu in header
   const jobsOptions = [
     "Beginner", "Experienced", "Advanced", "Expert",
   ]
+
+
  
 
   const years = [
@@ -161,6 +165,8 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const monthlySalary = userData?.roleAndSalary?.monthlySalary
   const expectedSalary = userData?.roleAndSalary?.expectedSalary
 
+  console.log(phoneNumber);
+
   const workExperience = userData?.workExperience
 
   const skillsListData = userData?.skills
@@ -204,7 +210,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
 // const [month, year] = (eduStartDateString ?? "").split("/");
 // const eduModalStartDate = new Date(`${year}-${month}-01`);
 
-
 //State for date formats
 
 const [startDateWorkExp, setStartDateWorkExp] = useState(new Date()); //DatePicker start date Work Experience
@@ -237,7 +242,7 @@ useEffect(()=>{
     setProfilePicture(data.data?.profilePicture)
     setNationality(data.data?.nationality)
     setResidance(data.data?.residence)
-    setPhoneCode(data.data?.phoneNumber.split(" ")[0])
+    setPhoneCode(data.data?.phoneNumber?.split(" ")[0])
     setEducationsList(data?.data?.education)
     setWorksList(data?.data?.workExperience)
 
@@ -277,11 +282,8 @@ useEffect(()=>{
      
     const selectedProject = selectedWorkExp?.projects?.find((item)=>item._id === clickedIdAlpha)
 
-    console.log(selectedProject);
 
-
-
-  setLocation(selectedWorkExp.location)
+  setLocation(selectedWorkExp?.location)
 
   setIsWorkChecked(selectedWorkExp?.workingNow)
 
@@ -299,7 +301,9 @@ setProjectSkillList(selectedProject?.skill?.map((item)=>({
    
     //---------
   
-  }).catch(()=>{
+  }).catch((err)=>{
+    console.log(err);
+    dispatch(userActions.setError(true))
   }).finally(()=>{
     dispatch(userActions.setLoading(false))
   })
@@ -647,7 +651,6 @@ formData.append("available", avia )
 
   }
 
- 
 
   //7th modal Work experience form
 
@@ -891,6 +894,8 @@ formData.append("available", avia )
 
   }
 
+  if (error) return <p className="error"> <img src={errorIcon} alt="error" /> Something went wrong. Try again...</p>;
+
 return  <div className="dev-profile">
   
 <Backdrop
@@ -922,7 +927,7 @@ return  <div className="dev-profile">
                     </li>
                   </ul>
                 </nav>
-                <div  onClick={()=>setMenu(!menu)} className="dev-profile__account-wrapper">
+                <div onClick={()=>setMenu(!menu)} className="dev-profile__account-wrapper">
                    {profilePicture ? <img style={{borderRadius: "50%"}} width={30} height={30} className="dev-profile_general-picture-header" src={profilePicture} alt="profile" /> : <div className="dev-profile__account-image">A</div>}
                     <div className="dev-profile__account-inner-wrapper">
                     <p className="profile-name">{userName}</p>
@@ -931,8 +936,8 @@ return  <div className="dev-profile">
                    {menu && 
                    <div 
               className="dev-profile__menu">
-                    <ul 
-                          ref={menuRef}
+                    <ul  
+                    ref={menuRef}
                     className="dev-profile__menu-list">
                       <li className="dev-profile__menu-item">
                         <Link className="dev-profile__menu-link" to={"/dev-profile"}>My profile</Link>
@@ -945,12 +950,14 @@ return  <div className="dev-profile">
                         <Link className="dev-profile__menu-link">Referral</Link>
                       </li>
                       <li className="dev-profile__menu-item">
-                        <button 
-                        typy="button"
-                        className="dev-profile__menu-link" onClick={()=>{
+                        <Link
+                        type="button"
+                        className="dev-profile__menu-link" 
+                        onClick={()=>{
                           localStorage.clear()
-                        navigate("/")
-                        }}>Log out</button>
+                        }}
+                        to={"/"} 
+                        >Log out</Link>
                       </li>
                     </ul>
                   </div>}
@@ -1136,7 +1143,7 @@ onClick={()=>{
         <div className="dev-profile__education-top-wrapper">
         <p className="dev-profile__title dev-profile-control-left-width">Education<span style={{color: "#5350505f"}} className="dev-profile__required"> - optional</span></p>
    
-   {!educationsList ? <button onClick={()=>{setEduModal(true)
+   {educationsList?.length === 0 ? <button onClick={()=>{setEduModal(true)
     setBtnType("add") 
   }} data-type="edu-add"  type="button"><img width={18} height={18} src={editPen} alt="edit pen" /></button> : <button data-type="edu-add"
    onClick={()=>{setEduModal(true)
@@ -1171,7 +1178,7 @@ onClick={()=>{
 trusted parties, to assist in certain phases of the hiring process (such as conducting
 ducting background checks).</p>
     </div>
-<BlueButton disabled={!agree && phoneNumber && true} to={"/jobs"}  style={{padding: "8px 60px", borderRadius: 4, marginBottom: 20}}>Submit</BlueButton>
+<BlueButton disabled={!agree || !phoneNumber && true} to={"/jobs"}  style={{padding: "8px 60px", borderRadius: 4, marginBottom: 20}}>Submit</BlueButton>
     </div>
     </section>
   </main>
