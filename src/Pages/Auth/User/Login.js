@@ -80,6 +80,7 @@ const Login = () => {
       setOpenLoader(false);
       setTimeout(() => {
         navigate("/dev-profile");
+        window.location.reload();
       }, 1000);
     } catch (err) {
       if (
