@@ -76,10 +76,10 @@ export const Jobs = () => {
       })
       .then((data) => {
         console.log(data)
-        setJobs(data.data);
+        setJobs(data?.data?.posts);
         setState((prevState) => ({
           ...prevState,
-          todos: data.data,
+          todos: data?.data?.posts,
         }));
       })
       .catch((error) => {
@@ -559,13 +559,13 @@ export const Jobs = () => {
                               <p className="job-posts__text">{job?.jobInfo}</p>
                             </div>
                             <span className="job-posts__skills">Skills:</span>
-                            <ul className="job-posts__list">
+                            {/* <ul className="job-posts__list">
                               {job?.jobSkills?.map((skill) => (
                                 <li className="job-posts__item" key={skill._id}>
                                   {skill.skillName}
                                 </li>
                               ))}
-                            </ul>
+                            </ul> */}
                           </div>
                           {/* Info block */}
                           <div className="info-block">
@@ -653,14 +653,14 @@ export const Jobs = () => {
                           <div className="more-down__outer">
                             <p className="more-down__skills">Skills:</p>
                             <ul className="more-down__list">
-                              {jobCard?.jobSkills.map((skill) => (
+                              {/* {jobCard?.jobSkills.map((skill) => (
                                 <li
                                   className="more-down__item"
                                   key={skill?._id}
                                 >
                                   {skill?.skillName}
                                 </li>
-                              ))}
+                              ))} */}
                             </ul>
                           </div>
                           <p className="more-down__more">
