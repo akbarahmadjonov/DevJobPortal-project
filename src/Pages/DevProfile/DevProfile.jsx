@@ -1679,7 +1679,7 @@ menuPlacement="auto" options={skillsList} className="select dev-profile__work-ex
     </div>
   </div>
   }
-     {eduModal && <div className="dev-profile__modal">
+     {eduModal && <div className="dev-profile__modal">``
     <div className="dev-profile__modal-wrapper">
     <div className="dev-profile__modal-content">
       <div className="dev-profile__modal-header">
