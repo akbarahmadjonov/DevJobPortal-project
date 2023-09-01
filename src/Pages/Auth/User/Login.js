@@ -47,6 +47,7 @@ const Login = () => {
           localStorage.setItem("verify", JSON.stringify(true));
           setTimeout(() => {
             navigate("/dev-profile");
+            window.location.reload();
           }, 1000);
         }
         setOpenLoader(false);

@@ -144,7 +144,7 @@ export default function Register() {
         localStorage.setItem("verify", JSON.stringify(true));
 
         setTimeout(() => {
-          navigate("/user/login");
+          navigate("/dev-profile");
         }, 1000);
       }
 
@@ -202,7 +202,7 @@ export default function Register() {
         localStorage.setItem("verify", JSON.stringify(true));
 
         setTimeout(() => {
-          navigate("/user/login");
+          navigate("/dev-profile");
         }, 1000);
       }
       setOpenLoader(false);
