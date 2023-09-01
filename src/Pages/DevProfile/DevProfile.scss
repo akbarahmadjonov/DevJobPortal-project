@@ -74,9 +74,9 @@
   border-bottom-style: solid;
   border-color: rgba(0, 0, 0, 0.12);
   // padding: 16px;
-  border-left: 1px solid transparent;
+  border-left: 2px solid transparent;
   &:hover {
-    border-left: 1px solid #0050c8;
+    border-left: 2px solid #0050c8;
   }
   &:hover ~ .dev-profile__account-wrapper {
     background-color: initial;
@@ -149,12 +149,15 @@
 }
 
 .dev-profile__nav-item {
-  padding: 15px 16px 15px 16px;
   cursor: pointer;
 }
 
-.dev-profile__nav-item:hover {
-  background-color: #dadada;
+.dev-profile__navigation-link {
+  padding: 15px 16px 15px 16px;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    background-color: #dadada;
+  }
 }
 
 .dev-profile__account-wrapper {
@@ -165,6 +168,7 @@
   gap: 8px;
   padding: 15px 8px;
   cursor: pointer;
+  transition: 0.2s ease-in-out;
 
   &:hover {
     background-color: #dadada;

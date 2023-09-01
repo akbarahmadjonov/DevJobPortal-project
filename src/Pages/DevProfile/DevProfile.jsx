@@ -919,11 +919,11 @@ return  <div className="dev-profile">
                 <div className="dev-profile__header-right-wrapper">
                 <nav className="dev-profile__nav">
                   <ul className="dev-profile__nav-list">
-                    <li className="dev-profile__nav-item dev-profile__nav-item-1">
-                      <Link to={"/jobs"}>Jobs</Link>
+                    <li className="dev-profile__nav-item">
+                      <Link className="dev-profile__navigation-link" to={"/jobs"}>Jobs</Link>
                     </li>
-                    <li className="dev-profile__nav-item dev-profile__nav-item-2">
-                      <Link>Assessment</Link>
+                    <li className="dev-profile__nav-item">
+                      <Link className="dev-profile__navigation-link">Assessment</Link>
                     </li>
                   </ul>
                 </nav>
