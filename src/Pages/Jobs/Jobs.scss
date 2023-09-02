@@ -56,17 +56,35 @@
 .jobs__modal-content {
   position: relative;
   margin: 50px auto;
-  max-width: 762px;
-  height: 672px;
   background: #fff;
-  padding: 72px 40px 80px 40px;
+  width: 50vw;
+  z-index: 1101;
+  border-radius: 4px;
+  box-shadow: 0 11px 15px -7px #0003, 0 24px 38px 3px #00000024,
+    0 9px 46px 8px #0000001f;
+}
+
+.jobs__modal-header {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.jobs__modal-title {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.jobs__modal-text {
+  padding: 15px 0 20px 0;
+  font-size: 16px;
 }
 
 .jobs__modal-info-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  margin-bottom: 33px;
+  padding: 0px 22px 22px 22px;
+  overflow-y: auto;
 }
 
 .jobs__modal-texts-wrapper {
@@ -122,20 +140,41 @@
   margin-bottom: 64px;
 }
 
+.jobs__modal-footer {
+  padding: 16px 24px;
+}
+
+.jobs__modal-form {
+  text-align: right;
+}
+
 .jobs__form-button {
-  width: 100%;
-  padding: 24px 0;
-  background: #0050c8;
-  border-bottom: 1px solid #0050c8;
+  // width: 100%;
+  min-width: 135px;
+  margin-left: 10px;
+  padding: 10px 22px;
+  background: #fbc02d;
+  border-radius: 4px;
   color: #fff;
   font-size: 16px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
-
+  transition: 0.2s ease-in-out;
   &:hover {
-    background-color: #0c58cb;
+    background: rgba($color: #fbc02d, $alpha: 0.8);
   }
+}
+
+.jobs__form-button-1 {
+  &:hover {
+    background: rgba($color: #3a6fff, $alpha: 0.8);
+  }
+}
+
+.jobs__form-button-text {
+  width: 103px;
+  color: #212529;
 }
 
 ////
@@ -161,20 +200,17 @@
 }
 
 .xIcon {
-  width: 87px;
-  height: 55px;
-
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  margin-left: 50px !important;
-  position: absolute;
-  top: 0;
-  right: 0;
-
-  background-color: #f6f7f7;
+  justify-content: center;
+  width: 55px;
+  height: 55px;
   cursor: pointer;
+  border-radius: 50%;
+  transition: 0.2s ease-in-out;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }
 
 .jobs {

@@ -81,6 +81,11 @@ a {
 }
 
 .error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: "DM Sans";
   margin-top: 150px;
   text-align: center;
   color: rgb(161, 69, 69);
@@ -186,5 +191,3 @@ a {
 .phone-input input {
   outline: none;
 }
-
-

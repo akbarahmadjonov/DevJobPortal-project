@@ -6,18 +6,18 @@ export const { actions: userActions, reducer: userReducer } = createSlice({
     user:
       localStorage.getItem("userData") &&
       JSON.parse(localStorage.getItem("userData")),
-    token:
-      localStorage.getItem("token") ||
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWRhZDU3NTliNTExYTA4OTgxMzRjYSIsImlhdCI6MTY5MzI5ODAwN30.MTw3zzHAdVTl3bYwKhg_3I5SCy7Obtusg9JhbTA9Z3c",
+
+    token: localStorage.getItem("token"),
     userData: null,
     loading: false,
-    error: null,
+    error: false,
+    isSubmitted: localStorage.getItem("isSubmitted"), // can be removed
   },
   reducers: {
     setUser: (state, { payload }) => {
       state.user = payload.user;
       state.token = payload.token;
-      localStorage.setItem("token", payload.accessToken);
+      localStorage.setItem("token", payload.token);
       localStorage.setItem("userData", JSON.stringify(payload.user));
     },
     setUserData: (state, { payload }) => {
@@ -26,6 +26,13 @@ export const { actions: userActions, reducer: userReducer } = createSlice({
     },
     setLoading: (state, { payload }) => {
       state.loading = payload;
+    },
+    setError: (state, { payload }) => {
+      state.error = payload;
+      state.loading = false;
+    },
+    setIsSubmitted: (state, { payload }) => {
+      state.isSubmitted = payload; //can be removed
     },
   },
 });

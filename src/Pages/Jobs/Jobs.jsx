@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from "react";
-import "./Jobs.scss";
 
-// Images
-import { Backdrop, CircularProgress, Grid } from "@mui/material";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Footer } from "../../Widgets";
 import axios from "axios";
-import { useNavigate, useRouteLoaderData } from "react-router-dom";
+// Images
 import SaveButton from "../../Assets/Images/jobs-posts_save.svg";
 import Layer from "../../Assets/Images/layer.png";
 import Cancel from "../../Assets/Images/X-icon.svg";
-import { Footer } from "../../Widgets";
 import Header from "../../Widgets/Header/Header";
+import closeButton from "../../Assets/Icons/close-btn.svg"
+import errorIcon from "../../Assets/Icons/error.svg";
+import "./Jobs.scss";
 
 export const Jobs = () => {
   const [openLoader, setOpenLoader] = useState(false);
@@ -29,6 +27,9 @@ export const Jobs = () => {
   const [error, setError] = useState(false);
   const [placeholder, setPlaceholder] = useState(false);
   const [placeholderSelect, setPlaceholderSelect] = useState(false);
+  const [jobIdAlpha, setJobIdAplha] = useState();
+
+
 
   const url = "https://job-px4t.onrender.com/api";
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ export const Jobs = () => {
   //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
   //   return;
   // };
+
   function handleLoadMore() {
     setState((prevState) => ({
       ...prevState,
@@ -68,22 +70,23 @@ export const Jobs = () => {
   // Get Jobs
   useEffect(() => {
     setOpenLoader(true);
-    axios
-      .get(`${url}/job`,{
-        headers:{
-          token:localStorage.getItem("token"),
-        }
-      })
+    axios.get(`${url}/job`,
+      // {
+      //   headers:{
+      //     token:localStorage.getItem("token"),
+      //   }
+      // }
+      )
       .then((data) => {
         console.log(data)
-        setJobs(data?.data?.posts);
+        // setJobs(data?.data?.posts);
         setState((prevState) => ({
           ...prevState,
-          todos: data?.data?.posts,
+          todos: data?.data,
         }));
       })
       .catch((error) => {
-        // setError(true);
+        setError(true);
         console.log(error)
       })
       .finally(() => {
@@ -115,6 +118,7 @@ export const Jobs = () => {
 
   let jobId = "";
 
+
   // Get Job Info
   const handleCardClick = (evt) => {
     evt.preventDefault();
@@ -133,7 +137,10 @@ export const Jobs = () => {
         parentElement = parentElement.parentElement;
       }
     }
+    setJobIdAplha(jobId)
     setOpenLoader(true);
+
+
     axios
       .get(`${url}/job/${jobId}`)
       .then((data) => {
@@ -159,7 +166,6 @@ export const Jobs = () => {
   };
 
   const handleSelectInput = (evt) => {
-    console.log(evt.target.value);
     if (evt.target.value !== "") {
       setPlaceholderSelect(true);
     } else {
@@ -199,6 +205,8 @@ export const Jobs = () => {
         setOpenLoader(false);
       });
   };
+
+
 
   const handleApply = () => {
     const verified = localStorage.getItem("verify");
@@ -250,7 +258,9 @@ export const Jobs = () => {
   //   setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
   // };
 
-  if (error) return <p className="error">Something went wrong. Try again...</p>;
+
+
+  if (error) return <p className="error"><img src={errorIcon} alt="error" />Something went wrong. Try again...</p>;
 
   if (loading)
     return (
@@ -265,6 +275,9 @@ export const Jobs = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
     );
+
+    
+
 
   return (
     <>
@@ -282,155 +295,39 @@ export const Jobs = () => {
       </Backdrop>
 
       {/* JOBS */}
-      {modal ? (
-        //         <div className="modal-wrapper">
-        //  <div className="container max-w-[1728px]  mx-auto position-relative">
-        //           <main className=" w-full ">
-        //             <div className="flex absolute top-[106px] rounded-md right-[276px] flex-col z-40 space-y-[40px] items-center px-[40px] w-[612px] min-h-[637px]  bg-white modal-content">
-        //               <CssBaseline />
-        //               <Box
-        //                 sx={{
-        //                   marginTop: 8,
-        //                   display: "flex",
-        //                   flexDirection: "column",
-        //                   alignItems: "start",
-        //                   pb: "104px",
-        //                 }}
-        //               >
-        //                 <div className="modal-wrap">
-        //                   <img width={48} height={48} src={jobCard?.comImg} alt={"Company image"} />
-        //                   <div>
-        //                     <Typography
-        //                       component="h5"
-        //                       variant="h5"
-        //                       className="font-semibold text-black text-[10px]"
-        //                     >
-        //                       <span className="modal__com-name">
-        //                       {jobCard?.comName}
-        //                       </span>
-        //                     </Typography>
-        //                     <Typography
-        //                       component="h6"
-        //                       variant="h6"
-        //                       className="text-[#999] text-[16px] font-normal"
-        //                     ><span className="modal__job-title">
-        //                       Apply as a {jobCard?.jobTitle}
-        //                     </span>
-        //                     </Typography>
-        //                   </div>
-        //                   <span className="xIcon" onClick={() => setModal(false)}>
-        //                     X
-        //                   </span>
-        //                 </div>
-        //                 <Box component="form" noValidate sx={{ mt: 3 }}>
-        //                   <Grid container spacing={2}>
-        //                     <Grid item xs={12}>
-        //                        <TextField
-        //                         autoComplete="given-name"
-        //                         name="email"
-        //                         required
-        //                         fullWidth
-        //                         id="email"
-        //                         label="Email address"
-        //                         autoFocus
-        //                       />
-        //                     </Grid>
-        //                     <Grid item xs={12}>
-        //                       <TextField
-        //                         required
-        //                         fullWidth
-        //                         id="full_name"
-        //                         label="Full names"
-        //                         name="full_name"
-        //                         autoComplete="full_name"
-        //                       />
-        //                     </Grid>
-        //                     <Grid item xs={12}>
-        //                            <TextField
-        //                         required
-        //                         fullWidth
-        //                         id="resume"
-        //                         label="Resume"
-        //                         name="resume"
-        //                         // type="file"
-        //                       > </TextField>
-        //                     </Grid>
-        //                   </Grid>
-        //                   <div className="flex flex-col pt-[30px] items-center justify-between w-full space-y-4">
-        //                     <button
-        //                       type="submit"
-        //                       className=" w-full py-[23px] transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
-        //                     >
-        //                       Apply
-        //                     </button>
-        //                   </div>
-        //                 </Box>
-        //               </Box>
-        //             </div>
-        //           </main>
-        //         </div>
-        //         </div>
+      {modal && 
         <div className="jobs__modal">
           <div className="jobs__modal-content">
-            <span className="xIcon" onClick={() => setModal(false)}>
-              X
-            </span>
-            <div className="jobs__modal-info-wrapper">
-              <img
-                width={48}
-                height={48}
-                src={jobCard?.comImg}
-                alt={"Company image"}
-              />
-              <div className="jobs__modal-texts-wrapper">
-                <span className="jobs__modal-com-name">{jobCard?.comName}</span>
-                <span className="jobs__modal-job-title">
-                  Apply as a {jobCard?.jobTitle}
-                </span>
-              </div>
+            <div className="jobs__modal-header">
+              <p className="jobs__modal-title">Apply for the job?</p>
+            <button type="button" className="xIcon" onClick={() => setModal(false)}>
+              <img width={24} height={24} src={closeButton} alt="close" />
+            </button>
+
             </div>
+            <div className="jobs__modal-info-wrapper">
+              <p className="jobs__modal-text">Your profile will be shared with the company you are applying for.</p>
+              <strong>Increase your change to get this job</strong>
+              <p>Complete your profile and take assessment of your skill</p>
+             
+            </div>
+            <div className="jobs__modal-footer">
             <form onSubmit={handleApplySubmit} className="jobs__modal-form">
-              <label className="jobs__label" htmlFor="inputEmail">
-                Email address <span style={{ color: "red" }}>*</span>
-              </label>
-              <input
-                defaultValue={userData?.email}
-                placeholder="alex@gmail.com"
-                id="inputEmail"
-                type="email"
-                className="jobs__input"
-              />
-              <label className="jobs__label" htmlFor="inputName">
-                Full names<span style={{ color: "red" }}>*</span>
-              </label>
-              <input
-                defaultValue={userData?.fullName}
-                style={{ marginBottom: 26 }}
-                placeholder="Alex Johnson"
-                id="inputName"
-                type="text"
-                className="jobs__input"
-              />
-              <label className="jobs__label" htmlFor="inputFile">
-                Resume<span style={{ color: "red" }}>*</span>
-              </label>
-              <input
-                onChange={handleFileUpload}
-                style={{ marginBottom: 26 }}
-                placeholder=""
-                id="inputFile"
-                type="file"
-                className="jobs__input jobs__file-input"
-              />
-              <button type="submit" className="jobs__form-button">
-                Apply
+              <button onClick={()=>setModal(false)} type="button" className="jobs__form-button">
+                <span className="jobs__form-button-text">
+                Cancel
+                </span>
+              </button>
+              <button style={{background: "#3A6FFF"}} type="submit" className="jobs__form-button jobs__form-button-1">
+                <span style={{color: "#FFF"}} className="jobs__form-button-text">
+                Submit
+                </span>
               </button>
             </form>
+            </div>
+          
           </div>
-        </div>
-      ) : (
-        ""
-      )}
+        </div>}
       <Header />
       <div className="jobs">
         <div className="container">
