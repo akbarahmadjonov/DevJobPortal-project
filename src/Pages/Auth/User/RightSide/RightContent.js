@@ -15,6 +15,7 @@ import crossIcon from "../../../../Assets/Icons/cross.png";
 import GoogleIcon from "../../../../Assets/Icons/GoogleIcon.svg";
 import { Link as LinkDom } from "react-router-dom";
 import { Backdrop, Fade, Modal } from "@mui/material";
+import Logo from "./../../../../Assets/Images/SuperCoderLogoForDeveloper.svg";
 
 export const RightContent = ({
   email,
@@ -102,8 +103,16 @@ export const RightContent = ({
         <main className="relative w-full h-screen flex items-center justify-center">
           {forgotPassword ? (
             <>
-              <main className="relative w-full h-screen flex items-center justify-center">
-                <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
+              <main className="relative w-full flex-col h-screen flex items-center justify-center">
+                  <img
+                    src={Logo}
+                    width={70}
+                    height={41}
+                    className="mb-[30px] block md:hidden cursor-pointer"
+                    alt="site-logo"
+                    onClick={() => navigate("/")}
+                  />
+                <div className="flex rounded-md flex-col z-40 space-y-[40px] w-5/6 md:w-1/2 pb-[20px] items-center px-[10px] md:px-[30px]  bg-white">
                   <Box
                     sx={{
                       marginTop: 4,
@@ -142,7 +151,7 @@ export const RightContent = ({
                         position: "relative",
                       }}
                     >
-                      {createNewPass ? (
+                      {createNewPass && (
                         <Typography
                           component="h1"
                           variant="h4"
@@ -156,8 +165,6 @@ export const RightContent = ({
                         >
                           Create a new password
                         </Typography>
-                      ) : (
-                        ""
                       )}
                       <TextField
                         required
@@ -175,7 +182,7 @@ export const RightContent = ({
                         autoFocus
                       />
 
-                      {showConfirmationCode ? (
+                      {showConfirmationCode && (
                         <Grid item xs={12} marginTop={2}>
                           <TextField
                             required
@@ -187,10 +194,8 @@ export const RightContent = ({
                             id="confirmationCode"
                           />
                         </Grid>
-                      ) : (
-                        ""
                       )}
-                      {createNewPass ? (
+                      {createNewPass && (
                         <>
                           <Grid
                             item
@@ -281,24 +286,25 @@ export const RightContent = ({
                             </ul>
                           </Grid>
                         </>
-                      ) : (
-                        ""
                       )}
                       <div className="flex flex-col items-center pt-[40px] justify-between w-full space-y-4">
                         <Button
                           type="submit"
                           disabled={resetBtn}
                           variant="contained"
-                          className="w-full py-[10px] transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
+                          className="w-3/5 md:w-full py-[10px] duration-150 transition-all bg-[#3A6FFF] font-normal active:bg-blue-800 hover:bg-blue-600  text-[16px] text-white rounded-md "
                         >
-                          Reset Password
+                          <span className="text-[12px] md:text-[16px]">Reset Password</span>
                         </Button>
                       </div>
                       <Grid container justifyContent="center" pt={"15px"}>
                         <Grid item>
                           Having trouble logging in?{" "}
-                          <Link href="mailto:support@supercoder.co" variant="body2">
-                              Contact support
+                          <Link
+                            href="mailto:support@supercoder.co"
+                            variant="body2"
+                          >
+                            Contact support
                           </Link>
                         </Grid>
                       </Grid>
@@ -324,7 +330,7 @@ export const RightContent = ({
               </main>
             </>
           ) : (
-            <div className="flex rounded-md flex-col z-40 space-y-[40px] w-1/2 pb-[20px] items-center px-[30px]  bg-white">
+            <div className="flex rounded-md flex-col z-40 space-y-[40px] w-5/6 transition-all duration-150 md:w-1/2 pb-[20px] items-center px-[30px]  bg-white">
               <Box
                 sx={{
                   marginTop: 4,
@@ -338,11 +344,11 @@ export const RightContent = ({
                   component="h1"
                   variant="h5"
                   sx={{
-                    fontSize: "26px",
+                    // fontSize: "26px",
                     marginBottom: "15px",
                     fontWeight: 700,
                   }}
-                  className="mx-auto w-full text-center font-bold text-black "
+                  className="mx-auto w-full text-center text-[20px] transition-all duration-150 md:text-[26px]  font-bold text-black "
                 >
                   Log in as a developer
                 </Typography>
@@ -361,7 +367,11 @@ export const RightContent = ({
                       width={25}
                       height={25}
                     />
-                    <span>Continue with Google</span>
+                    <span
+                      className={`text-[12px] transition-all duration-150 sm:text-[16px] max-[360px]:hidden flex`}
+                    >
+                      Continue with Google
+                    </span>
                   </Button>
                   <div className="w-full flex items-center justify-between my-[10px]">
                     <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
@@ -383,32 +393,34 @@ export const RightContent = ({
                     autoComplete="email"
                     autoFocus
                   />
-                  <TextField
-                    size="small"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type={typeInput}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    id="password"
-                    style={{ color: "#999" }}
-                    autoComplete="current-password"
-                  />
-                  <img
-                    width={17}
-                    className={`absolute cursor-pointer right-[10px] bottom-[165px] `}
-                    onClick={() => {
-                      if (typeInput === "password") {
-                        setTypeInput("text");
-                      } else setTypeInput("password");
-                    }}
-                    height={17}
-                    src={typeInput === "password" ? eyeIcon : closeEye}
-                    alt="toggle input type"
-                  />
+                  <div className="relative ">
+                    <TextField
+                      size="small"
+                      margin="normal"
+                      required
+                      fullWidth
+                      name="password"
+                      label="Password"
+                      type={typeInput}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      id="password"
+                      style={{ color: "#999" }}
+                      autoComplete="current-password"
+                    />
+                    <img
+                      width={17}
+                      className={`absolute cursor-pointer right-[10px] transition-all duration-150 bottom-[17px] `}
+                      onClick={() => {
+                        if (typeInput === "password") {
+                          setTypeInput("text");
+                        } else setTypeInput("password");
+                      }}
+                      height={17}
+                      src={typeInput === "password" ? eyeIcon : closeEye}
+                      alt="toggle input type"
+                    />
+                  </div>
                   <FormHelperText
                     id="password"
                     className="hover:text-blue-700  tracking-tight  transition-all cursor-pointer"
@@ -434,7 +446,12 @@ export const RightContent = ({
                   <Grid container justifyContent="center" pt={"15px"}>
                     <Grid item>
                       Don't have an account?{" "}
-                        <LinkDom to={"/user/register"} className="text-[16px] text-blue-400">Sign up</LinkDom>
+                      <LinkDom
+                        to={"/user/register"}
+                        className="text-[16px] text-blue-400"
+                      >
+                        Sign up
+                      </LinkDom>
                     </Grid>
                   </Grid>
                 </Box>
