@@ -203,6 +203,7 @@ export default function Register() {
 
         setTimeout(() => {
           navigate("/dev-profile");
+          window.location.reload()
         }, 1000);
       }
       setOpenLoader(false);

@@ -177,17 +177,6 @@ const Login = () => {
       });
   };
 
-  // Checking if the user is authenticated
-  // useEffect(() => {
-  //   if (
-  //     verify &&
-  //     localStorage.getItem("userData") &&
-  //     localStorage.getItem("token")
-  //   ) {
-  //     navigate("/dev-profile");
-  //   }
-  // }, []);
-
   return (
     <>
       {/* Backdrop Loader */}
@@ -201,7 +190,7 @@ const Login = () => {
       {
         <div className="w-full h-screen flex">
           {/* Left Side Content */}
-          <LeftContent />
+          <LeftContent  />
           {/* Right Side Content */}
           <RightContent
             forgotPassword={forgotPassword}

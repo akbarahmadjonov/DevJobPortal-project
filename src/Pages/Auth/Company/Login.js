@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Fade,
-  FormControl,
   FormHelperText,
   Grid,
   Input,
@@ -211,7 +210,7 @@ export default function CompanyLogin() {
           <Link
             onClick={() => {}}
             to={"/company/register"}
-            className="duration-400 text-center w-[200px] hover:bg-[#2144a5] transition-all rounded-3xl bg-[#3A6FFF] text-white font-bold py-[8px] text-sm"
+            className="duration-400 sm:flex hidden items-center justify-center text-center w-[200px] hover:bg-[#2144a5] transition-all rounded-3xl bg-[#3A6FFF] text-white font-bold py-[8px] text-sm"
           >
             Sign up
           </Link>
@@ -444,16 +443,16 @@ export default function CompanyLogin() {
             </div>
           )
         ) : (
-          <div className="flex flex-col relative w-[512px] mx-auto items-center h-[80vh] justify-center">
-            <div className="flex flex-col items-center mb-[20px] justify-center">
+          <div className="flex flex-col relative max-w-[512px] mx-auto items-center h-[80vh] justify-center">
+            <div className="flex flex-col items-center  mt-[70px] md:mt-0 mb-[20px] justify-center">
               <h1 className="text-[26px] font-bold">Log in</h1>
             </div>
             <div
               style={{ rowGap: "13px" }}
               className="w-full pb-[40px] bg-white rounded-lg px-[30px] pt-[50px] flex-col"
             >
-              <div className="flex  w-full justify-between items-center">
-                <p className="w-[50%] border-[#607D8B] hover:text-[#acb6c8] border-b-2 transition-all duration-500 text-center py-[6px]">
+              <div className="flex md:flex-row flex-col w-full justify-between items-center">
+                <p className="md:w-[50%] w-full border-[#607D8B] hover:text-[#acb6c8] border-b-2 transition-all duration-500 text-center py-[6px]">
                   Customers
                 </p>
                 <Link
@@ -465,7 +464,7 @@ export default function CompanyLogin() {
               </div>
               <form
                 onSubmit={handleLoginFormSubmit}
-                className="mt-[20px] flex flex-col "
+                className="mt-[20px] transition-all duration-150   flex flex-col "
               >
                 <div className="flex flex-col mb-[20px]">
                   <label className="font-bold" htmlFor="email">
@@ -549,13 +548,13 @@ export default function CompanyLogin() {
                 >
                   Forgot password?
                 </span>
-                <div className="flex items-center flex-col justify-center w-full space-y-[24px]">
+                <div className="flex items-center transition-all duration-150 flex-col justify-center w-full space-y-[24px]">
                   <LoadingButton
                     type="submit"
                     sx={{
                       paddingX: "16px",
                       paddingY: "8px",
-                      width: "200px",
+                      // width: "200px",
                       color: "white",
                       background: "#989898",
                       fontSize: "14px",
@@ -567,13 +566,14 @@ export default function CompanyLogin() {
                     style={{ color: "white" }}
                     variant="contained"
                     disabled={disabled}
+                    className="transition-all duration-150 w-1/2 text-[10px] md:text-[14px]"
                   >
                     LOGIN
                   </LoadingButton>
                   <p>
                     Don't have an account?{" "}
                     <Link
-                      className="underline text-blue-500"
+                      className="underline transition-all duration-150 text-blue-500"
                       to="/company/register"
                     >
                       {" "}
