@@ -10,6 +10,10 @@ import { Button, Input, Modal, Select, Skeleton, message } from "antd";
 import { Dropdown, Menu } from "antd";
 import JobService from "../../../../../API/Jobs.service";
 import { useJobContext } from "../../../../../context/JobContext";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { Popconfirm } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+
 export const OpenPaused = () => {
   const { companyJob, setCompanyJob } = useJobContext();
   const [loading, setLoading] = useState(true);
@@ -22,6 +26,7 @@ export const OpenPaused = () => {
   const [skillStext, setSkillsText] = useState({});
   const [moreInfoText, setMoreInfoText] = useState({});
   const [typeOfMoney, setTypeOfMoney] = useState({});
+  const [openLoader, setOpenLoader] = useState(false);
 
   // Delete success notification
   const [messageApi, contextHolder] = message.useMessage();
@@ -46,6 +51,7 @@ export const OpenPaused = () => {
   // Function to open the edit modal
   const handleOpenEditModal = async (jobId) => {
     setSelectedJob({});
+    setOpenLoader(true);
     const getByID = await JobService.jobGetByID(jobId);
     getByID.data ? setSelectedJob(getByID.data) : setSelectedJob({});
     setUpdatedJobData(getByID.data || {});
@@ -72,6 +78,7 @@ export const OpenPaused = () => {
     //   jobSkills: combinedSkills?.join(','),
     // })
     setEditModalVisible(true);
+    setOpenLoader(false);
   };
 
   // Function to close the view modal
@@ -87,12 +94,13 @@ export const OpenPaused = () => {
   };
 
   const handleOpenModal = async (job) => {
+    setOpenLoader(true);
     const getByID = await JobService.jobGetByID(job);
     getByID.data ? setSelectedJob(getByID.data) : setSelectedJob({});
     // setSelectedJob(getByID?.data);
 
-    console.log(job);
     setModalVisible(true);
+    setOpenLoader(false);
   };
 
   const handleCloseModal = () => {
@@ -135,22 +143,22 @@ export const OpenPaused = () => {
   const handleEditJob = async (e, _id) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("comImg", updatedJobData.comImg);
-      formData.append("comName", updatedJobData.comName);
-      formData.append("comLocation", updatedJobData.comLocation);
-      formData.append("jobTitle", updatedJobData.jobTitle);
-      formData.append("jobInfo", updatedJobData.jobInfo);
-      formData.append("jobType", updatedJobData.jobType);
-      formData.append("jobPrice", updatedJobData.jobPrice);
-      formData.append("jobskillsId", skillStext.id);
-      formData.append("jobskills", skillStext.skills?.split(/[ ,]+/));
-      formData.append("moreInfoId", moreInfoText.id);
-      formData.append("moreInfo", moreInfoText.moreInfo);
-      formData.append("typeMoneyId", typeOfMoney.id);
-      formData.append("typeMoney", typeOfMoney.moneyText);
-
-      let { data } = await JobService.jobEdit(selectedJob._id, formData);
+      let updateJobObj = {
+        comImg: updatedJobData?.comImg,
+        comName: updatedJobData?.comName,
+        comLocation: updatedJobData?.comLocation,
+        jobTitle: updatedJobData?.jobTitle,
+        jobInfo: updatedJobData?.jobInfo,
+        jobType: updatedJobData?.jobType,
+        jobPrice: updatedJobData?.jobPrice,
+        jobskillsId: skillStext.id,
+        jobskills: skillStext.skills?.split(/[ ,]+/),
+        moreInfoId: moreInfoText.id,
+        moreInfo: moreInfoText.moreInfo,
+        typeMoneyId: typeOfMoney.id,
+        typeMoney: typeOfMoney.moneyText,
+      };
+      let { data } = await JobService.jobEdit(selectedJob._id, updateJobObj);
       if (data) {
         message.success("Successfully edited post");
       }
@@ -165,14 +173,17 @@ export const OpenPaused = () => {
       <Menu.Item key="1" onClick={() => handleOpenEditModal(jobId)}>
         Edit this post
       </Menu.Item>
-      <Menu.Item
-        key="2"
-        danger
-        onClick={() => {
-          deleteJob(jobId);
-        }}
-      >
-        Delete this job
+      <Menu.Item key="2" danger>
+        <Popconfirm
+          title="Delete this job?"
+          onConfirm={() => deleteJob(jobId)}
+          onCancel={() => message.info("Job deletion canceled.")}
+          okText="Yes"
+          cancelText="No"
+          icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+        >
+          Delete this job
+        </Popconfirm>
       </Menu.Item>
     </Menu>
   );
@@ -184,337 +195,353 @@ export const OpenPaused = () => {
   };
 
   return (
-    <div className="open-paused open-paused__scroll">
-      {contextHolder}
-      <div className="container">
-        {loading ? (
-          <Skeleton active />
-        ) : companyJob?.length > 0 ? (
-          <div>
-            {companyJob?.map((data) => (
-              <div
-                className="open-paused__inner"
-                key={data._id}
-                onClick={() => handleOpenModal(data._id)}
-              >
-                <div className="open-paused__block">
-                  <h2 className="job__title">{data?.jobTitle}</h2>
-                  <span className="job__createdTime">
-                    Created: {formatCreatedAt(data?.createdAt)}
-                  </span>
-                </div>
-                <div className="open-paused__box">
-                  <div className="open-paused__block">
-                    <div className="open-paused__box-outer">
-                      <VscFolderActive
-                        style={{ color: "#0050C8", fontSize: "23px" }}
-                      />
-                      <span>Active</span>
-                      <span>{companyJob?.length}</span>
-                    </div>
-                  </div>
-                  <div className="open-paused__block">
-                    <div className="open-paused__box-outer">
-                      <GiSandsOfTime
-                        style={{ color: "#0050C8", fontSize: "23px" }}
-                      />
-                      <span>Proposed</span>
-                      <span>0</span>
-                    </div>
-                  </div>
-                  <div className="open-paused__block">
-                    <div className="open-paused__box-outer">
-                      <BsHeadphones
-                        style={{ color: "#0050C8", fontSize: "23px" }}
-                      />
-                      <span>Interview</span>
-                      <span>0</span>
-                    </div>
-                  </div>
-                  <div className="open-paused__block">
-                    <div className="open-paused__box-outer">
-                      <FaPeopleGroup
-                        style={{ color: "#0050C8", fontSize: "23px" }}
-                      />
-                      <span>Hired</span>
-                      <span>0</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="open-paused__disQua">
-                  <HiOutlineDesktopComputer
-                    style={{ color: "#0050C8", fontSize: "23px" }}
-                  />
-                  <span>Disqualified</span>
-                  <span>0</span>
-                </div>
-                <div className="open-paused__block">
-                  <Select
-                    defaultValue="Active"
-                    style={{
-                      width: "120px",
-                      borderBottom: "1px solid #d9d9d9",
-                    }}
-                    onChange={handleChange}
-                    onClick={(e) => e.stopPropagation()}
-                    options={[{ value: "Active" }, { value: "Paused" }]}
-                  />
-                </div>
-                <div className="open-paused__block">
-                  <Dropdown
-                    overlay={dropdownMenu(data._id)}
-                    trigger={["click"]}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    <div className="open-paused__dotsIcon">
-                      <BsThreeDots
-                        style={{ color: "#0050C8", fontSize: "23px" }}
-                      />
-                    </div>
-                  </Dropdown>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="open-paused__nojob">
-            <FaPodcast style={{ color: "#0050C8", fontSize: "23px" }} />
-            <h2 className="open-paused__sub">No jobs created yet!</h2>
-            <span>Open Doors: Post Your Job using the button above!</span>
-          </div>
-        )}
-      </div>
-      <Modal
-        visible={modalVisible}
-        onCancel={handleCloseModal}
-        footer={null}
-        width={800}
+    <>
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          width: "100%",
+        }}
+        open={openLoader}
       >
-        <div className="modal-wrapper">
-          <h1
-            style={{ display: "flex", alignItems: "center" }}
-            className="modal-upper__title"
-          >
-            {`Detailed "${selectedJob?.jobTitle}" post`}
-            <span className="job__createdTime selectedJobTime">
-              Created: {formatCreatedAt(selectedJob?.createdAt)}
-            </span>
-          </h1>
-          <div className="modal-inner">
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <div className="open-paused open-paused__scroll">
+        {contextHolder}
+        <div className="container">
+          {loading ? (
+            <Skeleton active />
+          ) : companyJob?.length > 0 ? (
+            <div>
+              {companyJob?.map((data) => (
+                <div
+                  className="open-paused__inner"
+                  key={data._id}
+                  onClick={() => handleOpenModal(data._id)}
+                >
+                  <div className="open-paused__block">
+                    <h2 className="job__title">{data?.jobTitle}</h2>
+                    <span className="job__createdTime">
+                      Created: {formatCreatedAt(data?.createdAt)}
+                    </span>
+                  </div>
+                  <div className="open-paused__box">
+                    <div className="open-paused__block">
+                      <div className="open-paused__box-outer">
+                        <VscFolderActive
+                          style={{ color: "#0050C8", fontSize: "23px" }}
+                        />
+                        <span>Active</span>
+                        <span>{companyJob?.length}</span>
+                      </div>
+                    </div>
+                    <div className="open-paused__block">
+                      <div className="open-paused__box-outer">
+                        <GiSandsOfTime
+                          style={{ color: "#0050C8", fontSize: "23px" }}
+                        />
+                        <span>Proposed</span>
+                        <span>0</span>
+                      </div>
+                    </div>
+                    <div className="open-paused__block">
+                      <div className="open-paused__box-outer">
+                        <BsHeadphones
+                          style={{ color: "#0050C8", fontSize: "23px" }}
+                        />
+                        <span>Interview</span>
+                        <span>0</span>
+                      </div>
+                    </div>
+                    <div className="open-paused__block">
+                      <div className="open-paused__box-outer">
+                        <FaPeopleGroup
+                          style={{ color: "#0050C8", fontSize: "23px" }}
+                        />
+                        <span>Hired</span>
+                        <span>0</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="open-paused__disQua">
+                    <HiOutlineDesktopComputer
+                      style={{ color: "#0050C8", fontSize: "23px" }}
+                    />
+                    <span>Disqualified</span>
+                    <span>0</span>
+                  </div>
+                  <div className="open-paused__block">
+                    <Select
+                      defaultValue="Active"
+                      style={{
+                        width: "120px",
+                        borderBottom: "1px solid #d9d9d9",
+                      }}
+                      onChange={handleChange}
+                      onClick={(e) => e.stopPropagation()}
+                      options={[{ value: "Active" }, { value: "Paused" }]}
+                    />
+                  </div>
+                  <div className="open-paused__block">
+                    <Dropdown
+                      overlay={dropdownMenu(data._id)}
+                      trigger={["click"]}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                    >
+                      <div className="open-paused__dotsIcon">
+                        <BsThreeDots
+                          style={{ color: "#0050C8", fontSize: "23px" }}
+                        />
+                      </div>
+                    </Dropdown>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="open-paused__nojob">
+              <FaPodcast style={{ color: "#0050C8", fontSize: "23px" }} />
+              <h2 className="open-paused__sub">No jobs created yet!</h2>
+              <span>Open Doors: Post Your Job using the button above!</span>
+            </div>
+          )}
+        </div>
+        <Modal
+          visible={modalVisible}
+          onCancel={handleCloseModal}
+          footer={null}
+          width={800}
+        >
+          <div className="modal-wrapper">
+            <h1
+              style={{ display: "flex", alignItems: "center" }}
+              className="modal-upper__title"
+            >
+              {`Detailed "${selectedJob?.jobTitle}" post`}
+              <span className="job__createdTime selectedJobTime">
+                Created: {formatCreatedAt(selectedJob?.createdAt)}
+              </span>
+            </h1>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Company Image</span>
+                <img
+                  src={selectedJob?.comImg}
+                  width={100}
+                  alt="company image"
+                />
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Company Name</span>
+                <p>{selectedJob?.comName}</p>
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Company Location</span>
+                <p>{selectedJob?.comLocation}</p>
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Job Title</span>
+                <p>{selectedJob?.jobTitle}</p>
+              </div>
+            </div>
+            <div className="modal-">
+              <div className="modal-values">
+                <span className="modal-title">Job Info</span>
+                <p>{selectedJob?.jobInfo}</p>
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Job Type (Online & Offline)</span>
+                <p>{selectedJob?.jobType}</p>
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Job Price</span>
+                <p>{selectedJob?.jobPrice}</p>
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Job Skills</span>
+                {selectedJob?.jobSkills?.skillName?.map((skill) => {
+                  return <p>{skill}</p>;
+                })}
+              </div>
+            </div>
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">Currency Type</span>
+                <p>{selectedJob?.moneyTypeId?.moneyType}</p>
+              </div>
+            </div>
+
+            <div className="modal-inner">
+              <div className="modal-values">
+                <span className="modal-title">More Info</span>
+                {selectedJob?.moreInfo?.map((info) => {
+                  return <p>{info.jobText}</p>;
+                })}
+              </div>
+            </div>
+          </div>
+          <div></div>
+        </Modal>
+        {/* Edit Job Details Modal */}
+        <Modal
+          visible={editModalVisible}
+          onCancel={handleCloseEditModal}
+          footer={null}
+          width={800}
+        >
+          <form onSubmit={(e) => handleEditJob(e)}>
             <div className="modal-values">
               <span className="modal-title">Company Image</span>
-              <img src={selectedJob?.comImg} width={100} alt="company image" />
+              {/* <input
+                className="modal-values__input"
+                value={updatedJobData.comImg}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    comImg: e.target.value,
+                  })
+                }
+              /> */}
+              Is being integrated
             </div>
-          </div>
-          <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">Company Name</span>
-              <p>{selectedJob?.comName}</p>
+              <input
+                className="modal-values__input"
+                value={updatedJobData.comName}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    comName: e.target.value,
+                  })
+                }
+              />
             </div>
-          </div>
-          <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">Company Location</span>
-              <p>{selectedJob?.comLocation}</p>
+              <input
+                className="modal-values__input"
+                value={updatedJobData.comLocation}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    comLocation: e.target.value,
+                  })
+                }
+              />
             </div>
-          </div>
-          <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">Job Title</span>
-              <p>{selectedJob?.jobTitle}</p>
+              <input
+                className="modal-values__input"
+                value={updatedJobData.jobTitle}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    jobTitle: e.target.value,
+                  })
+                }
+              />
             </div>
-          </div>
-          <div className="modal-">
             <div className="modal-values">
               <span className="modal-title">Job Info</span>
-              <p>{selectedJob?.jobInfo}</p>
+              <input
+                className="modal-values__input"
+                value={updatedJobData.jobInfo}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    jobInfo: e.target.value,
+                  })
+                }
+              />
             </div>
-          </div>
-          <div className="modal-inner">
             <div className="modal-values">
-              <span className="modal-title">Job Type (Online & Offline)</span>
-              <p>{selectedJob?.jobType}</p>
+              <span className="modal-title">Skills</span>
+              <input
+                className="modal-values__input"
+                value={skillStext.skills}
+                onChange={(e) =>
+                  setSkillsText({
+                    ...skillStext,
+                    skills: e.target.value,
+                  })
+                }
+              />
             </div>
-          </div>
-          <div className="modal-inner">
-            <div className="modal-values">
-              <span className="modal-title">Job Price</span>
-              <p>{selectedJob?.jobPrice}</p>
-            </div>
-          </div>
-          <div className="modal-inner">
-            <div className="modal-values">
-              <span className="modal-title">Job Skills</span>
-              {selectedJob?.jobSkills?.skillName?.map((skill) => {
-                return <p>{skill}</p>;
-              })}
-            </div>
-          </div>
-          <div className="modal-inner">
-            <div className="modal-values">
-              <span className="modal-title">Currency Type</span>
-              <p>{selectedJob?.moneyTypeId?.moneyType}</p>
-            </div>
-          </div>
-
-          <div className="modal-inner">
             <div className="modal-values">
               <span className="modal-title">More Info</span>
-              {selectedJob?.moreInfo?.map((info) => {
-                return <p>{info.jobText}</p>;
-              })}
+              <input
+                className="modal-values__input"
+                value={moreInfoText.moreInfo}
+                onChange={(e) =>
+                  setMoreInfoText({
+                    ...moreInfoText,
+                    moreInfo: e.target.value,
+                  })
+                }
+              />
             </div>
-          </div>
-        </div>
-        <div></div>
-      </Modal>
-      {/* Edit Job Details Modal */}
-      <Modal
-        visible={editModalVisible}
-        onCancel={handleCloseEditModal}
-        footer={null}
-        width={800}
-      >
-        <form onSubmit={(e) => handleEditJob(e)}>
-          <div className="modal-values">
-            <span className="modal-title">Company Image</span>
-            <input
-              type="file"
-              className="modal-values__input"
-              // value={updatedJobData.comImg}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  comImg: e.target.files[0], // Store the selected file
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Company Name</span>
-            <input
-              className="modal-values__input"
-              value={updatedJobData.comName}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  comName: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Company Location</span>
-            <input
-              className="modal-values__input"
-              value={updatedJobData.comLocation}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  comLocation: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Job Title</span>
-            <input
-              className="modal-values__input"
-              value={updatedJobData.jobTitle}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  jobTitle: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Job Info</span>
-            <input
-              className="modal-values__input"
-              value={updatedJobData.jobInfo}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  jobInfo: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Skills</span>
-            <input
-              className="modal-values__input"
-              value={skillStext.skills}
-              onChange={(e) =>
-                setSkillsText({
-                  ...skillStext,
-                  skills: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">More Info</span>
-            <input
-              className="modal-values__input"
-              value={moreInfoText.moreInfo}
-              onChange={(e) =>
-                setMoreInfoText({
-                  ...moreInfoText,
-                  moreInfo: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Currency Type</span>
-            <input
-              className="modal-values__input"
-              value={typeOfMoney.moneyText}
-              onChange={(e) =>
-                setTypeOfMoney({
-                  ...typeOfMoney,
-                  moneyText: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Job Type</span>
-            <input
-              className="modal-values__input"
-              value={updatedJobData.jobType}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  jobType: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div className="modal-values">
-            <span className="modal-title">Job Price</span>
-            <input
-              className="modal-values__input"
-              value={updatedJobData.jobPrice}
-              onChange={(e) =>
-                setUpdatedJobData({
-                  ...updatedJobData,
-                  jobPrice: e.target.value,
-                })
-              }
-            />
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button type="submit">Save changes</Button>
-          </div>
-        </form>
-      </Modal>
-    </div>
+            <div className="modal-values">
+              <span className="modal-title">Currency Type</span>
+              <input
+                className="modal-values__input"
+                value={typeOfMoney.moneyText}
+                onChange={(e) =>
+                  setTypeOfMoney({
+                    ...typeOfMoney,
+                    moneyText: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="modal-values">
+              <span className="modal-title">Job Type</span>
+              <input
+                className="modal-values__input"
+                value={updatedJobData.jobType}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    jobType: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div className="modal-values">
+              <span className="modal-title">Job Price</span>
+              <input
+                className="modal-values__input"
+                value={updatedJobData.jobPrice}
+                onChange={(e) =>
+                  setUpdatedJobData({
+                    ...updatedJobData,
+                    jobPrice: e.target.value,
+                  })
+                }
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button type="submit">Save changes</Button>
+            </div>
+          </form>
+        </Modal>
+      </div>
+    </>
   );
 };
