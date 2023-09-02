@@ -145,6 +145,7 @@ export default function Register() {
 
         setTimeout(() => {
           navigate("/dev-profile");
+          window.location.reload();
         }, 1000);
       }
 
@@ -203,7 +204,7 @@ export default function Register() {
 
         setTimeout(() => {
           navigate("/dev-profile");
-          window.location.reload()
+          window.location.reload();
         }, 1000);
       }
       setOpenLoader(false);
@@ -283,7 +284,7 @@ export default function Register() {
         <div className="bg-[#2144a5] w-full md:w-3/4">
           {/* Main Register Card */}
           <main className="relative w-full h-screen flex items-center justify-center">
-            <div className="flex rounded-md flex-col z-40 items-center px-[30px] pb-[15px] pt-[40px] w-1/2 bg-white">
+            <div className="flex rounded-md flex-col z-40 items-center px-[10px] transition-all duration-150 md:px-[30px] pb-[15px] pt-[40px] w-5/6 md:w-1/2 bg-white">
               <Typography
                 component="h1"
                 variant="h5"
@@ -301,14 +302,14 @@ export default function Register() {
                 variant="h6"
                 marginBottom={""}
                 sx={{ fontSize: "14px" }}
-                className="text-[#000] font-normal"
+                className="text-[#000] font-normal max-[360px]:hidden flex text-center "
               >
                 Sign up with your Google account or use the form
               </Typography>
               <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                 <Button
                   onClick={handleGoogleClick}
-                  className="flex w-full items-center justify-center space-x-2 bg-white border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
+                  className="flex w-full items-center  justify-center space-x-2 bg-white border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 outline-none"
                 >
                   <img
                     src={GoogleIcon}
@@ -316,7 +317,9 @@ export default function Register() {
                     width={25}
                     height={25}
                   />
-                  <span>Continue with Google</span>
+                  <span className="max-[360px]:hidden flex text-[12px] transition-all duration-150 sm:text-[16px]">
+                    Continue with Google
+                  </span>
                 </Button>
                 <div className="w-full flex items-center justify-between my-[10px]">
                   <hr className="h-[1.5px] bg-blue-300 flex w-[46%]" />
@@ -485,15 +488,20 @@ export default function Register() {
                     ""
                   )}
                 </Grid>
-                <Button
-                  disabled={state.disabled}
-                  type="submit"
-                  variant="contained"
-                  className="w-full 0  transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[16px] text-white rounded-md "
-                  sx={{ marginTop: "52px" }}
+                <Grid
+                  xs={12}
+                  className="transition-all flex items-center justify-center duration-150 max-[360px]:mt-[40px] md:mt-[52px]"
                 >
-                  Create Your Supercoder Account
-                </Button>
+                  <Button
+                    disabled={state.disabled}
+                    type="submit"
+                    variant="contained"
+                    size={window.innerWidth > 516 ? "medium" : "small"}
+                    className="w-full w mx-auto z-50 transition-all bg-[#0050C8] font-normal active:bg-blue-800 hover:bg-blue-600 text-[14px] md:text-[16px] text-white rounded-md "
+                  >
+                    Create Your Supercoder Account
+                  </Button>
+                </Grid>
                 <Grid
                   container
                   alignItems="center"
