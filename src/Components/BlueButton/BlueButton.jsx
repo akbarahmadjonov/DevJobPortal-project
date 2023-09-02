@@ -9,7 +9,7 @@ export const BlueButton = ({loading, to, children, type = "submit", style, disab
       </Link>
     );
   return (
-    <button disabled={disabled} type={type} style={style} className={`blue-button ${loading && "blue-button--loading"}`}>
+    <button disabled={disabled} type={type} style={style} className={`blue-button ${loading && "blue-button--loading"} ${disabled && "blue-button--disabled"}`}>
       {loading ? "Loading..." : children}
     </button>
   );

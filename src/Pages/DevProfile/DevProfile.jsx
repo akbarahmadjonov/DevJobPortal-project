@@ -894,6 +894,27 @@ formData.append("available", avia )
 
   }
 
+
+  const handleAgreementSubmit = (evt)=>{
+    evt.preventDefault()
+
+    dispatch(userActions.setLoading(true))
+
+    axios.put(`${url}/user`, {checked: true},  {
+      headers: {
+        token
+      }
+    }).then((res)=>{
+      console.log(res);
+      navigate("/jobs")
+    }).catch((err)=>{
+      console.log(err);
+    }).finally(()=>{
+      setTrigger(!trigger)
+      dispatch(userActions.setLoading(false))
+    })
+  }
+
   if (error) return <p className="error"> <img src={errorIcon} alt="error" /> Something went wrong. Try again...</p>;
 
 return  <div className="dev-profile">
@@ -972,10 +993,10 @@ return  <div className="dev-profile">
   <main className="dev-profile__main">
     <section className="dev-profile__info-section-container dev-profile__info-section">
     <p className="dev-profile__dev-name">{`Wellcome, ${userName}`}</p>
-    <div className="dev-profile__info-wrapper">
+  {!userData?.checked && <div className="dev-profile__info-wrapper">
       <p className="dev-profile__title">Your Career Profile</p>
       <p className="dev-profile__text">Your Supercoder profile saves your info so you can to jobs quickly, receive personalized jobs recomendations.</p>
-    </div>
+    </div>}
     <div className="dev-profile__info-wrapper-2">
     <p className="dev-profile__title dev-profile-control-left-width">Resume</p>
   {fileName ? <a className="dev-profile__text-2 dev-profile-control-middle-width" href={filePath} target="_blank" download="resume-file">{fileName}</a>  : <p className="dev-profile__text-2">"To start your application, upload your resume in English in DOCX or PDF with a max size of 2 MB"</p>}
@@ -1166,20 +1187,22 @@ onClick={()=>{
     ))}
 
     </ul>
-    </div>
+    </div>{!userData?.checked && 
+<form onSubmit={handleAgreementSubmit}>
     <div  className="dev-profile__bottom">
     <div className="dev-profile__input-wrapper">
-    {/* <input type="checkbox" name="" id="" />
-     */}
-     <Checkbox 
+<Checkbox 
         onChange={() => setAgree(!agree)}
        /> 
     <p> I understand that the information I provide will be used in accordance with Supercoder's applicant and candidate privacy policy. I content the processing of my information as described in the policy including the, unlimited circumstances, Supercoder may share my contact information with
 trusted parties, to assist in certain phases of the hiring process (such as conducting
 ducting background checks).</p>
     </div>
-<BlueButton disabled={!agree || !phoneNumber && true} to={"/jobs"}  style={{padding: "8px 60px", borderRadius: 4, marginBottom: 20}}>Submit</BlueButton>
+<BlueButton disabled={!agree || !phoneNumber && true}  style={{padding: "8px 60px", borderRadius: 4, marginBottom: 20}}>Submit</BlueButton>
     </div>
+</form>
+    }
+    
     </section>
   </main>
   {/* Modals */}
