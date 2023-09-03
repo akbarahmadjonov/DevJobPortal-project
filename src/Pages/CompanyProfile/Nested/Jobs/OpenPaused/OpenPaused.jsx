@@ -6,13 +6,24 @@ import { BsHeadphones } from "react-icons/bs";
 import { FaPeopleGroup, FaPodcast } from "react-icons/fa6";
 import { HiOutlineDesktopComputer } from "react-icons/hi";
 import { BsThreeDots } from "react-icons/bs";
-import { Button, Input, Modal, Select, Skeleton, message } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Select,
+  Skeleton,
+  message,
+  Collapse,
+  Divider,
+} from "antd";
 import { Dropdown, Menu } from "antd";
-import JobService from "../../../../../API/Jobs.service";
-import { useJobContext } from "../../../../../context/JobContext";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { Popconfirm } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+
+import JobService from "../../../../../API/Jobs.service";
+import { useJobContext } from "../../../../../context/JobContext";
+import CompanyService from "../../../../../API/CompanyProfile.service";
 
 export const OpenPaused = () => {
   const { companyJob, setCompanyJob } = useJobContext();
@@ -27,6 +38,7 @@ export const OpenPaused = () => {
   const [moreInfoText, setMoreInfoText] = useState({});
   const [typeOfMoney, setTypeOfMoney] = useState({});
   const [openLoader, setOpenLoader] = useState(false);
+  const [applicants, setApplicants] = useState([]);
 
   // Delete success notification
   const [messageApi, contextHolder] = message.useMessage();
@@ -114,6 +126,7 @@ export const OpenPaused = () => {
 
   useEffect(() => {
     fetchUserProfile();
+    fetchApplicants();
   }, []);
 
   const fetchUserProfile = async () => {
@@ -125,6 +138,13 @@ export const OpenPaused = () => {
     } catch (error) {
       console.error("Error occurred while fetching user profile", error);
     }
+  };
+
+  // Fetches applicants from company info
+  const fetchApplicants = async () => {
+    const data = await CompanyService.profileGet();
+    console.log(data);
+    setApplicants(data);
   };
 
   const deleteJob = async (id) => {
@@ -342,6 +362,58 @@ export const OpenPaused = () => {
               </div>
             </div>
             <div className="modal-inner">
+              <Divider orientation="left">Applicants</Divider>
+              <Collapse
+                items={[
+                  {
+                    key: "1",
+                    label: "See all applicants",
+                    children: (
+                      <>
+                        {applicants?.data?.posts?.[0]?.employees?.map(
+                          (employee) => {
+                            return (
+                              <div className="applicants">
+                                <div>
+                                  <img
+                                    src={employee.profilePicture}
+                                    alt="profile picture"
+                                    width={70}
+                                    height={70}
+                                  />
+                                  <p className="applicants__name">{employee.fullName}</p>
+                                </div>
+                                <div className="applicants__info">
+                                  <div className="applicants__details">
+                                    Skills:{""}
+                                  </div>
+                                  {employee.skills.map((skill) => {
+                                    return (
+                                      <>
+                                        <p>{skill.skill},</p>
+                                      </>
+                                    );
+                                  })}
+                                </div>
+                                <div className="applicants__info">
+                                  <div className="applicants__details">
+                                    Email:{""}
+                                  </div>
+                                  <a href={`mailto:${employee?.email}`}>
+                                    {employee?.email}
+                                  </a>
+                                </div>
+                              </div>
+                            );
+                          }
+                        )}
+                      </>
+                    ),
+                  },
+                ]}
+              />
+            </div>
+            <div className="modal-inner">
               <div className="modal-values">
                 <span className="modal-title">Company Location</span>
                 <p>{selectedJob?.comLocation}</p>
@@ -537,7 +609,8 @@ export const OpenPaused = () => {
               />
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="submit">Save changes</Button>
+              {/* <Button type="submit">Save changes</Button> */}
+              <button type="submit">submit</button>
             </div>
           </form>
         </Modal>
