@@ -920,7 +920,7 @@ export default function CompanyRegister() {
                               htmlFor="phoneNumber"
                               className="text-[14px] font-bold"
                             >
-                              Phone Number:
+                              Phone Number: *
                             </label>
                             <PhoneInput
                               inputStyle={{
