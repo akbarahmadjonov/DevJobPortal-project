@@ -1,0 +1,30 @@
+.dev-profile-applied__wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  max-width: 320px;
+  min-height: 310px;
+}
+
+.dev-profile-applied__logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.dev-profile-applied__list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.dev-profile-applied_desc {
+  width: 300px;
+  max-height: 100px;
+  position: relative;
+  overflow: hidden;
+  flex-grow: 1;
+}

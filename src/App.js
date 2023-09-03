@@ -35,6 +35,7 @@ import { CompanyProfileProvider } from "./context/CompanyProfileContext";
 import { Profile } from "./Pages/CompanyProfile/Profile/Profile";
 import ErrorPage from "./Pages/Error/ErrorPage";
 import { JobProvider } from "./context/JobContext";
+import { Applied } from "./Pages/DevProfile/Nested/Applied";
 
 const App = () => {
   const user = localStorage.getItem("userData");
@@ -67,10 +68,18 @@ const App = () => {
               <Route path="/company/login" element={<CompanyLogin />} />
               <Route path="/company/register" element={<CompanyRegister />} />
               <Route path="/jobs" element={<Jobs />} />
-              <Route
-                path={"/dev-profile"}
-                element={user ? <DevProfile /> : <Login />}
-              />
+              <Route path="/dev-profile">
+                <Route
+                  exact
+                  path="/dev-profile"
+                  element={user ? <DevProfile /> : <Login />}
+                />
+                <Route
+                  exact
+                  path="/dev-profile/applied"
+                  element={<Applied />}
+                />
+              </Route>
               <Route
                 path="/comprofile"
                 element={

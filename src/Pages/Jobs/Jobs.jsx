@@ -11,6 +11,7 @@ import Cancel from "../../Assets/Images/X-icon.svg";
 import Header from "../../Widgets/Header/Header";
 import closeButton from "../../Assets/Icons/close-btn.svg"
 import errorIcon from "../../Assets/Icons/error.svg";
+import infoMoney from "../../Assets/Images/info-money.svg";
 import "./Jobs.scss";
 
 export const Jobs = () => {
@@ -27,6 +28,8 @@ export const Jobs = () => {
   const [placeholder, setPlaceholder] = useState(false);
   const [placeholderSelect, setPlaceholderSelect] = useState(false);
   const [jobIdAlpha, setJobIdAplha] = useState();
+
+  const [appliedJobs, setAppliedJobs] = useState(null)
 
   const targetRef = useRef(null);
 
@@ -49,6 +52,30 @@ export const Jobs = () => {
   //User data
 
   const userData = JSON.parse(localStorage?.getItem("userData"));
+
+  const selectedJob  = appliedJobs?.find((item)=>item._id === jobIdAlpha)
+
+
+  useEffect(()=>{
+    setLoading(true)
+    axios.get(`${url}/job/applied`, {
+      headers:{
+        token: localStorage.getItem("token")
+      }
+    }).then((res)=>{
+      console.log(res);
+      setAppliedJobs(res.data)
+    }).then((data)=>{
+      console.log(data);
+    }).catch((err)=>{
+      setError(true)
+      console.log(err);
+    }).finally(()=>{
+      setLoading(false)
+    })
+  }, [])
+
+
 
 
 
@@ -454,8 +481,11 @@ export const Jobs = () => {
                               <li className="info-item">
                                 {job?.jobCooperate ? "Contract" : "Intern"}
                               </li>
-
+                                {/* Here is a quick fix
+                                img icon exists but on
+                                previous two item it doesnt  */}
                               <li className="info-item">
+                                <img width={24} height={15} src={infoMoney} alt="" />
                                 {job?.jobPrice}&nbsp;
                                 {job?.moneyTypeId?.moneyType}
                               </li>
@@ -562,12 +592,12 @@ export const Jobs = () => {
                             </li>
                           </ul>
                         </div>
-                        <button
+                        {!selectedJob ? <button
                           onClick={handleApply}
                           className="more-upper__applyBtn"
                         >
                           Apply for this job
-                        </button>
+                        </button> : <p className="more-upper__already-text">You have already applied to this job</p>}
                       </div>
                     </div>
                   </div>
