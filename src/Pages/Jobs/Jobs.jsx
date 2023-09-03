@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Backdrop, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,6 @@ import errorIcon from "../../Assets/Icons/error.svg";
 import "./Jobs.scss";
 
 export const Jobs = () => {
-  const [openLoader, setOpenLoader] = useState(false);
   const [showBtnLoadMore, setShowBtnLoadMore] = useState(true);
   const [jobs, setJobs] = useState(null);
   const [jobCard, setJobCard] = useState(null);
@@ -29,7 +28,7 @@ export const Jobs = () => {
   const [placeholderSelect, setPlaceholderSelect] = useState(false);
   const [jobIdAlpha, setJobIdAplha] = useState();
 
-
+  const targetRef = useRef(null);
 
   const url = "https://job-px4t.onrender.com/api";
   const navigate = useNavigate();
@@ -51,6 +50,8 @@ export const Jobs = () => {
 
   const userData = JSON.parse(localStorage?.getItem("userData"));
 
+
+
   // Refreshes the current jobs
   // const search = () => {
   //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -69,7 +70,7 @@ export const Jobs = () => {
   // Pagination end
   // Get Jobs
   useEffect(() => {
-    setOpenLoader(true);
+    setLoading(true);
     axios.get(`${url}/job`,
       // {
       //   headers:{
@@ -90,7 +91,7 @@ export const Jobs = () => {
         console.log(error)
       })
       .finally(() => {
-        setOpenLoader(false);
+        setLoading(false);
         // setLoading(false)
       });
   }, []);
@@ -124,6 +125,9 @@ export const Jobs = () => {
     evt.preventDefault();
     setLoading(true);
     setJobCardOpen(true);
+
+    targetRef.current.scrollIntoView({ behavior: 'smooth' });
+    
     jobId = evt?.target?.dataset?.id;
 
     if (!jobId) {
@@ -138,7 +142,7 @@ export const Jobs = () => {
       }
     }
     setJobIdAplha(jobId)
-    setOpenLoader(true);
+    setLoading(true);
 
 
     axios
@@ -150,7 +154,7 @@ export const Jobs = () => {
         setError(true);
       })
       .finally(() => {
-        setOpenLoader(false);
+      setLoading(false);
         setLoading(false);
       });
   };
@@ -178,7 +182,7 @@ export const Jobs = () => {
   const handleSearchSubmit = (evt) => {
     evt.preventDefault();
     setJobCardOpen(false);
-    setOpenLoader(true);
+    setLoading(true);
     axios
       .get(`${url}/job/search`, {
         params: { comLocation: locationOption, jobTitle: jobsSearch },
@@ -202,7 +206,7 @@ export const Jobs = () => {
       })
       .finally(() => {
         setLoading(false);
-        setOpenLoader(false);
+        setLoading(false);
       });
   };
 
@@ -223,26 +227,21 @@ export const Jobs = () => {
     }
   };
 
-  const handleApplySubmit = async (evt) => {
+
+  const handleApplySubmit = (evt) => {
     evt.preventDefault();
     setLoading(true);
 
-    let formData = new FormData();
-
-    formData.append("resume", applyFile);
-    formData.append("userEmail", evt.target.inputEmail.value);
-    formData.append("userFullName", evt.target.inputName.value);
-    formData.append("jobId", jobId);
-
-    await axios
-      .post(`${url}/employees`, {
-        formData,
+    axios.post(`${url}/user/apply`,  {
+        jobId: jobIdAlpha
+      }, {
         headers: {
           token: localStorage.getItem("token"),
         },
       })
       .then((res) => {
-        console.log(res.status);
+        console.log(res);
+        setModal(false)
       })
       .catch((err) => {
         console.log(err);
@@ -262,23 +261,7 @@ export const Jobs = () => {
 
   if (error) return <p className="error"><img src={errorIcon} alt="error" />Something went wrong. Try again...</p>;
 
-  if (loading)
-    return (
-      <Backdrop
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          width: "100%",
-        }}
-        open={openLoader}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
-    );
-
     
-
-
   return (
     <>
       {/* Backdrop Loader */}
@@ -289,7 +272,7 @@ export const Jobs = () => {
           zIndex: (theme) => theme.zIndex.drawer + 1,
           width: "100%",
         }}
-        open={openLoader}
+        open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -318,9 +301,9 @@ export const Jobs = () => {
                 Cancel
                 </span>
               </button>
-              <button style={{background: "#3A6FFF"}} type="submit" className="jobs__form-button jobs__form-button-1">
+              <button disabled={loading} type="submit" className={`jobs__form-button jobs__form-button-1 ${loading && "jobs__form-button--loading"}`}>
                 <span style={{color: "#FFF"}} className="jobs__form-button-text">
-                Submit
+                {loading ? "Applying..." : "Submit"}
                 </span>
               </button>
             </form>
@@ -391,7 +374,7 @@ export const Jobs = () => {
       </div>
       {/* JOBS POSTS */}
       <div className="job-posts">
-        <div className="container jobs-container">
+        <div ref={targetRef} className="container jobs-container">
           <h3 className="job-posts__title">Latest added</h3>
           {currentTodos?.length > 0 ? (
             <div className="job-posts__inner-wrapper">
@@ -411,7 +394,7 @@ export const Jobs = () => {
                 >
                   {currentTodos?.length &&
                     currentTodos?.map((job) => (
-                      <li key={job?._id}>
+                      <li  key={job?._id}>
                         <div
                           data-id={job?._id}
                           id={job?._id}

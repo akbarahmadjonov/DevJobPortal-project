@@ -167,9 +167,14 @@
 }
 
 .jobs__form-button-1 {
+  background: #3a6fff;
   &:hover {
     background: rgba($color: #3a6fff, $alpha: 0.8);
   }
+}
+
+.jobs__form-button--loading {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .jobs__form-button-text {
