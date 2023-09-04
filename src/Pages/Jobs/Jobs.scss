@@ -683,11 +683,19 @@
       align-items: center;
 
       //* Margin, paddings
+    & .info-item:last-child::before {
+      // content: "";
+      // width: 24px;
+      // height: 15px;
+      // display: block;
+      // // align-items: center;
+
+      // //* Margin, paddings
       // margin-right: 5px;
 
-      background-image: url("../../Assets/Images/info-money.svg");
-      background-repeat: no-repeat;
-      background-size: 100%;
+      // // background-image: url("../../Assets/Images/info-money.svg");
+      // background-repeat: no-repeat;
+      // background-size: 100%;
     }
   }
 
@@ -1016,6 +1024,17 @@
       background-color: #0c58cb;
     }
   }
+}
+
+.more-upper__already-text {
+  background-color: transparent;
+  margin: 0 auto;
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 70px;
+  text-align: center;
+  padding: 30px 0;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  font-size: larger;
 }
 
 .jobs__footer-container {

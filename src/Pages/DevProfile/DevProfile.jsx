@@ -24,6 +24,8 @@ import langList from "./Components/langList/langList";
 import 'react-phone-number-input/style.css';
 import "react-datepicker/dist/react-datepicker.css";
 import "./DevProfile.scss";
+import { DevHeader } from "./Components/DevHeader";
+import { DevActions } from "../../Redux/DeveloperSlice";
 
 
 
@@ -43,7 +45,9 @@ export const DevProfile = ()=>{
 
   const [avia, setAvia] = useState(available)
 
-  const [menu, setMenu] = useState(false)
+
+  //can be removed
+  // const [menu, setMenu] = useState(false)
 
   //Modals
   const [genModal, setGenModal] = useState(false)
@@ -96,7 +100,8 @@ const [langInputs, setLangInputs] = useState([]);
 
   //refs
 const roleRef = useRef(null); //for role and salary dropdown
-const menuRef = useRef(null) //for menu in header
+
+
   //
 
   //Mock datas
@@ -165,8 +170,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
   const monthlySalary = userData?.roleAndSalary?.monthlySalary
   const expectedSalary = userData?.roleAndSalary?.expectedSalary
 
-  console.log(phoneNumber);
-
   const workExperience = userData?.workExperience
 
   const skillsListData = userData?.skills
@@ -180,18 +183,6 @@ const skillsList =  skills.map(opt => ({ label: opt, value: opt }));
  
   //
   //Logics--------------------------
-
-
-
-  useEffect(() => {
-    const handleClickOutside = (evt) => {
-      if (!menuRef?.current?.contains(evt.target)) {
-        setMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-  }, [menuRef]);
-
 
 
   const selectedEdu = educationsList?.find(item => item?._id === clickedId)
@@ -229,6 +220,8 @@ const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date 
   //
   //Handles and integration
 //First form upload resume
+
+let dataStart = ""
 
 useEffect(()=>{
   dispatch(userActions.setLoading(true))
@@ -279,6 +272,8 @@ useEffect(()=>{
     
    const selectedWorkExp =  data?.data?.workExperience?.find((item)=>item._id === clickedId)
 
+  
+
      
     const selectedProject = selectedWorkExp?.projects?.find((item)=>item._id === clickedIdAlpha)
 
@@ -298,7 +293,6 @@ setProjectSkillList(selectedProject?.skill?.map((item)=>({
   label: item
 })))
 
-   
     //---------
   
   }).catch((err)=>{
@@ -349,8 +343,6 @@ const handleInputChange = (index, inputName, selectedOption) => {
   if (index === inputs.length - 1 && selectedOption !== '') {
     setInputs([...inputs, { skill: '', experience: '', level: '' }]);
   }
-
- 
 
 
 };
@@ -926,72 +918,9 @@ return  <div className="dev-profile">
   >
     <CircularProgress color="inherit" />
   </Backdrop>
-  
-  <header className="dev-profile__header">
-    <div className="dev-profile__header-container">
-    <div className="dev-profile__header-left-wrapper">
-    <Link to={"/"} className="dev-profile__header-logo">
-        TheJobportal
-                </Link>
-                <label htmlFor="devProfileSearch" className="dev-profile__header-label">
-                <input placeholder="Search by skill or job position" className="dev-profile__header-search-input" type="text" name="" id="devProfileSearch" />
-                </label>
-    </div>
-                <div className="dev-profile__header-right-wrapper">
-                <nav className="dev-profile__nav">
-                  <ul className="dev-profile__nav-list">
-                    <li className="dev-profile__nav-item">
-                      <Link className="dev-profile__navigation-link" to={"/jobs"}>Jobs</Link>
-                    </li>
-                    <li className="dev-profile__nav-item">
-                      <Link className="dev-profile__navigation-link">Assessment</Link>
-                    </li>
-                  </ul>
-                </nav>
-                <div onClick={()=>setMenu(!menu)} className="dev-profile__account-wrapper">
-                   {profilePicture ? <img style={{borderRadius: "50%"}} width={30} height={30} className="dev-profile_general-picture-header" src={profilePicture} alt="profile" /> : <div className="dev-profile__account-image">A</div>}
-                    <div className="dev-profile__account-inner-wrapper">
-                    <p className="profile-name">{userName}</p>
-                    <p className="profile-email">{userEmail}</p>
-                    </div>
-                   {menu && 
-                   <div 
-              className="dev-profile__menu">
-                    <ul  
-                    ref={menuRef}
-                    className="dev-profile__menu-list">
-                      <li className="dev-profile__menu-item">
-                        <Link className="dev-profile__menu-link" to={"/dev-profile"}>My profile</Link>
-                      </li>
-                      <li className="dev-profile__menu-item">
-                        <Link 
-                        className="dev-profile__menu-link">My Contact</Link>
-                      </li>
-                      <li className="dev-profile__menu-item">
-                        <Link className="dev-profile__menu-link">Referral</Link>
-                      </li>
-                      <li className="dev-profile__menu-item">
-                        <Link
-                        type="button"
-                        className="dev-profile__menu-link" 
-                        onClick={()=>{
-                          localStorage.clear()
-                        }}
-                        to={"/"} 
-                        >Log out</Link>
-                      </li>
-                    </ul>
-                  </div>}
-                  </div>
-                
-              
-      
-                </div>
-
-    </div>
-  </header>
+  <DevHeader/>
   <main className="dev-profile__main">
-    <section className="dev-profile__info-section-container dev-profile__info-section">
+    <section className="dev-container dev-profile__info-section">
     <p className="dev-profile__dev-name">{`Wellcome, ${userName}`}</p>
   {!userData?.checked && <div className="dev-profile__info-wrapper">
       <p className="dev-profile__title">Your Career Profile</p>
@@ -1554,6 +1483,7 @@ classNamePrefix="mySelect"  menuPlacement="auto" placeholder="Proficiency"  clas
   showMonthYearPicker
   selected={startDateWorkExp} 
   onChange={(date) =>{ setStartDateWorkExp(date)
+    console.log(date);
   }
   } 
   
@@ -1694,7 +1624,7 @@ wrapperStyle={{marginBottom: 30}} textarea={true} maxLength={
       } forId={"textAreaProject"}>Description</TextInput>
 </div>
 <Select
-defaultInputValue={projectSkill}
+value={projectSkill}
 onChange={(list) => setProjectSkillList(list)}
 isMulti
  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
