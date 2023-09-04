@@ -121,12 +121,6 @@ const roleRef = useRef(null); //for role and salary dropdown
     {value: "Expert", label: "Expert"},
   ]
 
-  const jobsOptions = [
-    "Beginner", "Experienced", "Advanced", "Expert",
-  ]
-
-
- 
 
   const years = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40
@@ -292,6 +286,8 @@ setProjectSkillList(selectedProject?.skill?.map((item)=>({
   value: item,
   label: item
 })))
+
+setStartDateWorkExp(selectedWorkExp?.startDate)
 
     //---------
   
@@ -956,7 +952,7 @@ onClick={()=>{
   <img width={14} height={14} src={emailIcon} alt="email-icon" /><p>{userEmail}</p>
   </div>
  <div className="dev-profile__gen-info-middle-inner-wrapper">
-  {phoneNumber && <><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber}</p></>}
+  {phoneNumber && <><img width={14} height={14} src={phoneIcon} alt="phone-icon" /><p>{phoneNumber.split(" ")[0] === undefined ? phoneNumber.split(" ")[0] : ""}&nbsp;{phoneNumber.split(" ")[1]}</p></>}
   </div>
 </div>
       <button className={phoneNumber && "dev-profile__edit-btn"} onClick={()=>setGenModal(true)} type="button">{!phoneNumber && <img width={18} height={18} src={editPen} alt="edit pen" />}{phoneNumber && "Edit"}</button>
@@ -1583,7 +1579,6 @@ className="select dev-profile__work-exp-modal-react-select" placeholder="Skill (
   onChange={(date) =>{ setStartDateProject(date)
   }
   } 
-  
 />
         </div>
         <div className="dev-profile__modal-date-wrapper">
