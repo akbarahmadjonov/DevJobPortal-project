@@ -403,14 +403,20 @@
 
 //* Jobs posts
 .job-posts {
+  & img {
+    object-fit: contain;
+  }
+
   position: relative;
 
   // .container {
   //   width: 1438px !important;
   // }
   //* Margin, paddings
-  margin-top: 125px;
-  margin-bottom: 125px;
+  padding-top: 125px;
+  padding-bottom: 125px;
+
+  background-color: #fff;
   .job-posts__title {
     //* Margin, paddings
     margin-bottom: 65px;
@@ -643,8 +649,8 @@
     //* Before decorative images
     & .info-item:nth-child(1)::before {
       content: "";
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
       display: block;
 
       //* Margin, paddings
@@ -669,6 +675,14 @@
       background-size: 100%;
     }
 
+    & .info-item:nth-child(3)::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      display: flex;
+      align-items: center;
+
+      //* Margin, paddings
     & .info-item:last-child::before {
       // content: "";
       // width: 24px;
