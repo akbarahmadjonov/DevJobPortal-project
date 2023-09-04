@@ -9,7 +9,7 @@ import SaveButton from "../../Assets/Images/jobs-posts_save.svg";
 import Layer from "../../Assets/Images/layer.png";
 import Cancel from "../../Assets/Images/X-icon.svg";
 import Header from "../../Widgets/Header/Header";
-import closeButton from "../../Assets/Icons/close-btn.svg"
+import closeButton from "../../Assets/Icons/close-btn.svg";
 import errorIcon from "../../Assets/Icons/error.svg";
 import "./Jobs.scss";
 
@@ -50,8 +50,6 @@ export const Jobs = () => {
 
   const userData = JSON.parse(localStorage?.getItem("userData"));
 
-
-
   // Refreshes the current jobs
   // const search = () => {
   //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -71,15 +69,17 @@ export const Jobs = () => {
   // Get Jobs
   useEffect(() => {
     setLoading(true);
-    axios.get(`${url}/job`,
-      // {
-      //   headers:{
-      //     token:localStorage.getItem("token"),
-      //   }
-      // }
+    axios
+      .get(
+        `${url}/job`
+        // {
+        //   headers:{
+        //     token:localStorage.getItem("token"),
+        //   }
+        // }
       )
       .then((data) => {
-        console.log(data)
+        console.log(data);
         // setJobs(data?.data?.posts);
         setState((prevState) => ({
           ...prevState,
@@ -88,7 +88,7 @@ export const Jobs = () => {
       })
       .catch((error) => {
         setError(true);
-        console.log(error)
+        console.log(error);
       })
       .finally(() => {
         setLoading(false);
@@ -119,15 +119,14 @@ export const Jobs = () => {
 
   let jobId = "";
 
-
   // Get Job Info
   const handleCardClick = (evt) => {
     evt.preventDefault();
     setLoading(true);
     setJobCardOpen(true);
 
-    targetRef.current.scrollIntoView({ behavior: 'smooth' });
-    
+    targetRef.current.scrollIntoView({ behavior: "smooth" });
+
     jobId = evt?.target?.dataset?.id;
 
     if (!jobId) {
@@ -141,9 +140,8 @@ export const Jobs = () => {
         parentElement = parentElement.parentElement;
       }
     }
-    setJobIdAplha(jobId)
+    setJobIdAplha(jobId);
     setLoading(true);
-
 
     axios
       .get(`${url}/job/${jobId}`)
@@ -154,7 +152,7 @@ export const Jobs = () => {
         setError(true);
       })
       .finally(() => {
-      setLoading(false);
+        setLoading(false);
         setLoading(false);
       });
   };
@@ -210,8 +208,6 @@ export const Jobs = () => {
       });
   };
 
-
-
   const handleApply = () => {
     const verified = localStorage.getItem("verify");
     if (verified) {
@@ -227,21 +223,25 @@ export const Jobs = () => {
     }
   };
 
-
   const handleApplySubmit = (evt) => {
     evt.preventDefault();
     setLoading(true);
 
-    axios.post(`${url}/user/apply`,  {
-        jobId: jobIdAlpha
-      }, {
-        headers: {
-          token: localStorage.getItem("token"),
+    axios
+      .post(
+        `${url}/user/apply`,
+        {
+          jobId: jobIdAlpha,
         },
-      })
+        {
+          headers: {
+            token: localStorage.getItem("token"),
+          },
+        }
+      )
       .then((res) => {
         console.log(res);
-        setModal(false)
+        setModal(false);
       })
       .catch((err) => {
         console.log(err);
@@ -257,11 +257,14 @@ export const Jobs = () => {
   //   setVisibleCards((prevVisibleCards) => prevVisibleCards + 5);
   // };
 
+  if (error)
+    return (
+      <p className="error">
+        <img src={errorIcon} alt="error" />
+        Something went wrong. Try again...
+      </p>
+    );
 
-
-  if (error) return <p className="error"><img src={errorIcon} alt="error" />Something went wrong. Try again...</p>;
-
-    
   return (
     <>
       {/* Backdrop Loader */}
@@ -278,39 +281,55 @@ export const Jobs = () => {
       </Backdrop>
 
       {/* JOBS */}
-      {modal && 
+      {modal && (
         <div className="jobs__modal">
           <div className="jobs__modal-content">
             <div className="jobs__modal-header">
               <p className="jobs__modal-title">Apply for the job?</p>
-            <button type="button" className="xIcon" onClick={() => setModal(false)}>
-              <img width={24} height={24} src={closeButton} alt="close" />
-            </button>
-
+              <button
+                type="button"
+                className="xIcon"
+                onClick={() => setModal(false)}
+              >
+                <img width={24} height={24} src={closeButton} alt="close" />
+              </button>
             </div>
             <div className="jobs__modal-info-wrapper">
-              <p className="jobs__modal-text">Your profile will be shared with the company you are applying for.</p>
+              <p className="jobs__modal-text">
+                Your profile will be shared with the company you are applying
+                for.
+              </p>
               <strong>Increase your change to get this job</strong>
               <p>Complete your profile and take assessment of your skill</p>
-             
             </div>
             <div className="jobs__modal-footer">
-            <form onSubmit={handleApplySubmit} className="jobs__modal-form">
-              <button onClick={()=>setModal(false)} type="button" className="jobs__form-button">
-                <span className="jobs__form-button-text">
-                Cancel
-                </span>
-              </button>
-              <button disabled={loading} type="submit" className={`jobs__form-button jobs__form-button-1 ${loading && "jobs__form-button--loading"}`}>
-                <span style={{color: "#FFF"}} className="jobs__form-button-text">
-                {loading ? "Applying..." : "Submit"}
-                </span>
-              </button>
-            </form>
+              <form onSubmit={handleApplySubmit} className="jobs__modal-form">
+                <button
+                  onClick={() => setModal(false)}
+                  type="button"
+                  className="jobs__form-button"
+                >
+                  <span className="jobs__form-button-text">Cancel</span>
+                </button>
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className={`jobs__form-button jobs__form-button-1 ${
+                    loading && "jobs__form-button--loading"
+                  }`}
+                >
+                  <span
+                    style={{ color: "#FFF" }}
+                    className="jobs__form-button-text"
+                  >
+                    {loading ? "Applying..." : "Submit"}
+                  </span>
+                </button>
+              </form>
             </div>
-          
           </div>
-        </div>}
+        </div>
+      )}
       <Header />
       <div className="jobs">
         <div className="container">
@@ -394,7 +413,7 @@ export const Jobs = () => {
                 >
                   {currentTodos?.length &&
                     currentTodos?.map((job) => (
-                      <li  key={job?._id}>
+                      <li key={job?._id}>
                         <div
                           data-id={job?._id}
                           id={job?._id}
@@ -456,7 +475,7 @@ export const Jobs = () => {
                               </li>
 
                               <li className="info-item">
-                                {job?.jobPrice}&nbsp;
+                                {job?.jobPrice?.toString().substr(0, 6)}.
                                 {job?.moneyTypeId?.moneyType}
                               </li>
                             </ul>
