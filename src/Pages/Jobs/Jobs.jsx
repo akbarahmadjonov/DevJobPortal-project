@@ -12,6 +12,8 @@ import Header from "../../Widgets/Header/Header";
 import closeButton from "../../Assets/Icons/close-btn.svg";
 import errorIcon from "../../Assets/Icons/error.svg";
 import "./Jobs.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { DevActions } from "../../Redux/DeveloperSlice";
 
 export const Jobs = () => {
   const [showBtnLoadMore, setShowBtnLoadMore] = useState(true);
@@ -27,6 +29,15 @@ export const Jobs = () => {
   const [placeholder, setPlaceholder] = useState(false);
   const [placeholderSelect, setPlaceholderSelect] = useState(false);
   const [jobIdAlpha, setJobIdAplha] = useState();
+  // const [appliedJob, setAppliedJob] = useState(null)
+
+  const {appliedJobs} = useSelector((state)=> state.developer)
+  const [trigger, setTrigger] = useState(false)
+
+  const dispatch = useDispatch()
+
+ 
+  const appliedJob = appliedJobs?.find((item)=>item._id === jobIdAlpha) 
 
   const targetRef = useRef(null);
 
@@ -48,6 +59,7 @@ export const Jobs = () => {
 
   //User data
 
+
   const userData = JSON.parse(localStorage?.getItem("userData"));
 
   // Refreshes the current jobs
@@ -55,6 +67,26 @@ export const Jobs = () => {
   //   currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
   //   return;
   // };
+
+
+  useEffect(()=>{
+    setLoading(true)
+    axios.get(`${url}/job/applied`, {
+      headers:{
+        token: localStorage.getItem("token")
+      }
+    }).then((res)=>{
+      console.log(res);
+      dispatch(DevActions.setAppliedJobs(res.data))
+    }).then((data)=>{
+      console.log(data);
+    }).catch((err)=>{
+      setError(true)
+      console.log(err);
+    }).finally(()=>{
+      setLoading(false)
+    })
+  }, [trigger])
 
   function handleLoadMore() {
     setState((prevState) => ({
@@ -79,7 +111,6 @@ export const Jobs = () => {
         // }
       )
       .then((data) => {
-        console.log(data);
         // setJobs(data?.data?.posts);
         setState((prevState) => ({
           ...prevState,
@@ -242,6 +273,7 @@ export const Jobs = () => {
       .then((res) => {
         console.log(res);
         setModal(false);
+        setTrigger(!trigger)
       })
       .catch((err) => {
         console.log(err);
@@ -581,12 +613,12 @@ export const Jobs = () => {
                             </li>
                           </ul>
                         </div>
-                        <button
+                      {!appliedJob ?  <button
                           onClick={handleApply}
                           className="more-upper__applyBtn"
                         >
                           Apply for this job
-                        </button>
+                        </button> : <p className="more-upper__apply-text">You have already applied for this job</p>}
                       </div>
                     </div>
                   </div>

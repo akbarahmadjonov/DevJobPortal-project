@@ -7,14 +7,17 @@ import { useEffect } from "react"
 import { useState } from "react"
 import { Backdrop, CircularProgress } from "@mui/material"
 import errorIcon from "../../../../Assets/Icons/error.svg";
+import { useDispatch, useSelector } from "react-redux"
+import { DevActions } from "../../../../Redux/DeveloperSlice"
 
 
 export const Applied = ()=>{
 
+  const dispatch = useDispatch()
+  const {appliedJobs} = useSelector((state)=> state.developer)
 
   const url = "https://job-px4t.onrender.com/api"
   const token = localStorage.getItem("token")
-  const [appliedJobs, setAppliedJobs] = useState(null)
   const [loading, setLoading] = useState(false) 
   const [error, setError] = useState(false)
 
@@ -26,7 +29,7 @@ useEffect(()=>{
     }
   }).then((res)=>{
     console.log(res);
-    setAppliedJobs(res.data)
+    dispatch(DevActions.setAppliedJobs(res.data))
   }).then((data)=>{
     console.log(data);
   }).catch((err)=>{

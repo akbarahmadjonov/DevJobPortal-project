@@ -215,7 +215,6 @@ const [endDateEdu, setEndDateEdu] = useState(new Date()); //DatePicker end date 
   //Handles and integration
 //First form upload resume
 
-let dataStart = ""
 
 useEffect(()=>{
   dispatch(userActions.setLoading(true))
